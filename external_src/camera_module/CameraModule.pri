@@ -1,5 +1,11 @@
 CONFIG += c++2a
 
+INCLUDEPATH += $$PWD/include
+DEPENDPATH += $$PWD/include
+
+INCLUDEPATH += $$PWD/include/CameraSDK_include
+DEPENDPATH += $$PWD/include/CameraSDK_include
+
 HEADERS  += \
     $$PWD/include/autoexposurehandler.h \
     $$PWD/include/camenums.h \
@@ -19,7 +25,7 @@ SOURCES += \
         $$PWD/src/serialib.cpp
 
 
-INCLUDEPATH += -I$$PWD/include/CameraSDK_include
-INCLUDEPATH += -I$$PWD/include/opencv2
-LIBS += -L$$PWD/lib
-
+LIBS += -L$$PWD/lib/win64 -lqhyccd
+LIBS += -L$$PWD/lib/win64/opencv-lib -llibopencv_calib3d460     -llibopencv_core460
+LIBS += -L$$PWD/lib/win64/opencv-lib -llibopencv_features2d460  -llibopencv_flann460
+LIBS += -L$$PWD/lib/win64/opencv-lib -llibopencv_highgui460     -llibopencv_imgproc460  -llibopencv_xphoto460

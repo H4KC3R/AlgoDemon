@@ -24,3 +24,4 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 include(../../external_src/AlgoDemon.pri)
+include(../../external_src/camera_module/CameraModule.pri)
