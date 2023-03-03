@@ -37,6 +37,18 @@ bool CameraQHYCCD::getID(int32_t num, char* id){
     return (ret == QHYCCD_SUCCESS);
 }
 
+std::string CameraQHYCCD::getModel(char *id) {
+    char model[20];
+    std::string camModel;
+    int ret = GetQHYCCDModel(id, model);
+    if(ret == QHYCCD_SUCCESS)
+        camModel = model;
+    else
+        camModel = "";
+    return camModel;
+
+}
+
 bool CameraQHYCCD::connect(StreamMode mode) {
     uint32_t ret = SetQHYCCDStreamMode(pCamhandle, mode);
     if(ret != QHYCCD_SUCCESS)

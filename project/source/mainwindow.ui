@@ -33,7 +33,7 @@
      <number>9</number>
     </property>
     <item>
-     <widget class="QFrame" name="control_frm">
+     <widget class="QFrame" name="controlFrame">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
         <horstretch>0</horstretch>
@@ -66,7 +66,7 @@
         <number>0</number>
        </property>
        <item>
-        <widget class="QTabWidget" name="control_objects_tab">
+        <widget class="QTabWidget" name="controlObjectsTabWidget">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
            <horstretch>0</horstretch>
@@ -79,7 +79,7 @@
          <property name="currentIndex">
           <number>0</number>
          </property>
-         <widget class="QWidget" name="camera_tab">
+         <widget class="QWidget" name="cameraTab">
           <attribute name="title">
            <string>Камера</string>
           </attribute>
@@ -97,11 +97,11 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QToolBox" name="cam_control_toolbox">
+            <widget class="QToolBox" name="cameraControlToolBox">
              <property name="currentIndex">
               <number>0</number>
              </property>
-             <widget class="QWidget" name="cam_page">
+             <widget class="QWidget" name="cameraToolBoxPage">
               <property name="geometry">
                <rect>
                 <x>0</x>
@@ -127,7 +127,7 @@
                 <number>0</number>
                </property>
                <item>
-                <widget class="QFrame" name="cam_connection_frm">
+                <widget class="QFrame" name="cameraConnectionFrame">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                    <horstretch>0</horstretch>
@@ -154,7 +154,7 @@
                    <number>0</number>
                   </property>
                   <item>
-                   <widget class="QFrame" name="find_frm">
+                   <widget class="QFrame" name="findCamerasFrame">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -181,7 +181,7 @@
                       <number>0</number>
                      </property>
                      <item>
-                      <widget class="QPushButton" name="find_btn">
+                      <widget class="QPushButton" name="findCamerasButton">
                        <property name="text">
                         <string>Поиск камер</string>
                        </property>
@@ -191,7 +191,7 @@
                    </widget>
                   </item>
                   <item>
-                   <widget class="QFrame" name="connection_frm">
+                   <widget class="QFrame" name="connectionFrame">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -218,7 +218,7 @@
                       <number>0</number>
                      </property>
                      <item row="1" column="1">
-                      <widget class="QPushButton" name="disconnect_btn">
+                      <widget class="QPushButton" name="disconnectCameraButton">
                        <property name="enabled">
                         <bool>false</bool>
                        </property>
@@ -228,20 +228,30 @@
                       </widget>
                      </item>
                      <item row="0" column="1">
-                      <widget class="QPushButton" name="connect_btn">
+                      <widget class="QPushButton" name="connectCameraButton">
                        <property name="text">
                         <string>Подключиться</string>
                        </property>
                       </widget>
                      </item>
                      <item row="0" column="0">
-                      <widget class="QComboBox" name="camera_combox"/>
+                      <widget class="QComboBox" name="cameraComboBox"/>
                      </item>
                      <item row="1" column="0">
-                      <widget class="QComboBox" name="mode_combox">
+                      <widget class="QComboBox" name="modeCameraComboBox">
                        <property name="enabled">
-                        <bool>false</bool>
+                        <bool>true</bool>
                        </property>
+                       <item>
+                        <property name="text">
+                         <string>Режим &quot;Фото&quot;</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>Режим &quot;Видео&quot;</string>
+                        </property>
+                       </item>
                       </widget>
                      </item>
                     </layout>
@@ -251,7 +261,7 @@
                 </widget>
                </item>
                <item>
-                <widget class="QFrame" name="cam_control_frm">
+                <widget class="QFrame" name="cameraControlFrame">
                  <property name="enabled">
                   <bool>false</bool>
                  </property>
@@ -269,7 +279,48 @@
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_8">
                   <item>
-                   <widget class="QFrame" name="bit_frm">
+                   <widget class="QFrame" name="cameraTypeFrame">
+                    <property name="frameShape">
+                     <enum>QFrame::StyledPanel</enum>
+                    </property>
+                    <property name="frameShadow">
+                     <enum>QFrame::Raised</enum>
+                    </property>
+                    <layout class="QHBoxLayout" name="horizontalLayout_5">
+                     <property name="leftMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="topMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="rightMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="bottomMargin">
+                      <number>0</number>
+                     </property>
+                     <item>
+                      <widget class="QLabel" name="cameraTypeLabel">
+                       <property name="enabled">
+                        <bool>false</bool>
+                       </property>
+                       <property name="text">
+                        <string>Тип</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QLabel" name="cameraTypeValueLabel">
+                       <property name="text">
+                        <string/>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QFrame" name="cameraDepthFrame">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -296,20 +347,20 @@
                       <number>0</number>
                      </property>
                      <item>
-                      <widget class="QLabel" name="bit_label">
+                      <widget class="QLabel" name="cameraDepthLabel">
                        <property name="text">
                         <string>Бит</string>
                        </property>
                       </widget>
                      </item>
                      <item>
-                      <widget class="QComboBox" name="bit_combox"/>
+                      <widget class="QComboBox" name="cameraDepthComboBox"/>
                      </item>
                     </layout>
                    </widget>
                   </item>
                   <item>
-                   <widget class="Line" name="bit_line">
+                   <widget class="Line" name="cameraDepthLine">
                     <property name="frameShadow">
                      <enum>QFrame::Plain</enum>
                     </property>
@@ -322,7 +373,7 @@
                    </widget>
                   </item>
                   <item>
-                   <widget class="QFrame" name="gain_frm">
+                   <widget class="QFrame" name="cameraGainFrame">
                     <property name="frameShape">
                      <enum>QFrame::StyledPanel</enum>
                     </property>
@@ -343,14 +394,14 @@
                       <number>0</number>
                      </property>
                      <item>
-                      <widget class="QLabel" name="gain_lbl">
+                      <widget class="QLabel" name="cameraGainLabel">
                        <property name="text">
                         <string>Усиление</string>
                        </property>
                       </widget>
                      </item>
                      <item>
-                      <widget class="QDoubleSpinBox" name="gain_spnbox">
+                      <widget class="QDoubleSpinBox" name="cameraGainDSpinBox">
                        <property name="sizePolicy">
                         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                          <horstretch>0</horstretch>
@@ -363,7 +414,7 @@
                    </widget>
                   </item>
                   <item>
-                   <widget class="QFrame" name="gain_min_max_frm">
+                   <widget class="QFrame" name="cameraGainMinMaxFrame">
                     <property name="frameShape">
                      <enum>QFrame::StyledPanel</enum>
                     </property>
@@ -372,7 +423,7 @@
                     </property>
                     <layout class="QGridLayout" name="gridLayout_2">
                      <item row="1" column="1">
-                      <widget class="QLabel" name="gmax_lbl">
+                      <widget class="QLabel" name="cameraGMaxLabel">
                        <property name="text">
                         <string>Max</string>
                        </property>
@@ -382,21 +433,21 @@
                       </widget>
                      </item>
                      <item row="4" column="0">
-                      <widget class="QLabel" name="gmax_val_lbl">
+                      <widget class="QLabel" name="cameraGMinValLabel">
                        <property name="text">
                         <string>0</string>
                        </property>
                       </widget>
                      </item>
                      <item row="1" column="0">
-                      <widget class="QLabel" name="gmin_lbl">
+                      <widget class="QLabel" name="cameraGMinLabel">
                        <property name="text">
                         <string>Min</string>
                        </property>
                       </widget>
                      </item>
                      <item row="4" column="1">
-                      <widget class="QLabel" name="gmax_val_lbl_2">
+                      <widget class="QLabel" name="cameraGMaxValLabel">
                        <property name="text">
                         <string>100</string>
                        </property>
@@ -409,14 +460,14 @@
                    </widget>
                   </item>
                   <item>
-                   <widget class="QSlider" name="gain_hslider">
+                   <widget class="QSlider" name="cameraGainHSlider">
                     <property name="orientation">
                      <enum>Qt::Horizontal</enum>
                     </property>
                    </widget>
                   </item>
                   <item>
-                   <widget class="Line" name="gain_line">
+                   <widget class="Line" name="cameraGainLine">
                     <property name="frameShadow">
                      <enum>QFrame::Plain</enum>
                     </property>
@@ -426,7 +477,7 @@
                    </widget>
                   </item>
                   <item>
-                   <widget class="QFrame" name="exposure_frm">
+                   <widget class="QFrame" name="cameraExposureFrame">
                     <property name="frameShape">
                      <enum>QFrame::StyledPanel</enum>
                     </property>
@@ -447,14 +498,14 @@
                       <number>0</number>
                      </property>
                      <item>
-                      <widget class="QLabel" name="exposure_lbl">
+                      <widget class="QLabel" name="cameraExposureLabel">
                        <property name="text">
                         <string>Экспозиция(мс)</string>
                        </property>
                       </widget>
                      </item>
                      <item>
-                      <widget class="QDoubleSpinBox" name="exposure_spnbox">
+                      <widget class="QDoubleSpinBox" name="cameraExposureDSpinBox">
                        <property name="sizePolicy">
                         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                          <horstretch>0</horstretch>
@@ -467,7 +518,7 @@
                    </widget>
                   </item>
                   <item>
-                   <widget class="QFrame" name="exposure_min_max_frm">
+                   <widget class="QFrame" name="cameraExpMinMaxFrame">
                     <property name="frameShape">
                      <enum>QFrame::StyledPanel</enum>
                     </property>
@@ -476,7 +527,7 @@
                     </property>
                     <layout class="QGridLayout" name="gridLayout_3">
                      <item row="1" column="1">
-                      <widget class="QLabel" name="emax_val_lbl">
+                      <widget class="QLabel" name="cameraExpMaxValLabel">
                        <property name="text">
                         <string>100</string>
                        </property>
@@ -486,7 +537,7 @@
                       </widget>
                      </item>
                      <item row="0" column="1">
-                      <widget class="QLabel" name="emax_lbl">
+                      <widget class="QLabel" name="cameraExpMaxLabel">
                        <property name="text">
                         <string>Max</string>
                        </property>
@@ -496,14 +547,14 @@
                       </widget>
                      </item>
                      <item row="0" column="0">
-                      <widget class="QLabel" name="emin_lbl">
+                      <widget class="QLabel" name="cameraExpMinLabel">
                        <property name="text">
                         <string>Min</string>
                        </property>
                       </widget>
                      </item>
                      <item row="1" column="0">
-                      <widget class="QLabel" name="emin_val_lbl">
+                      <widget class="QLabel" name="cameraExpMinValLabel">
                        <property name="text">
                         <string>0</string>
                        </property>
@@ -513,14 +564,14 @@
                    </widget>
                   </item>
                   <item>
-                   <widget class="QSlider" name="exposure_hslider">
+                   <widget class="QSlider" name="cameraExposureHSlider">
                     <property name="orientation">
                      <enum>Qt::Horizontal</enum>
                     </property>
                    </widget>
                   </item>
                   <item>
-                   <widget class="Line" name="exposure_line">
+                   <widget class="Line" name="cameraExposureLine">
                     <property name="frameShadow">
                      <enum>QFrame::Plain</enum>
                     </property>
@@ -529,18 +580,11 @@
                     </property>
                    </widget>
                   </item>
-                  <item>
-                   <widget class="QPushButton" name="set_control_btn">
-                    <property name="text">
-                     <string>Задать</string>
-                    </property>
-                   </widget>
-                  </item>
                  </layout>
                 </widget>
                </item>
                <item>
-                <widget class="QGroupBox" name="capture_grpbox">
+                <widget class="QGroupBox" name="cameraCaptureGroupBox">
                  <property name="enabled">
                   <bool>false</bool>
                  </property>
@@ -567,14 +611,14 @@
                    <number>0</number>
                   </property>
                   <item>
-                   <widget class="QPushButton" name="start_capture_btn">
+                   <widget class="QPushButton" name="cameraStartCaptureButton">
                     <property name="text">
                      <string>Начать</string>
                     </property>
                    </widget>
                   </item>
                   <item>
-                   <widget class="QPushButton" name="stop_capture_btn">
+                   <widget class="QPushButton" name="cameraStopCaptureButton">
                     <property name="text">
                      <string>Остановить</string>
                     </property>
@@ -585,7 +629,7 @@
                </item>
               </layout>
              </widget>
-             <widget class="QWidget" name="image_process_page">
+             <widget class="QWidget" name="imageProcessPage">
               <property name="enabled">
                <bool>false</bool>
               </property>
@@ -614,7 +658,7 @@
                 <number>0</number>
                </property>
                <item>
-                <widget class="QFrame" name="image_process_frame">
+                <widget class="QFrame" name="imageProcessFrame">
                  <property name="frameShape">
                   <enum>QFrame::StyledPanel</enum>
                  </property>
@@ -623,81 +667,32 @@
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_11">
                   <item>
-                   <widget class="QFrame" name="blur_control_frm">
+                   <widget class="QFrame" name="focusControlFrame">
                     <property name="frameShape">
                      <enum>QFrame::StyledPanel</enum>
                     </property>
                     <property name="frameShadow">
                      <enum>QFrame::Raised</enum>
                     </property>
-                    <layout class="QGridLayout" name="gridLayout_7">
-                     <item row="0" column="0">
-                      <widget class="QLabel" name="blur_lbl">
+                    <layout class="QVBoxLayout" name="verticalLayout_16">
+                     <item>
+                      <widget class="QCheckBox" name="cameraEnableFocusCheckBox">
                        <property name="text">
-                        <string>Расфокусировка</string>
+                        <string>CheckBox</string>
                        </property>
                       </widget>
                      </item>
-                     <item row="3" column="1">
-                      <widget class="QLineEdit" name="blur_laplacian_lnedit">
-                       <property name="readOnly">
-                        <bool>true</bool>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="3" column="0">
-                      <widget class="QLabel" name="blur_laplacian_lbl">
+                     <item>
+                      <widget class="QLabel" name="cameraFocusRoiLabel">
                        <property name="text">
-                        <string>Лапласиан</string>
+                        <string>TextLabel</string>
                        </property>
                       </widget>
                      </item>
-                     <item row="4" column="1">
-                      <widget class="QLineEdit" name="blur_fft_lnedit">
-                       <property name="readOnly">
-                        <bool>true</bool>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="2" column="1">
-                      <widget class="QLineEdit" name="blur_scharr_lnedit">
-                       <property name="readOnly">
-                        <bool>true</bool>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="2" column="0">
-                      <widget class="QLabel" name="blur_scharr_lbl">
+                     <item>
+                      <widget class="QPushButton" name="cameraFocusButton">
                        <property name="text">
-                        <string>Шарр</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="1" column="0">
-                      <widget class="QLabel" name="blur_sobel_lbl">
-                       <property name="text">
-                        <string>Собель</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="4" column="0">
-                      <widget class="QLabel" name="blur_fft_lbl">
-                       <property name="text">
-                        <string>FFT</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="0" column="1">
-                      <widget class="QCheckBox" name="blur_algo_en_chkbox">
-                       <property name="text">
-                        <string/>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="1" column="1">
-                      <widget class="QLineEdit" name="blur_sobel_lnedit">
-                       <property name="readOnly">
-                        <bool>true</bool>
+                        <string>PushButton</string>
                        </property>
                       </widget>
                      </item>
@@ -705,21 +700,21 @@
                    </widget>
                   </item>
                   <item>
-                   <widget class="QCheckBox" name="debayer_chkbox">
+                   <widget class="QCheckBox" name="debayerCheckBox">
                     <property name="text">
                      <string>Дебаеризация</string>
                     </property>
                    </widget>
                   </item>
                   <item>
-                   <widget class="QCheckBox" name="wb_chkbox">
+                   <widget class="QCheckBox" name="whiteBalanceCheckBox">
                     <property name="text">
                      <string>Баланс белого</string>
                     </property>
                    </widget>
                   </item>
                   <item>
-                   <widget class="QFrame" name="contrasts_frm">
+                   <widget class="QFrame" name="contrastsFrame">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -752,7 +747,7 @@
                       <number>0</number>
                      </property>
                      <item>
-                      <widget class="QFrame" name="contrast_frm">
+                      <widget class="QFrame" name="contrastFrame">
                        <property name="sizePolicy">
                         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                          <horstretch>0</horstretch>
@@ -779,17 +774,17 @@
                          <number>0</number>
                         </property>
                         <item row="2" column="1">
-                         <widget class="QSpinBox" name="alpha_coeff_spnbox"/>
+                         <widget class="QSpinBox" name="contrastAlphaSpinBox"/>
                         </item>
                         <item row="2" column="0">
-                         <widget class="QLabel" name="alpha_coeff_lbl">
+                         <widget class="QLabel" name="contrastAlphaLabel">
                           <property name="text">
                            <string>Коэффицент</string>
                           </property>
                          </widget>
                         </item>
                         <item row="1" column="0">
-                         <widget class="QLabel" name="contrast_lbl">
+                         <widget class="QLabel" name="contrastLabel">
                           <property name="text">
                            <string>Контраст</string>
                           </property>
@@ -799,14 +794,14 @@
                       </widget>
                      </item>
                      <item>
-                      <widget class="QSlider" name="contrast_hslider">
+                      <widget class="QSlider" name="contrastHSlider">
                        <property name="orientation">
                         <enum>Qt::Horizontal</enum>
                        </property>
                       </widget>
                      </item>
                      <item>
-                      <widget class="QFrame" name="gamma_contrast_frm">
+                      <widget class="QFrame" name="gammaContrastFrame">
                        <property name="sizePolicy">
                         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                          <horstretch>0</horstretch>
@@ -833,17 +828,17 @@
                          <number>0</number>
                         </property>
                         <item row="1" column="3">
-                         <widget class="QSpinBox" name="gamma_coeff_spnbox"/>
+                         <widget class="QSpinBox" name="gammaCoeffSpinBox"/>
                         </item>
                         <item row="1" column="1">
-                         <widget class="QLabel" name="gamma_coeff_lbl">
+                         <widget class="QLabel" name="gammaCoeffLabel">
                           <property name="text">
                            <string>Коэффицент</string>
                           </property>
                          </widget>
                         </item>
                         <item row="0" column="1">
-                         <widget class="QLabel" name="gamma_contrast_lbl">
+                         <widget class="QLabel" name="gammaContrastLabel">
                           <property name="text">
                            <string>Гамма контраст</string>
                           </property>
@@ -853,7 +848,7 @@
                       </widget>
                      </item>
                      <item>
-                      <widget class="QSlider" name="gamma_contrast_hslider">
+                      <widget class="QSlider" name="gammaContrastHSlider">
                        <property name="orientation">
                         <enum>Qt::Horizontal</enum>
                        </property>
@@ -863,7 +858,7 @@
                    </widget>
                   </item>
                   <item>
-                   <widget class="QFrame" name="autoexposure_frm">
+                   <widget class="QFrame" name="autoExposureFrame">
                     <property name="frameShape">
                      <enum>QFrame::StyledPanel</enum>
                     </property>
@@ -884,17 +879,17 @@
                       <number>0</number>
                      </property>
                      <item row="1" column="0">
-                      <widget class="QLabel" name="label">
+                      <widget class="QLabel" name="autoExposureValLabel">
                        <property name="text">
                         <string>Значение</string>
                        </property>
                       </widget>
                      </item>
                      <item row="1" column="1">
-                      <widget class="QLineEdit" name="lineEdit"/>
+                      <widget class="QLineEdit" name="autoExposureValLineEdit"/>
                      </item>
                      <item row="0" column="0">
-                      <widget class="QCheckBox" name="checkBox_2">
+                      <widget class="QCheckBox" name="autoExposureCheckBox">
                        <property name="text">
                         <string>Автоэкспозиция</string>
                        </property>
@@ -912,13 +907,13 @@
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="objective_tab">
+         <widget class="QWidget" name="objectiveTab">
           <attribute name="title">
            <string>Объектив</string>
           </attribute>
           <layout class="QVBoxLayout" name="verticalLayout_9">
            <item>
-            <widget class="QFrame" name="objective_connection_frm">
+            <widget class="QFrame" name="objectiveConnectionFrame">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                <horstretch>0</horstretch>
@@ -945,24 +940,24 @@
                <number>0</number>
               </property>
               <item row="0" column="0">
-               <widget class="QPushButton" name="com_find_btn">
+               <widget class="QPushButton" name="objectiveComFindButton">
                 <property name="text">
                  <string>Поиск</string>
                 </property>
                </widget>
               </item>
               <item row="0" column="3">
-               <widget class="QComboBox" name="com_ports_combox"/>
+               <widget class="QComboBox" name="objectiveComPortsComboBox"/>
               </item>
               <item row="1" column="0">
-               <widget class="QPushButton" name="com_connect_btn">
+               <widget class="QPushButton" name="objectiveComConnectButton">
                 <property name="text">
                  <string>Подключиться</string>
                 </property>
                </widget>
               </item>
               <item row="1" column="3">
-               <widget class="QPushButton" name="com_disconnect_btn">
+               <widget class="QPushButton" name="objectiveComDisconnectButton">
                 <property name="enabled">
                  <bool>false</bool>
                 </property>
@@ -975,7 +970,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QFrame" name="lens_frm">
+            <widget class="QFrame" name="objectiveLensFrame">
              <property name="enabled">
               <bool>false</bool>
              </property>
@@ -999,7 +994,7 @@
                <number>0</number>
               </property>
               <item>
-               <widget class="QLabel" name="notification_lbl">
+               <widget class="QLabel" name="objectiveNotificationButton">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
                   <horstretch>0</horstretch>
@@ -1009,13 +1004,16 @@
                 <property name="text">
                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Внимание! Необходимо задать файл&lt;br/&gt;с корректными значениями аппертуры,&lt;br/&gt;для вашей модели!&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
+                <property name="alignment">
+                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                </property>
                </widget>
               </item>
               <item>
-               <widget class="QLineEdit" name="lens_file_lnedit"/>
+               <widget class="QLineEdit" name="objectiveLensFileLineEdit"/>
               </item>
               <item>
-               <widget class="QPushButton" name="lens_file_btn">
+               <widget class="QPushButton" name="objectiveLensFileButton">
                 <property name="text">
                  <string>Файл</string>
                 </property>
@@ -1025,7 +1023,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QFrame" name="objective_control_frm">
+            <widget class="QFrame" name="objectiveControlFrame">
              <property name="enabled">
               <bool>false</bool>
              </property>
@@ -1049,17 +1047,17 @@
                <number>0</number>
               </property>
               <item>
-               <widget class="QPushButton" name="set_apperture_btn">
+               <widget class="QPushButton" name="objectiveSetAppertureButton">
                 <property name="text">
                  <string>Задать аппертуру</string>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QComboBox" name="set_apperture_combox"/>
+               <widget class="QComboBox" name="objectiveSetAppertureComboBox"/>
               </item>
               <item>
-               <widget class="Line" name="line">
+               <widget class="Line" name="objectiveLine1">
                 <property name="frameShadow">
                  <enum>QFrame::Plain</enum>
                 </property>
@@ -1069,17 +1067,17 @@
                </widget>
               </item>
               <item>
-               <widget class="QPushButton" name="set_focus_btn">
+               <widget class="QPushButton" name="objectiveSetFocusButton">
                 <property name="text">
                  <string>Задать фокус</string>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QSpinBox" name="set_focus_spnbox"/>
+               <widget class="QSpinBox" name="objectiveSetFocusSpinBox"/>
               </item>
               <item>
-               <widget class="Line" name="line_2">
+               <widget class="Line" name="objectiveLine2">
                 <property name="frameShadow">
                  <enum>QFrame::Plain</enum>
                 </property>
@@ -1089,17 +1087,17 @@
                </widget>
               </item>
               <item>
-               <widget class="QPushButton" name="pushButton_6">
+               <widget class="QPushButton" name="objectiveGetFocusButton">
                 <property name="text">
                  <string>Получить фокус</string>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QSpinBox" name="get_focus_spnbox"/>
+               <widget class="QSpinBox" name="objectiveFocusValSpinbox"/>
               </item>
               <item>
-               <widget class="Line" name="line_3">
+               <widget class="Line" name="objectiveLine3">
                 <property name="frameShadow">
                  <enum>QFrame::Plain</enum>
                 </property>
@@ -1109,20 +1107,20 @@
                </widget>
               </item>
               <item>
-               <widget class="QLabel" name="error_lbl">
+               <widget class="QLabel" name="objectiveErrorLabel">
                 <property name="text">
                  <string>Ошибка</string>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QLineEdit" name="error_lnedit"/>
+               <widget class="QLineEdit" name="objectiveErrorLineEdit"/>
               </item>
              </layout>
             </widget>
            </item>
            <item>
-            <widget class="QFrame" name="stub_frm">
+            <widget class="QFrame" name="objectiveStubFrame">
              <property name="frameShape">
               <enum>QFrame::StyledPanel</enum>
              </property>
@@ -1190,21 +1188,15 @@
          <property name="lineWidth">
           <number>3</number>
          </property>
-         <layout class="QHBoxLayout" name="horizontalLayout_7"/>
-        </widget>
-       </item>
-       <item>
-        <widget class="QFrame" name="raw_image_frm">
-         <property name="frameShape">
-          <enum>QFrame::Box</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Raised</enum>
-         </property>
-         <property name="lineWidth">
-          <number>3</number>
-         </property>
-         <layout class="QHBoxLayout" name="horizontalLayout_8"/>
+         <layout class="QHBoxLayout" name="horizontalLayout_7">
+          <item>
+           <widget class="QLabel" name="label_2">
+            <property name="text">
+             <string>TextLabel</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </widget>
        </item>
       </layout>
@@ -1221,12 +1213,6 @@
      <height>21</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuView">
-    <property name="title">
-     <string>View</string>
-    </property>
-   </widget>
-   <addaction name="menuView"/>
   </widget>
  </widget>
  <resources/>

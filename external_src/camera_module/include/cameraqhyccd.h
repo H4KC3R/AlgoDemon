@@ -1,7 +1,7 @@
 #ifndef CAMERAQHYCCD_H
 #define CAMERAQHYCCD_H
 
-#include "CameraSDK_include/qhyccd.h"
+#include "qhyccd.h"
 #include "camstruct.h"
 #include "camenums.h"
 
@@ -24,6 +24,8 @@ public:
     static int32_t searchCamera();
 
     static bool getID(int32_t num, char* id);
+
+    static std::string getModel(char* id);
 
     bool connect(StreamMode mode);
 
