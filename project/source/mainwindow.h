@@ -23,18 +23,42 @@ public:
     ~MainWindow();
 
 private:
+
+private:
     Ui::MainWindow *ui;
 
-    InitializeCameraControls(CameraQHYCCD* mCamera);
+    // ************************** Camera ************************** //
+
+    void initializeCameraControls(CameraQHYCCD* mCamera);
 
     void on_findCamerasButton_clicked();
 
     void on_connectCameraButton_clicked();
 
+    void on_disconnectCameraButton_clicked();
+
+    void on_cameraGainDSpinBox_valueChanged(double val);
+
+    void on_cameraGainHSlider_valueChanged(int val);
+
+    void on_cameraExposureDSpinBox_valueChanged(double val);
+
+    void on_cameraExposureHSlider_valueChanged(int val);
+
+    void on_cameraDepthComboBox_currentIndexChanged(int index);
+
+    void on_cameraSetRoiButton_currentIndexChanged();
+
+    // ************************** Objective ************************** //
+
+    void on_objectiveComFindButton_clicked();
+
+
+
 private:
+    bool isSettingsChangedFlag = false;
+
     QMap<QString, QString> cameraIdModel;
     CameraQHYCCD* mCamera;
-
-
 };
 #endif // MAINWINDOW_H

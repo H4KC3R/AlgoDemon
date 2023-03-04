@@ -105,9 +105,9 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>0</y>
-                <width>299</width>
-                <height>586</height>
+                <y>-108</y>
+                <width>285</width>
+                <height>694</height>
                </rect>
               </property>
               <attribute name="label">
@@ -263,7 +263,7 @@
                <item>
                 <widget class="QFrame" name="cameraControlFrame">
                  <property name="enabled">
-                  <bool>false</bool>
+                  <bool>true</bool>
                  </property>
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -278,6 +278,15 @@
                   <enum>QFrame::Raised</enum>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_8">
+                  <property name="leftMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>0</number>
+                  </property>
                   <item>
                    <widget class="QFrame" name="cameraTypeFrame">
                     <property name="frameShape">
@@ -302,7 +311,7 @@
                      <item>
                       <widget class="QLabel" name="cameraTypeLabel">
                        <property name="enabled">
-                        <bool>false</bool>
+                        <bool>true</bool>
                        </property>
                        <property name="text">
                         <string>Тип</string>
@@ -354,33 +363,34 @@
                       </widget>
                      </item>
                      <item>
-                      <widget class="QComboBox" name="cameraDepthComboBox"/>
+                      <widget class="QComboBox" name="cameraDepthComboBox">
+                       <property name="enabled">
+                        <bool>false</bool>
+                       </property>
+                       <item>
+                        <property name="text">
+                         <string>8bits</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>16bits</string>
+                        </property>
+                       </item>
+                      </widget>
                      </item>
                     </layout>
                    </widget>
                   </item>
                   <item>
-                   <widget class="Line" name="cameraDepthLine">
-                    <property name="frameShadow">
-                     <enum>QFrame::Plain</enum>
+                   <widget class="QGroupBox" name="cameraGainGroupBox">
+                    <property name="enabled">
+                     <bool>true</bool>
                     </property>
-                    <property name="lineWidth">
-                     <number>1</number>
+                    <property name="title">
+                     <string>Усиление</string>
                     </property>
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QFrame" name="cameraGainFrame">
-                    <property name="frameShape">
-                     <enum>QFrame::StyledPanel</enum>
-                    </property>
-                    <property name="frameShadow">
-                     <enum>QFrame::Raised</enum>
-                    </property>
-                    <layout class="QHBoxLayout" name="horizontalLayout_3">
+                    <layout class="QVBoxLayout" name="verticalLayout_7">
                      <property name="leftMargin">
                       <number>0</number>
                      </property>
@@ -394,97 +404,116 @@
                       <number>0</number>
                      </property>
                      <item>
-                      <widget class="QLabel" name="cameraGainLabel">
-                       <property name="text">
-                        <string>Усиление</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
                       <widget class="QDoubleSpinBox" name="cameraGainDSpinBox">
+                       <property name="enabled">
+                        <bool>false</bool>
+                       </property>
                        <property name="sizePolicy">
                         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                          <horstretch>0</horstretch>
                          <verstretch>0</verstretch>
                         </sizepolicy>
                        </property>
+                       <property name="decimals">
+                        <number>2</number>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QFrame" name="cameraGainMinMaxFrame">
+                       <property name="enabled">
+                        <bool>true</bool>
+                       </property>
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="maximumSize">
+                        <size>
+                         <width>16777215</width>
+                         <height>50</height>
+                        </size>
+                       </property>
+                       <property name="frameShape">
+                        <enum>QFrame::StyledPanel</enum>
+                       </property>
+                       <property name="frameShadow">
+                        <enum>QFrame::Raised</enum>
+                       </property>
+                       <layout class="QGridLayout" name="gridLayout_2">
+                        <property name="leftMargin">
+                         <number>0</number>
+                        </property>
+                        <property name="topMargin">
+                         <number>0</number>
+                        </property>
+                        <property name="rightMargin">
+                         <number>0</number>
+                        </property>
+                        <property name="bottomMargin">
+                         <number>0</number>
+                        </property>
+                        <item row="4" column="1">
+                         <widget class="QLabel" name="cameraGMaxValLabel">
+                          <property name="text">
+                           <string>100</string>
+                          </property>
+                          <property name="alignment">
+                           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="4" column="0">
+                         <widget class="QLabel" name="cameraGMinValLabel">
+                          <property name="text">
+                           <string>0</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="1" column="1">
+                         <widget class="QLabel" name="cameraGMaxLabel">
+                          <property name="text">
+                           <string>Max</string>
+                          </property>
+                          <property name="alignment">
+                           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="1" column="0">
+                         <widget class="QLabel" name="cameraGMinLabel">
+                          <property name="text">
+                           <string>Min</string>
+                          </property>
+                         </widget>
+                        </item>
+                       </layout>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QSlider" name="cameraGainHSlider">
+                       <property name="enabled">
+                        <bool>false</bool>
+                       </property>
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
                       </widget>
                      </item>
                     </layout>
                    </widget>
                   </item>
                   <item>
-                   <widget class="QFrame" name="cameraGainMinMaxFrame">
-                    <property name="frameShape">
-                     <enum>QFrame::StyledPanel</enum>
+                   <widget class="QGroupBox" name="cameraExposureGroupBox">
+                    <property name="enabled">
+                     <bool>true</bool>
                     </property>
-                    <property name="frameShadow">
-                     <enum>QFrame::Raised</enum>
+                    <property name="title">
+                     <string>Экспозиция</string>
                     </property>
-                    <layout class="QGridLayout" name="gridLayout_2">
-                     <item row="1" column="1">
-                      <widget class="QLabel" name="cameraGMaxLabel">
-                       <property name="text">
-                        <string>Max</string>
-                       </property>
-                       <property name="alignment">
-                        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="4" column="0">
-                      <widget class="QLabel" name="cameraGMinValLabel">
-                       <property name="text">
-                        <string>0</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="1" column="0">
-                      <widget class="QLabel" name="cameraGMinLabel">
-                       <property name="text">
-                        <string>Min</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="4" column="1">
-                      <widget class="QLabel" name="cameraGMaxValLabel">
-                       <property name="text">
-                        <string>100</string>
-                       </property>
-                       <property name="alignment">
-                        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QSlider" name="cameraGainHSlider">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="Line" name="cameraGainLine">
-                    <property name="frameShadow">
-                     <enum>QFrame::Plain</enum>
-                    </property>
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QFrame" name="cameraExposureFrame">
-                    <property name="frameShape">
-                     <enum>QFrame::StyledPanel</enum>
-                    </property>
-                    <property name="frameShadow">
-                     <enum>QFrame::Raised</enum>
-                    </property>
-                    <layout class="QHBoxLayout" name="horizontalLayout_4">
+                    <layout class="QVBoxLayout" name="verticalLayout_18">
                      <property name="leftMargin">
                       <number>0</number>
                      </property>
@@ -498,130 +527,205 @@
                       <number>0</number>
                      </property>
                      <item>
-                      <widget class="QLabel" name="cameraExposureLabel">
+                      <widget class="QLabel" name="label_2">
                        <property name="text">
-                        <string>Экспозиция(мс)</string>
+                        <string>В милисекундах</string>
                        </property>
                       </widget>
                      </item>
                      <item>
                       <widget class="QDoubleSpinBox" name="cameraExposureDSpinBox">
+                       <property name="enabled">
+                        <bool>false</bool>
+                       </property>
                        <property name="sizePolicy">
                         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                          <horstretch>0</horstretch>
                          <verstretch>0</verstretch>
                         </sizepolicy>
                        </property>
+                       <property name="decimals">
+                        <number>3</number>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QLabel" name="label">
+                       <property name="text">
+                        <string>В секундах</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QFrame" name="cameraExpMinMaxFrame">
+                       <property name="maximumSize">
+                        <size>
+                         <width>16777215</width>
+                         <height>50</height>
+                        </size>
+                       </property>
+                       <property name="frameShape">
+                        <enum>QFrame::StyledPanel</enum>
+                       </property>
+                       <property name="frameShadow">
+                        <enum>QFrame::Raised</enum>
+                       </property>
+                       <layout class="QGridLayout" name="gridLayout_3">
+                        <property name="leftMargin">
+                         <number>0</number>
+                        </property>
+                        <property name="topMargin">
+                         <number>0</number>
+                        </property>
+                        <property name="rightMargin">
+                         <number>0</number>
+                        </property>
+                        <property name="bottomMargin">
+                         <number>0</number>
+                        </property>
+                        <item row="1" column="1">
+                         <widget class="QLabel" name="cameraExpMaxValLabel">
+                          <property name="text">
+                           <string>100</string>
+                          </property>
+                          <property name="alignment">
+                           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="0" column="1">
+                         <widget class="QLabel" name="cameraExpMaxLabel">
+                          <property name="text">
+                           <string>Max</string>
+                          </property>
+                          <property name="alignment">
+                           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="0" column="0">
+                         <widget class="QLabel" name="cameraExpMinLabel">
+                          <property name="text">
+                           <string>Min</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="1" column="0">
+                         <widget class="QLabel" name="cameraExpMinValLabel">
+                          <property name="text">
+                           <string>0</string>
+                          </property>
+                         </widget>
+                        </item>
+                       </layout>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QSlider" name="cameraExposureHSlider">
+                       <property name="enabled">
+                        <bool>false</bool>
+                       </property>
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
                       </widget>
                      </item>
                     </layout>
                    </widget>
                   </item>
                   <item>
-                   <widget class="QFrame" name="cameraExpMinMaxFrame">
-                    <property name="frameShape">
-                     <enum>QFrame::StyledPanel</enum>
+                   <widget class="QGroupBox" name="cameraRoiGroupBox">
+                    <property name="enabled">
+                     <bool>false</bool>
                     </property>
-                    <property name="frameShadow">
-                     <enum>QFrame::Raised</enum>
+                    <property name="title">
+                     <string>ROI</string>
                     </property>
-                    <layout class="QGridLayout" name="gridLayout_3">
-                     <item row="1" column="1">
-                      <widget class="QLabel" name="cameraExpMaxValLabel">
-                       <property name="text">
-                        <string>100</string>
+                    <layout class="QVBoxLayout" name="verticalLayout_17">
+                     <property name="leftMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="topMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="rightMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="bottomMargin">
+                      <number>0</number>
+                     </property>
+                     <item>
+                      <widget class="QFrame" name="cameraRoiSettingsFrame">
+                       <property name="frameShape">
+                        <enum>QFrame::StyledPanel</enum>
                        </property>
-                       <property name="alignment">
-                        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                       <property name="frameShadow">
+                        <enum>QFrame::Raised</enum>
                        </property>
+                       <layout class="QGridLayout" name="gridLayout_7">
+                        <property name="leftMargin">
+                         <number>0</number>
+                        </property>
+                        <property name="topMargin">
+                         <number>0</number>
+                        </property>
+                        <property name="rightMargin">
+                         <number>0</number>
+                        </property>
+                        <property name="bottomMargin">
+                         <number>0</number>
+                        </property>
+                        <item row="0" column="1">
+                         <widget class="QLabel" name="cameraStartYFrame">
+                          <property name="text">
+                           <string>StartY</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="1" column="0">
+                         <widget class="QSpinBox" name="cameraStartXSpinBox"/>
+                        </item>
+                        <item row="2" column="0">
+                         <widget class="QLabel" name="cameraSizeXFrame">
+                          <property name="text">
+                           <string>SizeX</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="0" column="0">
+                         <widget class="QLabel" name="cameraStartXFrame">
+                          <property name="text">
+                           <string>StartX</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="1" column="1">
+                         <widget class="QSpinBox" name="cameraStartYSpinBox"/>
+                        </item>
+                        <item row="2" column="1">
+                         <widget class="QLabel" name="cameraSizeYFrame">
+                          <property name="text">
+                           <string>SizeY</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="3" column="0">
+                         <widget class="QSpinBox" name="cameraSizeXSpinBox"/>
+                        </item>
+                        <item row="3" column="1">
+                         <widget class="QSpinBox" name="cameraSizeYSpinBox"/>
+                        </item>
+                       </layout>
                       </widget>
                      </item>
-                     <item row="0" column="1">
-                      <widget class="QLabel" name="cameraExpMaxLabel">
+                     <item>
+                      <widget class="QPushButton" name="cameraSetRoiButton">
                        <property name="text">
-                        <string>Max</string>
-                       </property>
-                       <property name="alignment">
-                        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="0" column="0">
-                      <widget class="QLabel" name="cameraExpMinLabel">
-                       <property name="text">
-                        <string>Min</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="1" column="0">
-                      <widget class="QLabel" name="cameraExpMinValLabel">
-                       <property name="text">
-                        <string>0</string>
+                        <string>задать ROI</string>
                        </property>
                       </widget>
                      </item>
                     </layout>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QSlider" name="cameraExposureHSlider">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="Line" name="cameraExposureLine">
-                    <property name="frameShadow">
-                     <enum>QFrame::Plain</enum>
-                    </property>
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
-                </widget>
-               </item>
-               <item>
-                <widget class="QGroupBox" name="cameraCaptureGroupBox">
-                 <property name="enabled">
-                  <bool>false</bool>
-                 </property>
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="title">
-                  <string>Съемка</string>
-                 </property>
-                 <layout class="QVBoxLayout" name="verticalLayout_7">
-                  <property name="leftMargin">
-                   <number>0</number>
-                  </property>
-                  <property name="topMargin">
-                   <number>0</number>
-                  </property>
-                  <property name="rightMargin">
-                   <number>0</number>
-                  </property>
-                  <property name="bottomMargin">
-                   <number>0</number>
-                  </property>
-                  <item>
-                   <widget class="QPushButton" name="cameraStartCaptureButton">
-                    <property name="text">
-                     <string>Начать</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QPushButton" name="cameraStopCaptureButton">
-                    <property name="text">
-                     <string>Остановить</string>
-                    </property>
                    </widget>
                   </item>
                  </layout>
@@ -631,7 +735,7 @@
              </widget>
              <widget class="QWidget" name="imageProcessPage">
               <property name="enabled">
-               <bool>false</bool>
+               <bool>true</bool>
               </property>
               <property name="geometry">
                <rect>
@@ -659,6 +763,9 @@
                </property>
                <item>
                 <widget class="QFrame" name="imageProcessFrame">
+                 <property name="enabled">
+                  <bool>true</bool>
+                 </property>
                  <property name="frameShape">
                   <enum>QFrame::StyledPanel</enum>
                  </property>
@@ -666,8 +773,23 @@
                   <enum>QFrame::Raised</enum>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_11">
+                  <property name="leftMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="bottomMargin">
+                   <number>0</number>
+                  </property>
                   <item>
                    <widget class="QFrame" name="focusControlFrame">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
                     <property name="frameShape">
                      <enum>QFrame::StyledPanel</enum>
                     </property>
@@ -675,24 +797,39 @@
                      <enum>QFrame::Raised</enum>
                     </property>
                     <layout class="QVBoxLayout" name="verticalLayout_16">
+                     <property name="leftMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="topMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="rightMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="bottomMargin">
+                      <number>0</number>
+                     </property>
                      <item>
                       <widget class="QCheckBox" name="cameraEnableFocusCheckBox">
                        <property name="text">
-                        <string>CheckBox</string>
+                        <string>Задать область фокусировки</string>
                        </property>
                       </widget>
                      </item>
                      <item>
                       <widget class="QLabel" name="cameraFocusRoiLabel">
                        <property name="text">
-                        <string>TextLabel</string>
+                        <string/>
                        </property>
                       </widget>
                      </item>
                      <item>
                       <widget class="QPushButton" name="cameraFocusButton">
+                       <property name="enabled">
+                        <bool>false</bool>
+                       </property>
                        <property name="text">
-                        <string>PushButton</string>
+                        <string>Сфокусировать</string>
                        </property>
                       </widget>
                      </item>
@@ -701,6 +838,9 @@
                   </item>
                   <item>
                    <widget class="QCheckBox" name="debayerCheckBox">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
                     <property name="text">
                      <string>Дебаеризация</string>
                     </property>
@@ -708,6 +848,9 @@
                   </item>
                   <item>
                    <widget class="QCheckBox" name="whiteBalanceCheckBox">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
                     <property name="text">
                      <string>Баланс белого</string>
                     </property>
@@ -715,6 +858,9 @@
                   </item>
                   <item>
                    <widget class="QFrame" name="contrastsFrame">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -859,6 +1005,15 @@
                   </item>
                   <item>
                    <widget class="QFrame" name="autoExposureFrame">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
                     <property name="frameShape">
                      <enum>QFrame::StyledPanel</enum>
                     </property>
@@ -886,7 +1041,11 @@
                       </widget>
                      </item>
                      <item row="1" column="1">
-                      <widget class="QLineEdit" name="autoExposureValLineEdit"/>
+                      <widget class="QLineEdit" name="autoExposureValLineEdit">
+                       <property name="readOnly">
+                        <bool>true</bool>
+                       </property>
+                      </widget>
                      </item>
                      <item row="0" column="0">
                       <widget class="QCheckBox" name="autoExposureCheckBox">
@@ -1151,7 +1310,7 @@
      </widget>
     </item>
     <item>
-     <widget class="QFrame" name="frame_2">
+     <widget class="QFrame" name="cameraDisplayControlFrame">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
         <horstretch>0</horstretch>
@@ -1178,21 +1337,65 @@
         <number>0</number>
        </property>
        <item>
-        <widget class="QFrame" name="processed_image_frm">
+        <widget class="QFrame" name="cameraDisplayFrame">
          <property name="frameShape">
-          <enum>QFrame::Box</enum>
+          <enum>QFrame::StyledPanel</enum>
          </property>
          <property name="frameShadow">
           <enum>QFrame::Raised</enum>
          </property>
-         <property name="lineWidth">
-          <number>3</number>
-         </property>
          <layout class="QHBoxLayout" name="horizontalLayout_7">
           <item>
-           <widget class="QLabel" name="label_2">
+           <widget class="QLabel" name="imageLabel">
             <property name="text">
-             <string>TextLabel</string>
+             <string/>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="cameraCaptureGroupBox">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="title">
+          <string>Съемка</string>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_6">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QPushButton" name="cameraStartCaptureButton">
+            <property name="text">
+             <string>Начать</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="cameraStopCaptureButton">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="text">
+             <string>Остановить</string>
             </property>
            </widget>
           </item>

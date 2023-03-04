@@ -10,7 +10,7 @@ CameraQHYCCD::CameraQHYCCD(char* id) {
     pCamhandle = OpenQHYCCD(id);
     if(pCamhandle == NULL)
         throw std::logic_error("Failed to open camera!");
-    uint32_t ret = GetQHYCCDModel(id, params.mModel);
+    uint32_t ret = GetQHYCCDModel(id, mParams.mModel);
     if(ret != QHYCCD_SUCCESS)
         throw std::logic_error("Failed to read model!");
 }
@@ -60,35 +60,35 @@ bool CameraQHYCCD::connect(StreamMode mode) {
 
     ret = IsQHYCCDControlAvailable(pCamhandle, CAM_COLOR);
     if(ret == BAYER_GB || ret == BAYER_GR || ret == BAYER_BG ||ret == BAYER_RG)
-        params.mIsMono = false;
+        mParams.mIsMono = false;
     else
-        params.mIsMono = true;
+        mParams.mIsMono = true;
 
     uint32_t imagew, imageh, bpp;
     double chipw, chiph, pixelw, pixelh;
 
     ret = GetQHYCCDChipInfo(pCamhandle, &chipw, &chiph, &imagew, &imageh, &pixelw, &pixelh, &bpp);
     if(ret == QHYCCD_SUCCESS){
-        params.mChipw = chipw;
-        params.mChiph = chiph;
-        params.mPixelw = pixelw;
-        params.mPixelh = pixelh;
-        params.mMaximgw = imagew;
-        params.mMaximgh = imageh;
+        mParams.mChipw = chipw;
+        mParams.mChiph = chiph;
+        mParams.mPixelw = pixelw;
+        mParams.mPixelh = pixelh;
+        mParams.mMaximgw = imagew;
+        mParams.mMaximgh = imageh;
     }
     else
         return false;
 
-    params.mWbin = 1;
-    params.mHbin = 1;
-    ret = SetQHYCCDBinMode(pCamhandle, params.mWbin, params.mHbin);
+    mParams.mWbin = 1;
+    mParams.mHbin = 1;
+    ret = SetQHYCCDBinMode(pCamhandle, mParams.mWbin, mParams.mHbin);
     if(ret != QHYCCD_SUCCESS)
         return false;
 
-    params.mIsLiveMode = (mode == live);
-    params.mIsConnected = true;
+    mParams.mIsLiveMode = (mode == live);
+    mParams.mIsConnected = true;
 
-    if(!params.mIsMono)
+    if(!mParams.mIsMono)
         SetQHYCCDDebayerOnOff(pCamhandle,false);
 
     return true;
@@ -99,11 +99,15 @@ bool CameraQHYCCD::getControlMinMaxStep(CameraControls control, double& min, dou
     if(ret != QHYCCD_SUCCESS)
         return false;
     ret = GetQHYCCDParamMinMaxStep(pCamhandle, (CONTROL_ID)control, &min, &max, &step);
+    if(control == exposure){
+        min /= 1000;
+        max /= 1000;
+    }
     return (ret == QHYCCD_SUCCESS);
 }
 
 bool CameraQHYCCD::setImageSize(uint32_t x, uint32_t y, uint32_t xsize, uint32_t ysize) {
-    uint32_t ret = SetQHYCCDResolution(pCamhandle, x, y, xsize/params.mWbin, ysize/params.mHbin);
+    uint32_t ret = SetQHYCCDResolution(pCamhandle, x, y, xsize/mParams.mWbin, ysize/mParams.mHbin);
     return (ret == QHYCCD_SUCCESS);
 }
 
@@ -154,16 +158,20 @@ uint32_t CameraQHYCCD::getImgLength() {
     return GetQHYCCDMemLength(pCamhandle);
 }
 
+CamParameters CameraQHYCCD::getCameraParameters() {
+    return mParams;
+}
+
 bool CameraQHYCCD::startSingleCapture() {
-    if(params.mIsLiveMode)
+    if(mParams.mIsLiveMode)
         return false;
 
-    params.mStatus = singleCapture;
+    mParams.mStatus = singleCapture;
     uint32_t ret = ExpQHYCCDSingleFrame(pCamhandle);
     if(ret == QHYCCD_SUCCESS)
         return true;
     else {
-        params.mStatus = failed;
+        mParams.mStatus = failed;
         return false;
     }
 }
@@ -171,11 +179,11 @@ bool CameraQHYCCD::startSingleCapture() {
 bool CameraQHYCCD::stopSingleCapture() {
     uint32_t ret = CancelQHYCCDExposing(pCamhandle);
     if(ret == QHYCCD_SUCCESS) {
-        params.mStatus = idle;
+        mParams.mStatus = idle;
         return true;
     }
     else {
-        params.mStatus = failed;
+        mParams.mStatus = failed;
         return false;
     }
 }
@@ -183,11 +191,11 @@ bool CameraQHYCCD::stopSingleCapture() {
 bool CameraQHYCCD::startLiveCapture() {
     uint32_t ret = BeginQHYCCDLive(pCamhandle);
     if(ret == QHYCCD_SUCCESS) {
-        params.mStatus = liveCapture;
+        mParams.mStatus = liveCapture;
         return true;
     }
     else {
-        params.mStatus = failed;
+        mParams.mStatus = failed;
         return false;
     }
 }
@@ -195,22 +203,22 @@ bool CameraQHYCCD::startLiveCapture() {
 bool CameraQHYCCD::stopLiveCapture() {
     uint32_t ret = StopQHYCCDLive(pCamhandle);
     if(ret == QHYCCD_SUCCESS) {
-        params.mStatus = idle;
+        mParams.mStatus = idle;
         return true;
     }
     else {
-        params.mStatus = failed;
+        mParams.mStatus = failed;
         return false;
     }
 }
 
 bool CameraQHYCCD::getImage(uint32_t& w, uint32_t& h, uint32_t& bpp, uint32_t& channels, uint8_t* imgdata) {
     uint32_t ret = 0;
-    if(params.mStatus == singleCapture) {
+    if(mParams.mStatus == singleCapture) {
         ret = GetQHYCCDSingleFrame(pCamhandle, &w, &h, &bpp, &channels, imgdata);
-        params.mStatus = idle;
+        mParams.mStatus = idle;
     }
-    else if(params.mStatus == liveCapture)
+    else if(mParams.mStatus == liveCapture)
         ret = GetQHYCCDLiveFrame(pCamhandle, &w, &h, &bpp, &channels, imgdata);
     else
         return false;
@@ -219,17 +227,17 @@ bool CameraQHYCCD::getImage(uint32_t& w, uint32_t& h, uint32_t& bpp, uint32_t& c
 }
 
 CameraQHYCCD::~CameraQHYCCD() {
-    if(params.mIsConnected)
+    if(mParams.mIsConnected)
         disconnect();
 }
 
 bool CameraQHYCCD::disconnect() {
-    if(params.mStatus == liveCapture)
+    if(mParams.mStatus == liveCapture)
         stopLiveCapture();
-    else if(params.mStatus == singleCapture)
+    else if(mParams.mStatus == singleCapture)
         stopSingleCapture();
     uint32_t ret = CloseQHYCCD(pCamhandle);
-    params.mIsConnected = false;
+    mParams.mIsConnected = false;
     return (ret == QHYCCD_SUCCESS);
 }
 

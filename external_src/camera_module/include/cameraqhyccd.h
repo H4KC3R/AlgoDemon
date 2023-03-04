@@ -10,9 +10,7 @@ class CameraQHYCCD
 private:
     qhyccd_handle *pCamhandle;
     static bool mIsSdkInited;
-
-public:
-    CamParameters params;
+    CamParameters mParams;
 
 public:
     CameraQHYCCD(char* id);
@@ -48,6 +46,8 @@ public:
     double getExposure(void);
 
     uint32_t getImgLength();
+
+    CamParameters getCameraParameters();
 
     bool startSingleCapture();
 

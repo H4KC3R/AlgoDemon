@@ -10,10 +10,12 @@ CONFIG += c++2a
 
 SOURCES += \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    singlemodethread.cpp
 
 HEADERS += \
-    mainwindow.h
+    mainwindow.h \
+    singlemodethread.h
 
 FORMS += \
     mainwindow.ui

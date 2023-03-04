@@ -55,7 +55,7 @@ void ObjectiveController::setFocusing(const double value) {
 
 double ObjectiveController::getCurrentFocusing() {
     mError.clear();
-    char* rxBuff;
+    char rxBuff[10];
     std::string resultStr = "0";
     std::string::size_type sz;
 
