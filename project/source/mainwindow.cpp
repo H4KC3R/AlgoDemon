@@ -118,7 +118,7 @@ void MainWindow::initializeCameraControls(CameraQHYCCD* mCamera) {
 }
 
 void MainWindow::on_findCamerasButton_clicked() {
-    qint num = CameraQHYCCD::searchCamera();
+    int num = CameraQHYCCD::searchCamera();
     if(num <= 0 )
         return;
 
