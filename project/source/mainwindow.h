@@ -4,7 +4,7 @@
 #include <QMainWindow>
 #include <QMap>
 #include "cameraqhyccd.h"
-#include "singlemodethread.h"
+#include "imageprocess.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -29,6 +29,10 @@ private:
     Ui::MainWindow *ui;
 
     // ************************** Camera ************************** //
+
+    void initializeImage();
+
+    void showImage();
 
     void initializeCameraControls(CameraQHYCCD* mCamera);
 
@@ -61,8 +65,7 @@ private:
 
     QMap<QString, QString> cameraIdModel;
     CameraQHYCCD* mCamera;
-
-    SingleModeThread *smt;
+    CamImage camImg;
 
 };
 #endif // MAINWINDOW_H

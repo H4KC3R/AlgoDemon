@@ -40,6 +40,21 @@ MainWindow::~MainWindow()
 
 // ************************** Camera ************************** //
 
+void MainWindow::initializeImage() {
+    CamParameters params = mCamera->getCameraParameters();
+    camImg.h = params.mMaximgh;
+    camImg.w = params.mMaximgw;
+    camImg.length = mCamera->getImgLength();
+    camImg.channels = 1;
+    camImg.bpp = mCamera->getImageBitMode();
+    int type = ImageProcess::getOpenCvType((BitMode)camImg.bpp, camImg.channels);
+    camImg.img = cv::Mat(camImg.h, camImg.w, type, 50);
+}
+
+void MainWindow::showImage() {
+    ui->imageLabel->setPixmap(QPixmap::fromImage(QImage(camImg.img.data, camImg.img.cols, camImg.img.rows, camImg.img.step, QImage::Format_Grayscale8)));
+}
+
 void MainWindow::initializeCameraControls(CameraQHYCCD* mCamera) {
     double min, max, step;
 
@@ -158,6 +173,9 @@ void MainWindow::on_connectCameraButton_clicked() {
 
         ui->disconnectCameraButton->setEnabled(true);
         ui->cameraCaptureGroupBox->setEnabled(true);
+
+        initializeImage();
+        showImage();
     }
 }
 

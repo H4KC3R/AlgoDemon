@@ -11,11 +11,11 @@ CONFIG += c++2a
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
-    singlemodethread.cpp
+    singlemodeworker.cpp
 
 HEADERS += \
     mainwindow.h \
-    singlemodethread.h
+    singlemodeworker.h
 
 FORMS += \
     mainwindow.ui
@@ -28,3 +28,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 include(../../external_src/AlgoDemon.pri)
 include(../../external_src/camera_module/CameraModule.pri)
+
+RESOURCES += \
+    resources.qrc
