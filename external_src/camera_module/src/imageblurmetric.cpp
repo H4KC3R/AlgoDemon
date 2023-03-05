@@ -1,8 +1,8 @@
 #include "imageblurmetric.h"
 
-double ImageBlurMetric::getBlurLaplacian(cv::Mat image){
+double ImageBlurMetric::getBlurLaplacian(const cv::Mat image){
     cv::Mat output, outputAbs;
-    cv::Scalar mean,stddev; //0:1st channel, 1:2nd channel and 2:3rd channel
+    cv::Scalar mean, stddev; //0:1st channel, 1:2nd channel and 2:3rd channel
 
     cv::Laplacian(image, output, CV_64F, 3, 1, 0, cv::BORDER_DEFAULT);
     // изначально выходное изображение было в формате 64 float,
@@ -14,11 +14,11 @@ double ImageBlurMetric::getBlurLaplacian(cv::Mat image){
     return variance;
 }
 
-double ImageBlurMetric::getBlurSobel(cv::Mat image) {
+double ImageBlurMetric::getBlurSobel(const cv::Mat image) {
     cv::Mat outputX, outputY;
 
-    cv::Sobel(image, outputX, CV_64F, 1, 0, 3, 1, 0, cv::BORDER_DEFAULT);
-    cv::Sobel(image, outputY, CV_64F, 0, 1, 3, 1, 0, cv::BORDER_DEFAULT);
+    cv::Sobel(image, outputX, CV_32FC1, 1, 0, 3, 1, 0, cv::BORDER_DEFAULT);
+    cv::Sobel(image, outputY, CV_32FC1, 0, 1, 3, 1, 0, cv::BORDER_DEFAULT);
 
     cv::Mat1f magn;
 
@@ -28,11 +28,11 @@ double ImageBlurMetric::getBlurSobel(cv::Mat image) {
     return mean.val[0];
 }
 
-double ImageBlurMetric::getBlurScharr(cv::Mat image) {
+double ImageBlurMetric::getBlurScharr(const cv::Mat image) {
     cv::Mat outputX, outputY;
 
-    cv::Scharr(image, outputX, CV_64F, 1, 0, 1, 0, cv::BORDER_DEFAULT);
-    cv::Scharr(image, outputY, CV_64F, 0, 1, 1, 0, cv::BORDER_DEFAULT);
+    cv::Scharr(image, outputX, CV_32FC1, 1, 0, 1, 0, cv::BORDER_DEFAULT);
+    cv::Scharr(image, outputY, CV_32FC1, 0, 1, 1, 0, cv::BORDER_DEFAULT);
 
     cv::Mat1f magn;
 
@@ -42,7 +42,7 @@ double ImageBlurMetric::getBlurScharr(cv::Mat image) {
     return mean.val[0];
 }
 
-double ImageBlurMetric::getBlurFFT(cv::Mat image, int cutOffFreq) {
+double ImageBlurMetric::getBlurFFT(const cv::Mat image, int cutOffFreq) {
     int cx = image.cols/2;
     int cy = image.rows/2;
 
