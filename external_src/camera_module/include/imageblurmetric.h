@@ -9,13 +9,13 @@
 
 namespace ImageBlurMetric {
 
-double getBlurLaplacian(const cv::Mat image);
+bool getBlurLaplacian(const cv::Mat image, double& result);
 
-double getBlurSobel(const cv::Mat image);
+bool getBlurSobel(const cv::Mat image, double& result);
 
-double getBlurScharr(const cv::Mat image);
+bool getBlurScharr(const cv::Mat image, double& result);
 
-double getBlurFFT(const cv::Mat image, int cutOffFreq = 60);
+bool getBlurFFT(const cv::Mat image, double& result, int cutOffFreq = 60);
 
 }
 

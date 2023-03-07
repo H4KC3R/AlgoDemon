@@ -3,6 +3,7 @@ QT       += core gui
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 CONFIG += c++2a
+QT += concurrent
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -10,12 +11,10 @@ CONFIG += c++2a
 
 SOURCES += \
     main.cpp \
-    mainwindow.cpp \
-    singlemodeworker.cpp
+    mainwindow.cpp
 
 HEADERS += \
-    mainwindow.h \
-    singlemodeworker.h
+    mainwindow.h
 
 FORMS += \
     mainwindow.ui

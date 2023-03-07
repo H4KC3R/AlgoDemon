@@ -5,6 +5,7 @@
 #include <QMap>
 #include "cameraqhyccd.h"
 #include "imageprocess.h"
+#include "imagepipeline.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -61,6 +62,7 @@ private:
 
 
 private:
+    ImagePipeline mPipeline;
     bool isSettingsChangedFlag = false;
 
     QMap<QString, QString> cameraIdModel;

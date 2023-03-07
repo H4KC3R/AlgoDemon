@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include <chrono>
 #include "camenums.h"
 
 #ifndef CAMSTRUCT_H
@@ -6,7 +7,7 @@
 
 struct CamParameters
 {
-    char mModel[12];         // camera model
+    char mModel[20];         // camera model
     bool mIsMono;            // mono or color
     bool mIsLiveMode;        // camera mode
     bool mIsConnected = false;
@@ -24,5 +25,20 @@ struct CamParameters
     uint8_t mWbin;
     uint8_t mHbin;
 };
+
+struct CamImage{
+    uint8_t* data;
+
+    std::time_t time;
+
+    uint32_t w = 0;
+    uint32_t h = 0;
+    uint32_t bpp = 0;
+    uint32_t channels = 0;
+
+    int32_t length;
+
+};
+
 
 #endif // CAMSTRUCT_H

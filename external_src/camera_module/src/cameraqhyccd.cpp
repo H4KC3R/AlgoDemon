@@ -117,6 +117,9 @@ bool CameraQHYCCD::getImageSize(uint32_t& startX, uint32_t& startY, uint32_t& si
 }
 
 bool CameraQHYCCD::setImageBitMode(BitMode bit){
+    if(mParams.mStatus != idle)
+        return false;
+
     if(bit == bit8) {
         uint32_t ret = IsQHYCCDControlAvailable(pCamhandle, CAM_8BITS);
         if(ret == QHYCCD_SUCCESS)

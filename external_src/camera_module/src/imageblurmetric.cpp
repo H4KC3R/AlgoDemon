@@ -1,6 +1,9 @@
 #include "imageblurmetric.h"
 
-double ImageBlurMetric::getBlurLaplacian(const cv::Mat image){
+bool ImageBlurMetric::getBlurLaplacian(const cv::Mat image, double& result) {
+    if(image.dims != 2)
+        return false;
+
     cv::Mat output, outputAbs;
     cv::Scalar mean, stddev; //0:1st channel, 1:2nd channel and 2:3rd channel
 
@@ -11,10 +14,14 @@ double ImageBlurMetric::getBlurLaplacian(const cv::Mat image){
     cv::meanStdDev(outputAbs, mean, stddev, cv::Mat());
 
     double variance = stddev.val[0] * stddev.val[0];
-    return variance;
+    result = variance;
+    return true;
 }
 
-double ImageBlurMetric::getBlurSobel(const cv::Mat image) {
+bool ImageBlurMetric::getBlurSobel(const cv::Mat image, double& result) {
+    if(image.dims != 2)
+        return false;
+
     cv::Mat outputX, outputY;
 
     cv::Sobel(image, outputX, CV_32FC1, 1, 0, 3, 1, 0, cv::BORDER_DEFAULT);
@@ -25,10 +32,14 @@ double ImageBlurMetric::getBlurSobel(const cv::Mat image) {
     cv::magnitude(outputX, outputY, magn);
     cv::Scalar mean = cv::mean(magn);
 
-    return mean.val[0];
+    result = mean.val[0];
+    return true;
 }
 
-double ImageBlurMetric::getBlurScharr(const cv::Mat image) {
+bool ImageBlurMetric::getBlurScharr(const cv::Mat image, double& result) {
+    if(image.dims != 2)
+        return false;
+
     cv::Mat outputX, outputY;
 
     cv::Scharr(image, outputX, CV_32FC1, 1, 0, 1, 0, cv::BORDER_DEFAULT);
@@ -39,10 +50,14 @@ double ImageBlurMetric::getBlurScharr(const cv::Mat image) {
     cv::magnitude(outputX, outputY, magn);
     cv::Scalar mean = cv::mean(magn);
 
-    return mean.val[0];
+    result = mean.val[0];
+    return true;
 }
 
-double ImageBlurMetric::getBlurFFT(const cv::Mat image, int cutOffFreq) {
+bool ImageBlurMetric::getBlurFFT(const cv::Mat image, double& result, int cutOffFreq) {
+    if(image.dims != 2)
+        return false;
+
     int cx = image.cols/2;
     int cy = image.rows/2;
 
@@ -106,7 +121,7 @@ double ImageBlurMetric::getBlurFFT(const cv::Mat image, int cutOffFreq) {
     cv::log(invFFT,logFFT);
     logFFT *= 20;
 
-    cv::Scalar result= cv::mean(logFFT);
-
-    return result.val[0];
+    cv::Scalar processedMean = cv::mean(logFFT);
+    result = processedMean.val[0];
+    return true;
 }

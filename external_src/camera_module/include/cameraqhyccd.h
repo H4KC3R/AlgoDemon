@@ -2,6 +2,7 @@
 #define CAMERAQHYCCD_H
 
 #include "qhyccd.h"
+#include "imagepipeline.h"
 #include "camstruct.h"
 #include "camenums.h"
 
