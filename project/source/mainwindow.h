@@ -64,8 +64,9 @@ private:
     bool isSettingsChangedFlag = false;
 
     QMap<QString, QString> cameraIdModel;
+
     CameraQHYCCD* mCamera;
     CamImage camImg;
-
+    uint8_t* camImgPipeline;
 };
 #endif // MAINWINDOW_H

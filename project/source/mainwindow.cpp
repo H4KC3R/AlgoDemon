@@ -2,7 +2,6 @@
 #include "ui_mainwindow.h"
 #include <QLabel>
 #include <QMessageBox>
-#include "DockManager.h"
 #include <QGraphicsView>
 
 MainWindow::MainWindow(QWidget *parent)
@@ -44,11 +43,13 @@ void MainWindow::initializeImage() {
     CamParameters params = mCamera->getCameraParameters();
     camImg.h = params.mMaximgh;
     camImg.w = params.mMaximgw;
-    camImg.length = mCamera->getImgLength();
     camImg.channels = 1;
     camImg.bpp = mCamera->getImageBitMode();
     int type = ImageProcess::getOpenCvType((BitMode)camImg.bpp, camImg.channels);
     camImg.img = cv::Mat(camImg.h, camImg.w, type, 50);
+
+    camImg.length = mCamera->getImgLength();
+    camImgPipeline = new uint8_t[camImg.length * 2];
 }
 
 void MainWindow::showImage() {
