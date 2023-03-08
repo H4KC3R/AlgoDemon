@@ -14,11 +14,16 @@ public:
 
     void clearPipeline();
 
+    const int getPipelineSize();
+
+    // Debug only
+    int getCount();
+
     void setFrame(CamImage* frame);
 
-    const std::list <CamImage>::const_iterator& getFirstFrame();
+    const std::list <CamImage>::const_iterator getFirstFrame();
 
-    const std::list <CamImage>::const_iterator& nextFrame(const std::list <CamImage>::const_iterator& it);
+    const std::list <CamImage>::const_iterator nextFrame(const std::list <CamImage>::const_iterator& it);
 
 private:
     int32_t count = 1;

@@ -11,6 +11,14 @@ void ImagePipeline::clearPipeline() {
     mList.clear();
 }
 
+const int ImagePipeline::getPipelineSize() {
+    return mList.size();
+}
+
+int ImagePipeline::getCount() {
+    return count;
+}
+
 void ImagePipeline::setFrame(CamImage *frame) {
     if(mList.size() == 2) {
         if(count == mSize){

@@ -22,4 +22,6 @@ cv::Mat contrastImg(const cv::Mat& src, double coeff);
 
 cv::Mat gammaContrastImg(const cv::Mat& src, double kGamma);
 
+}
+
 #endif // IMAGEPROCESS_H

@@ -24,18 +24,36 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-private:
+signals:
+    void imageReady(cv::Mat img);
+    void captureFinished();
+
+private  slots:
+    void on_imageReady(cv::Mat img);
+    void on_captureFinished();
 
 private:
     Ui::MainWindow *ui;
 
-    // ************************** Camera ************************** //
+    // ****************************** Camera ****************************** //
 
     void initializeImage();
 
-    void showImage();
+    void showImage(cv::Mat& image);
 
     void initializeCameraControls(CameraQHYCCD* mCamera);
+
+    void startSingleCapture();
+
+    void startLiveCapture();
+
+    void startCapture();
+
+    void stopCapture();
+
+    void processImage();
+
+    // ************************** Camera Handler ************************** //
 
     void on_findCamerasButton_clicked();
 
@@ -53,22 +71,22 @@ private:
 
     void on_cameraDepthComboBox_currentIndexChanged(int index);
 
-    void on_cameraSetRoiButton_currentIndexChanged();
+    void on_cameraSetRoiButton_clicked();
 
-    // ************************** Objective ************************** //
+    void on_cameraStartCaptureButton_clicked();
+
+    void on_cameraStopCaptureButton_clicked();
+
+    // **************************** Objective ****************************** //
 
     void on_objectiveComFindButton_clicked();
 
-
-
 private:
     ImagePipeline mPipeline;
-    bool isSettingsChangedFlag = false;
 
     QMap<QString, QString> cameraIdModel;
 
     CameraQHYCCD* mCamera;
     CamImage camImg;
-    uint8_t* camImgPipeline;
 };
 #endif // MAINWINDOW_H

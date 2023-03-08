@@ -99,13 +99,13 @@
            <item>
             <widget class="QToolBox" name="cameraControlToolBox">
              <property name="currentIndex">
-              <number>1</number>
+              <number>0</number>
              </property>
              <widget class="QWidget" name="cameraToolBoxPage">
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>-108</y>
+                <y>0</y>
                 <width>285</width>
                 <height>694</height>
                </rect>
@@ -241,6 +241,9 @@
                       <widget class="QComboBox" name="modeCameraComboBox">
                        <property name="enabled">
                         <bool>true</bool>
+                       </property>
+                       <property name="currentIndex">
+                        <number>1</number>
                        </property>
                        <item>
                         <property name="text">
@@ -1371,6 +1374,12 @@
               <height>16777215</height>
              </size>
             </property>
+            <property name="frameShape">
+             <enum>QFrame::Box</enum>
+            </property>
+            <property name="lineWidth">
+             <number>2</number>
+            </property>
             <property name="text">
              <string/>
             </property>
@@ -1388,7 +1397,7 @@
        <item>
         <widget class="QGroupBox" name="cameraCaptureGroupBox">
          <property name="enabled">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -1414,6 +1423,9 @@
           </property>
           <item>
            <widget class="QPushButton" name="cameraStartCaptureButton">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
             <property name="text">
              <string>Начать</string>
             </property>
