@@ -18,15 +18,15 @@ public:
 
     bool connectToController(const char* serialPort);
 
-    void setDiaphragmLevel(const double value);
+    bool disconnectController();
 
-    void setFocusing(const double value);
+    void setDiaphragmLevel(const int value);
+
+    void setFocusing(const int value);
 
     double getCurrentFocusing();
 
     string currentError() const;
-
-    void setAppertureVal();
 
     std::vector<double> getAppertures();
 
@@ -35,8 +35,8 @@ public:
 private:
 
     bool testControllerActive();
-    string getFocusingCmd(const double value);
-    string getAppertureCmd(const double value);
+    string getFocusingCmd(const int value);
+    string getAppertureCmd(const int value);
 
     vector <double> mAppertures;
     serialib mObjective;

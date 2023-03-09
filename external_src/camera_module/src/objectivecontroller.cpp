@@ -27,7 +27,15 @@ bool ObjectiveController::connectToController(const char* serialPort) {
     return true;
 }
 
-void ObjectiveController::setDiaphragmLevel(const double value) {
+bool ObjectiveController::disconnectController() {
+    if(mObjective.isDeviceOpen()) {
+        mObjective.closeDevice();
+        return true;
+    }
+    return false;
+}
+
+void ObjectiveController::setDiaphragmLevel(const int value) {
     mError.clear();
     int index;
     auto itr = std::find(mAppertures.begin(), mAppertures.end(), value);
@@ -44,7 +52,7 @@ void ObjectiveController::setDiaphragmLevel(const double value) {
     }
 }
 
-void ObjectiveController::setFocusing(const double value) {
+void ObjectiveController::setFocusing(const int value) {
     mError.clear();
     if (testControllerActive()) {
         if( mObjective.writeString(getFocusingCmd(value).c_str()) != 1 ) {
@@ -100,13 +108,13 @@ bool ObjectiveController::testControllerActive() {
     return false;
 }
 
-string ObjectiveController::getFocusingCmd(const double value) {
+string ObjectiveController::getFocusingCmd(const int value) {
     string val = to_string(value);
     string cmd = "M" + val + "#";
     return cmd;
 }
 
-string ObjectiveController::getAppertureCmd(const double value) {
+string ObjectiveController::getAppertureCmd(const int value) {
     string str = to_string(value);
     size_t n = 2;
 

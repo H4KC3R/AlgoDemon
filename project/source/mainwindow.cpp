@@ -6,6 +6,14 @@
 #include <QtConcurrent/QtConcurrent>
 #include "QtConcurrent/qtconcurrentrun.h"
 
+#include <QSerialPortInfo>
+#include <QSerialPort>
+#include <QFileDialog>
+
+#include <QJsonObject>
+#include <QJsonArray>
+#include <QJsonDocument>
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -39,13 +47,22 @@ MainWindow::MainWindow(QWidget *parent)
             Qt::QueuedConnection);
 
     connect(ui->objectiveComFindButton, &QPushButton::clicked, this, &MainWindow::on_objectiveComFindButton_clicked);
+    connect(ui->objectiveComConnectButton, &QPushButton::clicked, this, &MainWindow::on_objectiveComConnectButton_clicked);
+    connect(ui->objectiveComDisconnectButton, &QPushButton::clicked, this, &MainWindow::on_objectiveComDisconnectButton_clicked);
+    connect(ui->objectiveLensFileButton, &QPushButton::clicked, this, &MainWindow::on_objectiveLensFileButton_clicked);
+    connect(ui->objectiveSetAppertureButton, &QPushButton::clicked, this, &MainWindow::on_objectiveSetAppertureButton_clicked);
+    connect(ui->objectiveSetFocusButton, &QPushButton::clicked, this, &MainWindow::on_objectiveSetFocusButton_clicked);
+    connect(ui->objectiveGetFocusButton, &QPushButton::clicked, this, &MainWindow::on_objectiveGetFocusButton_clicked);
+
+    connect(this, SIGNAL(focusGetted(double)), this, SLOT(on_focusGetted(double)),
+            Qt::QueuedConnection);
 }
 
 MainWindow::~MainWindow() {
     delete ui;
 }
 
-// *************************** Camera Slots **************************** //
+// **************************** Slots ********************************* //
 
 void MainWindow::on_imageReady(cv::Mat img) {
     qDebug() << "mat data pointer" <<camImg.data;
@@ -56,6 +73,18 @@ void MainWindow::on_captureFinished() {
     ui->cameraStartCaptureButton->setEnabled(true);
     ui->cameraStopCaptureButton->setEnabled(false);
     ui->cameraDepthComboBox->setEnabled(true);
+}
+
+void MainWindow::on_focusGetted(double val) {
+    ui->objectiveFocusValSpinbox->setValue(val);
+
+    if(!mObjective->currentError().empty())
+        ui->objectiveErrorLineEdit->setText(QString::fromStdString(mObjective->currentError()));
+
+    ui->objectiveLensFileButton->setEnabled(true);
+    ui->objectiveSetAppertureButton->setEnabled(true);
+    ui->objectiveSetFocusButton->setEnabled(true);
+    ui->objectiveGetFocusButton->setEnabled(true);
 }
 
 // ****************************** Camera ****************************** //
@@ -232,7 +261,12 @@ void MainWindow::on_connectCameraButton_clicked() {
     QString qId = cameraIdModel.value(ui->cameraComboBox->currentText());
     QByteArray bId = qId.toLocal8Bit();
     char* id = bId.data();
-    mCamera = new CameraQHYCCD(id);
+    try {
+        mCamera = new CameraQHYCCD(id);
+    }
+    catch(...){
+        QMessageBox::warning(this, "Внимание", "Ошибка подключения камеры!\n");
+    }
 
     StreamMode mode = (ui->modeCameraComboBox->currentIndex() == 0) ? single : live;
     if(mCamera->connect(mode)) {
@@ -328,9 +362,115 @@ void MainWindow::on_cameraStopCaptureButton_clicked() {
 // **************************** Objective ****************************** //
 
 void MainWindow::on_objectiveComFindButton_clicked() {
-    return;
+    auto ports = QSerialPortInfo::availablePorts();
+    for (qint32 i = 0; i < ports.size(); ++i)
+        ui->objectiveComPortsComboBox->addItem(ports[i].portName());
 }
 
-//void MainWindow::on_disconnectCameraButton_clicked() {
+void MainWindow::on_objectiveComConnectButton_clicked() {
+    if(ui->objectiveComPortsComboBox->currentIndex() == -1)
+        return;
 
-//}
+    try {
+        QByteArray ba = ui->objectiveComPortsComboBox->currentText().toLocal8Bit();
+        const char* serialPort = ba.data();
+        mObjective = new ObjectiveController(serialPort);
+        if(mObjective->connectToController(serialPort)) {
+            ui->objectiveComPortsComboBox->setEnabled(false);
+            ui->objectiveComConnectButton->setEnabled(false);
+
+            ui->objectiveComDisconnectButton->setEnabled(true);
+            ui->objectiveLensFileButton->setEnabled(true);
+            ui->objectiveSetAppertureButton->setEnabled(true);
+            ui->objectiveSetAppertureComboBox->setEnabled(true);
+            ui->objectiveSetFocusButton->setEnabled(true);
+            ui->objectiveSetFocusSpinBox->setEnabled(true);
+            ui->objectiveGetFocusButton->setEnabled(true);
+            ui->objectiveFocusValSpinbox->setEnabled(true);
+
+            auto appertures = mObjective->getAppertures();
+            for (auto& i : appertures)
+                ui->objectiveSetAppertureComboBox->addItem(QString::number(i));
+        }
+        else
+            QMessageBox::warning(this, "Внимание", "Ошибка подключения объектива!\nВозможно неверно указан COM порт.");
+    }
+    catch(...){
+        QMessageBox::warning(this, "Внимание", "Ошибка подключения объектива!\nВозможно неверно указан COM порт.");
+    }
+}
+
+void MainWindow::on_objectiveComDisconnectButton_clicked() {
+    if(mObjective->disconnectController()) {
+        ui->objectiveComPortsComboBox->setEnabled(true);
+        ui->objectiveComConnectButton->setEnabled(true);
+
+        ui->objectiveComDisconnectButton->setEnabled(false);
+        ui->objectiveLensFileButton->setEnabled(false);
+        ui->objectiveSetAppertureButton->setEnabled(false);
+        ui->objectiveSetAppertureComboBox->setEnabled(false);
+        ui->objectiveSetFocusButton->setEnabled(false);
+        ui->objectiveSetFocusSpinBox->setEnabled(false);
+        ui->objectiveGetFocusButton->setEnabled(false);
+        ui->objectiveFocusValSpinbox->setEnabled(false);
+    }
+}
+
+void MainWindow::on_objectiveLensFileButton_clicked() {
+    QString fileName = QFileDialog::getOpenFileName(this,
+         tr("Аппертуры"), "/home", tr("JSON Files (*.json)"));
+    ui->objectiveLensFileLineEdit->setText(fileName);
+
+}
+
+void MainWindow::on_objectiveSetAppertureButton_clicked() {
+    ui->objectiveLensFileButton->setEnabled(false);
+    ui->objectiveSetAppertureButton->setEnabled(false);
+    ui->objectiveSetFocusButton->setEnabled(false);
+    ui->objectiveGetFocusButton->setEnabled(false);
+
+    ui->objectiveErrorLineEdit->clear();
+    int val = ui->objectiveSetAppertureComboBox->currentIndex();
+    mObjective->setDiaphragmLevel(val);
+    if(!mObjective->currentError().empty())
+        ui->objectiveErrorLineEdit->setText(QString::fromStdString(mObjective->currentError()));
+
+    ui->objectiveLensFileButton->setEnabled(true);
+    ui->objectiveSetAppertureButton->setEnabled(true);
+    ui->objectiveSetFocusButton->setEnabled(true);
+    ui->objectiveGetFocusButton->setEnabled(true);
+}
+
+void MainWindow::on_objectiveSetFocusButton_clicked() {
+    ui->objectiveLensFileButton->setEnabled(false);
+    ui->objectiveSetAppertureButton->setEnabled(false);
+    ui->objectiveSetFocusButton->setEnabled(false);
+    ui->objectiveGetFocusButton->setEnabled(false);
+
+    ui->objectiveErrorLineEdit->clear();
+    int val = ui->objectiveSetFocusSpinBox->value();
+    mObjective->setFocusing(val);
+    if(!mObjective->currentError().empty())
+        ui->objectiveErrorLineEdit->setText(QString::fromStdString(mObjective->currentError()));
+
+    ui->objectiveLensFileButton->setEnabled(true);
+    ui->objectiveSetAppertureButton->setEnabled(true);
+    ui->objectiveSetFocusButton->setEnabled(true);
+    ui->objectiveGetFocusButton->setEnabled(true);
+}
+
+void MainWindow::on_objectiveGetFocusButton_clicked() {
+    ui->objectiveLensFileButton->setEnabled(false);
+    ui->objectiveSetAppertureButton->setEnabled(false);
+    ui->objectiveSetFocusButton->setEnabled(false);
+    ui->objectiveGetFocusButton->setEnabled(false);
+    ui->objectiveErrorLineEdit->clear();
+
+    auto lambda = [this]() {
+        double currentFocusing = mObjective->getCurrentFocusing();
+        emit focusGetted(currentFocusing);
+    };
+    QtConcurrent::run(lambda);
+}
+
+

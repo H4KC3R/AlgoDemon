@@ -3,9 +3,12 @@
 
 #include <QMainWindow>
 #include <QMap>
+
 #include "cameraqhyccd.h"
 #include "imageprocess.h"
 #include "imagepipeline.h"
+
+#include "objectivecontroller.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -27,10 +30,12 @@ public:
 signals:
     void imageReady(cv::Mat img);
     void captureFinished();
+    void focusGetted(double val);
 
 private  slots:
     void on_imageReady(cv::Mat img);
     void on_captureFinished();
+    void on_focusGetted(double val);
 
 private:
     Ui::MainWindow *ui;
@@ -81,12 +86,26 @@ private:
 
     void on_objectiveComFindButton_clicked();
 
+    void on_objectiveComConnectButton_clicked();
+
+    void on_objectiveComDisconnectButton_clicked();
+
+    void on_objectiveLensFileButton_clicked();
+
+    void on_objectiveSetAppertureButton_clicked();
+
+    void on_objectiveSetFocusButton_clicked();
+
+    void on_objectiveGetFocusButton_clicked();
+
 private:
     ImagePipeline mPipeline;
 
     QMap<QString, QString> cameraIdModel;
 
     CameraQHYCCD* mCamera;
+    ObjectiveController* mObjective;
+
     CamImage camImg;
 };
 #endif // MAINWINDOW_H

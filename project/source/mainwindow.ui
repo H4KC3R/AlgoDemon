@@ -77,7 +77,7 @@
           <bool>false</bool>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="cameraTab">
           <attribute name="title">
@@ -744,8 +744,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>299</width>
-                <height>586</height>
+                <width>229</width>
+                <height>408</height>
                </rect>
               </property>
               <attribute name="label">
@@ -1146,7 +1146,7 @@
            <item>
             <widget class="QFrame" name="objectiveLensFrame">
              <property name="enabled">
-              <bool>false</bool>
+              <bool>true</bool>
              </property>
              <property name="frameShape">
               <enum>QFrame::StyledPanel</enum>
@@ -1169,6 +1169,9 @@
               </property>
               <item>
                <widget class="QLabel" name="objectiveNotificationButton">
+                <property name="enabled">
+                 <bool>true</bool>
+                </property>
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
                   <horstretch>0</horstretch>
@@ -1184,10 +1187,17 @@
                </widget>
               </item>
               <item>
-               <widget class="QLineEdit" name="objectiveLensFileLineEdit"/>
+               <widget class="QLineEdit" name="objectiveLensFileLineEdit">
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+               </widget>
               </item>
               <item>
                <widget class="QPushButton" name="objectiveLensFileButton">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
                 <property name="text">
                  <string>Файл</string>
                 </property>
@@ -1199,7 +1209,7 @@
            <item>
             <widget class="QFrame" name="objectiveControlFrame">
              <property name="enabled">
-              <bool>false</bool>
+              <bool>true</bool>
              </property>
              <property name="frameShape">
               <enum>QFrame::StyledPanel</enum>
@@ -1222,13 +1232,20 @@
               </property>
               <item>
                <widget class="QPushButton" name="objectiveSetAppertureButton">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
                 <property name="text">
                  <string>Задать аппертуру</string>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QComboBox" name="objectiveSetAppertureComboBox"/>
+               <widget class="QComboBox" name="objectiveSetAppertureComboBox">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+               </widget>
               </item>
               <item>
                <widget class="Line" name="objectiveLine1">
@@ -1242,13 +1259,23 @@
               </item>
               <item>
                <widget class="QPushButton" name="objectiveSetFocusButton">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
                 <property name="text">
                  <string>Задать фокус</string>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QSpinBox" name="objectiveSetFocusSpinBox"/>
+               <widget class="QSpinBox" name="objectiveSetFocusSpinBox">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+                <property name="maximum">
+                 <number>9999</number>
+                </property>
+               </widget>
               </item>
               <item>
                <widget class="Line" name="objectiveLine2">
@@ -1262,13 +1289,20 @@
               </item>
               <item>
                <widget class="QPushButton" name="objectiveGetFocusButton">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
                 <property name="text">
                  <string>Получить фокус</string>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QSpinBox" name="objectiveFocusValSpinbox"/>
+               <widget class="QDoubleSpinBox" name="objectiveFocusValSpinbox">
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+               </widget>
               </item>
               <item>
                <widget class="Line" name="objectiveLine3">
@@ -1288,7 +1322,11 @@
                </widget>
               </item>
               <item>
-               <widget class="QLineEdit" name="objectiveErrorLineEdit"/>
+               <widget class="QLineEdit" name="objectiveErrorLineEdit">
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+               </widget>
               </item>
              </layout>
             </widget>

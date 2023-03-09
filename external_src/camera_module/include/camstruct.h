@@ -27,6 +27,7 @@ struct CamParameters
 
 struct CamImage{
     uint8_t* data;
+    uint8_t* pNextFrm;
 
     std::chrono::steady_clock::time_point time;
 
