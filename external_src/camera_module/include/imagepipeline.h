@@ -8,26 +8,26 @@
 class ImagePipeline
 {
 public:
-    ImagePipeline();
+    ImagePipeline(uint32_t length);
 
     ~ImagePipeline();
 
-    void clearPipeline();
+    int getPipelineSize();
 
-    const int getPipelineSize();
+    const std::list <CamImage>::iterator getFirstFrame();
 
-    // Debug only
-    int getCount();
+    const std::list <CamImage>::iterator nextFrame(const std::list <CamImage>::iterator& it);
 
-    void setFrame(CamImage* frame);
+    uint32_t getFrameCount() const;
 
-    const std::list <CamImage>::const_iterator getFirstFrame();
-
-    const std::list <CamImage>::const_iterator nextFrame(const std::list <CamImage>::const_iterator& it);
+    int32_t getCount() const;
 
 private:
     int32_t count = 1;
+
     const size_t mSize = 2;
+    CamImage firstFrame;
+    CamImage secondFrame;
 
     std::list<CamImage> mList;
     std::shared_mutex mMutex;

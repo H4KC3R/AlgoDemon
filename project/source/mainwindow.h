@@ -42,7 +42,7 @@ private:
 
     // ****************************** Camera ****************************** //
 
-    void initializeImage();
+    void initializePipeline();
 
     void showImage(cv::Mat& image);
 
@@ -99,13 +99,14 @@ private:
     void on_objectiveGetFocusButton_clicked();
 
 private:
-    ImagePipeline mPipeline;
+    ImagePipeline* mPipeline;
 
     QMap<QString, QString> cameraIdModel;
 
     CameraQHYCCD* mCamera;
     ObjectiveController* mObjective;
 
-    CamImage camImg;
+    bool processNewImage = false;
+    bool isConnected = false;
 };
 #endif // MAINWINDOW_H

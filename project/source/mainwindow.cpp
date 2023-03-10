@@ -65,7 +65,6 @@ MainWindow::~MainWindow() {
 // **************************** Slots ********************************* //
 
 void MainWindow::on_imageReady(cv::Mat img) {
-    qDebug() << "mat data pointer" <<camImg.data;
     showImage(img);
 }
 
@@ -89,21 +88,20 @@ void MainWindow::on_focusGetted(double val) {
 
 // ****************************** Camera ****************************** //
 
-void MainWindow::initializeImage() {
+void MainWindow::initializePipeline() {
     CamParameters params = mCamera->getCameraParameters();
-    camImg.h = params.mMaximgh;
-    camImg.w = params.mMaximgw;
-    camImg.channels = 1;
-    camImg.bpp = mCamera->getImageBitMode();
-
-    camImg.length = (camImg.h * camImg.w) * 2;
-    camImg.data = new uint8_t[camImg.length];
-    qDebug() << "camImg variable pointer" <<camImg.data;
+    quint32 length = (params.mMaximgh * params.mMaximgw) * 2;
+    mPipeline = new ImagePipeline(length);
 }
 
 void MainWindow::showImage(cv::Mat& image) {
     ui->imageLabel->setPixmap(QPixmap::fromImage(QImage(image.data, image.cols, image.rows, image.step,
                                                         QImage::Format_Grayscale8)));
+
+    cv::namedWindow("Camera image", cv::WINDOW_NORMAL);
+    cv::resizeWindow("Camera image", 600, 600);
+    cv::imshow("Camera image", image);
+    cv::waitKey(0);
 }
 
 void MainWindow::initializeCameraControls(CameraQHYCCD* mCamera) {
@@ -184,11 +182,11 @@ void MainWindow::initializeCameraControls(CameraQHYCCD* mCamera) {
 }
 
 void MainWindow::startSingleCapture() {
-    mPipeline.clearPipeline();
     if(mCamera->startSingleCapture()){
-        if(mCamera->getImage(camImg.w, camImg.h, camImg.bpp, camImg.channels, camImg.data)) {
-            camImg.time = std::chrono::steady_clock::now();
-            mPipeline.setFrame(&camImg);
+        auto firstFrame = mPipeline->getFirstFrame();
+        if(mCamera->getImage(firstFrame->w, firstFrame->h, firstFrame->bpp,
+                             firstFrame->channels, firstFrame->data)) {
+            firstFrame->time = std::chrono::steady_clock::now();
             processImage();
         }
         else
@@ -200,20 +198,17 @@ void MainWindow::startSingleCapture() {
 }
 
 void MainWindow::startLiveCapture() {
-    mPipeline.clearPipeline();
-    bool ready = false;
-
     if(mCamera->startLiveCapture()) {
+        bool ready = false;
+        auto frame = mPipeline->getFirstFrame();
         while(mCamera->status() == liveCapture) {
+            qDebug() << "startLiveCapture" << frame->data;
             while(ready == false && mCamera->status() == liveCapture)
-                ready = mCamera->getImage(camImg.w, camImg.h, camImg.bpp, camImg.channels, camImg.data);
-
-            camImg.time = std::chrono::steady_clock::now();
-            mPipeline.setFrame(&camImg);
-            qDebug() << QDateTime::currentDateTimeUtc();
-
-            qDebug() << mPipeline.getCount();
-            qDebug() << mPipeline.getPipelineSize();
+                ready = mCamera->getImage(frame->w, frame->h, frame->bpp,
+                                          frame->channels, frame->data);
+            frame->time = std::chrono::steady_clock::now();
+            processNewImage = true;
+            frame = mPipeline->nextFrame(frame);
         }
     }
     else
@@ -222,11 +217,19 @@ void MainWindow::startLiveCapture() {
 }
 
 void MainWindow::processImage() {
-    auto it = mPipeline.getFirstFrame();
-    int type = ImageProcess::getOpenCvType((BitMode)it->bpp, it->channels);
-    cv::Mat img = cv::Mat(it->h, it->w, type, it->data);
-    qDebug() << "iterator variable pointer" << it->data;
-    emit imageReady(img);
+    auto it = mPipeline->getFirstFrame();
+    while(isConnected) {
+        if(processNewImage){
+            qDebug() << "Process image" << it->data;
+
+            /*
+            processNewImage = false;
+            int type = ImageProcess::getOpenCvType((BitMode)it->bpp, it->channels);
+            cv::Mat img = cv::Mat(it->h, it->w, type, it->data);
+            emit imageReady(img);*/
+            it = mPipeline->nextFrame(it);
+        }
+    }
 }
 
 // ************************** Camera Handler ************************** //
@@ -278,17 +281,24 @@ void MainWindow::on_connectCameraButton_clicked() {
         ui->disconnectCameraButton->setEnabled(true);
         ui->cameraCaptureGroupBox->setEnabled(true);
 
-        initializeImage();
+        initializePipeline();
+
+        isConnected = true;
+//        auto lambda = [this]() {
+//            processImage();
+//        };
+
+//        QtConcurrent::run(lambda);
     }
 }
 
 void MainWindow::on_disconnectCameraButton_clicked() {
-    delete camImg.data;
+    delete mPipeline;
 }
 
 void MainWindow::on_cameraGainDSpinBox_valueChanged(double val) {
     ui->cameraGainHSlider->setValue(val);
-    mCamera->setGain(val);
+//    mCamera->setGain(val);
 }
 
 void MainWindow::on_cameraGainHSlider_valueChanged(int val) {
@@ -297,7 +307,7 @@ void MainWindow::on_cameraGainHSlider_valueChanged(int val) {
 
 void MainWindow::on_cameraExposureDSpinBox_valueChanged(double val) {
     ui->cameraExposureHSlider->setValue(val / 1000);
-    mCamera->setExposure(val);
+//    mCamera->setExposure(val);
 
 }
 
@@ -337,11 +347,33 @@ void MainWindow::on_cameraStartCaptureButton_clicked() {
         return;
 
     auto lambda = [this]() {
-        CamParameters params = mCamera->getCameraParameters();
-        if(params.mIsLiveMode)
-            startLiveCapture();
+        if(mCamera->startLiveCapture()) {
+            bool ready = false;
+            auto frame = mPipeline->getFirstFrame();
+            forever {
+                qDebug() << "startLiveCapture" << frame->data;
+                if(!isConnected)
+                    return;
+            }
+//            while(mCamera->status() == liveCapture) {
+//                qDebug() << "startLiveCapture" << frame->data;
+//                while(ready == false && mCamera->status() == liveCapture)
+//                    ready = mCamera->getImage(frame->w, frame->h, frame->bpp,
+//                                              frame->channels, frame->data);
+//                frame->time = std::chrono::steady_clock::now();
+//                processNewImage = true;
+//                frame = mPipeline->nextFrame(frame);
+//            }
+        }
         else
-            startSingleCapture();
+            QMessageBox::warning(this, "Внимание", "Ошибка чтения кадра!\n");
+        emit captureFinished();
+
+//        CamParameters params = mCamera->getCameraParameters();
+//        if(params.mIsLiveMode)
+//            startLiveCapture();
+//        else
+//            startSingleCapture();
     };
 
     ui->cameraStartCaptureButton->setEnabled(false);
@@ -351,6 +383,7 @@ void MainWindow::on_cameraStartCaptureButton_clicked() {
 }
 
 void MainWindow::on_cameraStopCaptureButton_clicked() {
+    isConnected =false;
     ui->cameraStopCaptureButton->setEnabled(false);
     CamParameters params = mCamera->getCameraParameters();
     if(params.mIsLiveMode)
