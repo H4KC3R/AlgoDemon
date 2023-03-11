@@ -1,48 +1,60 @@
 #include "imagepipeline.h"
 
-ImagePipeline::ImagePipeline(uint32_t length) {
-    firstFrame.data = new uint8_t[length];
-    secondFrame.data = new uint8_t[length];
-
-    mList = {firstFrame, secondFrame};
+ImagePipeline::ImagePipeline(size_t size) : mSize(size) {
+    frameCount = 1;
 }
 
 ImagePipeline::~ImagePipeline() {
-    mList.clear();
-    delete firstFrame.data;
-    firstFrame.data = nullptr;
+}
 
-    delete secondFrame.data;
-    secondFrame.data = nullptr;
+void ImagePipeline::setFrame(CamFrame &frame) {
+    std::unique_lock lock(mMutex);
+    if(mList.size() == mSize){
+        mList.pop_front();
+        mList.push_back(CamFrame(frame));
+    }
+    else
+        mList.push_back(CamFrame(frame));
+
+    frameCount++;
 }
 
 int ImagePipeline::getPipelineSize() {
-    return mList.size();
+    return mSize;
 }
 
-const std::list <CamImage>::iterator ImagePipeline::getFirstFrame() {
-    std::list <CamImage>::iterator it = mList.begin();
-    if(it != mList.end()) {
+const std::list <CamFrame>::iterator ImagePipeline::getFirstFrame() {
+    std::list <CamFrame>::iterator it = mList.begin();
+    while(it == mList.end()) {
         std::shared_lock lock(mMutex);
-        it = mList.begin();
+        if(mList.size() != 0) {
+            it = mList.begin();
+        }
     }
     return it;
 }
 
-const std::list <CamImage>::iterator ImagePipeline::nextFrame(const std::list <CamImage>::iterator& it) {
-    std::list <CamImage>::iterator next;
-    if(count == 1) {
+const std::list <CamFrame>::iterator ImagePipeline::nextFrame(const std::list <CamFrame>::iterator& it) {
+    std::list <CamFrame>::iterator next = std::next(it, 1);
+    while (next == mList.end())
+    {
+        std::shared_lock lock(mMutex);
         next = std::next(it, 1);
-        count++;
-    }
-    else {
-        next = mList.begin();
-        count = 1;
     }
     return next;
 }
 
-int32_t ImagePipeline::getCount() const {
-    return count;
+void ImagePipeline::clearBuffer() {
+    if(mList.size() != 0) {
+        std::unique_lock lock(mMutex);
+        frameCount = 1;
+        mList.clear();
+    }
 }
+
+uint32_t ImagePipeline::getFrameCount() const {
+    return frameCount;
+}
+
+
 

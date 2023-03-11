@@ -1,7 +1,10 @@
 #include "cameraprocessor.h"
 
-CameraProcessor::CameraProcessor(QObject *parent)
-    : QObject{parent}
-{
+CameraProcessor::CameraProcessor() {
+}
+
+CameraProcessor::~CameraProcessor() {
 
 }
+
+

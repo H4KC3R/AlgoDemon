@@ -14,6 +14,8 @@ SOURCES += \
         src/imageblurmetric.cpp \
         src/imageprocess.cpp \
         src/objectivecontroller.cpp \
+        src/imagepipeline.cpp\
+        src/camframe.cpp\
         src/serialib.cpp
 
 HEADERS  += \
@@ -21,12 +23,15 @@ HEADERS  += \
     include/camenums.h \
     include/cameraqhyccd.h \
     include/camstruct.h \
+    include/camframe.h\
     include/imageblurmetric.h \
     include/imageprocess.h \
     include/objectivecontroller.h\
+    include/imagepipeline.h\
     include/serialib.h
 
 INCLUDEPATH += include
+DEPENDPATH += include
 
 unix: {
     message("Unix build. To DO")

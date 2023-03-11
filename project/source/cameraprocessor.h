@@ -21,13 +21,16 @@ public:
     ProcessingThread* processingThread;
     FocusingThread* focusingThread;
 
-    bool connectToCamera(char* id, );
+    bool connectToCamera(char* id);
     void disconnectCamera();
 
     void startCaptureThread();
     void stopCaptureThread();
 
     void stopProcessingThread();
+    void stopFocusingThread();
+
+    void startFocusingThread();
     void stopFocusingThread();
 
     void deleteCaptureThread();

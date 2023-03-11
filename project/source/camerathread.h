@@ -1,6 +1,7 @@
 #ifndef CAMERATHREAD_H
 #define CAMERATHREAD_H
 #include <QThread>
+#include <QMutex>
 #include "cameraqhyccd.h"
 #include "imagepipeline.h"
 
@@ -13,16 +14,20 @@ public:
     bool connectToCamera(char* id, StreamMode mode);
     void disconnectCamera();
 
+
+    void startCaptureThread();
     void stopCaptureThread();
     bool isCameraConnected();
-    void updateFPS(int);
-
-    int getAvgFPS();
 
 private:
+    bool isConnected = false;
     ImagePipeline* pImagePipeline;
     CameraQHYCCD* pCamera;
-    int avgFPS;
+    QMutex stoppedMutex;
+    volatile bool stopped;
+
+public slots:
+    on_settingsChanged();
 
     // QThread interface
 protected:

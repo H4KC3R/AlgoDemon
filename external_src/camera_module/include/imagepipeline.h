@@ -1,35 +1,35 @@
 #ifndef IMAGEPIPELINE_H
 #define IMAGEPIPELINE_H
-#include "camstruct.h"
+
+#include "camframe.h"
 #include <list>
 #include <iterator>
+#include <mutex>
 #include <shared_mutex>
 
 class ImagePipeline
 {
 public:
-    ImagePipeline(uint32_t length);
+    ImagePipeline(size_t size = 5);
 
     ~ImagePipeline();
 
+    void setFrame(CamFrame& frame);
+
+    const std::list <CamFrame>::iterator getFirstFrame();
+
+    const std::list <CamFrame>::iterator nextFrame(const std::list <CamFrame>::iterator& it);
+
     int getPipelineSize();
 
-    const std::list <CamImage>::iterator getFirstFrame();
-
-    const std::list <CamImage>::iterator nextFrame(const std::list <CamImage>::iterator& it);
+    void clearBuffer();
 
     uint32_t getFrameCount() const;
 
-    int32_t getCount() const;
-
 private:
-    int32_t count = 1;
-
-    const size_t mSize = 2;
-    CamImage firstFrame;
-    CamImage secondFrame;
-
-    std::list<CamImage> mList;
+    size_t mSize;
+    uint32_t frameCount;
+    std::list<CamFrame> mList;
     std::shared_mutex mMutex;
 
 };

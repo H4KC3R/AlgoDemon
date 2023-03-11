@@ -10,6 +10,7 @@ HEADERS  += \
     $$PWD/include/autoexposurehandler.h \
     $$PWD/include/camenums.h \
     $$PWD/include/cameraqhyccd.h \
+    $$PWD/include/camframe.h \
     $$PWD/include/camstruct.h \
     $$PWD/include/imageblurmetric.h \
     $$PWD/include/imageprocess.h \
@@ -18,6 +19,7 @@ HEADERS  += \
     $$PWD/include/serialib.h
 
 SOURCES += \
+        $$PWD/src/camframe.cpp \
         $$PWD/src/autoexposurehandler.cpp\
         $$PWD/src/cameraqhyccd.cpp \
         $$PWD/src/imageblurmetric.cpp \
