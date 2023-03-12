@@ -2,7 +2,7 @@
 #define CAMERAQHYCCD_H
 
 #include "CameraSDK_include/qhyccd.h"
-#include "imagepipeline.h"
+#include "framepipeline.h"
 #include "camstruct.h"
 #include "camenums.h"
 

@@ -23,7 +23,8 @@ HEADERS += \
     camerathread.h \
     focusingthread.h \
     mainwindow.h \
-    processingthread.h
+    processingthread.h \
+    structures.h
 
 FORMS += \
     mainwindow.ui

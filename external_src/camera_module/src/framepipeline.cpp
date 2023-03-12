@@ -1,29 +1,29 @@
-#include "imagepipeline.h"
+#include "framepipeline.h"
 
-ImagePipeline::ImagePipeline(size_t size) : mSize(size) {
+FramePipeline::FramePipeline(size_t size) : mSize(size) {
     frameCount = 1;
 }
 
-ImagePipeline::~ImagePipeline() {
+FramePipeline::~FramePipeline() {
 }
 
-void ImagePipeline::setFrame(CamFrame &frame) {
+void FramePipeline::setFrame(CamFrame &frame) {
     std::unique_lock lock(mMutex);
     if(mList.size() == mSize){
         mList.pop_front();
-        mList.push_back(CamFrame(frame));
+        mList.push_back(frame);
     }
     else
-        mList.push_back(CamFrame(frame));
+        mList.emplace_back(frame);
 
     frameCount++;
 }
 
-int ImagePipeline::getPipelineSize() {
+int FramePipeline::getPipelineSize() {
     return mSize;
 }
 
-const std::list <CamFrame>::iterator ImagePipeline::getFirstFrame() {
+const std::list <CamFrame>::iterator FramePipeline::getFirstFrame() {
     std::list <CamFrame>::iterator it = mList.begin();
     while(it == mList.end()) {
         std::shared_lock lock(mMutex);
@@ -34,7 +34,7 @@ const std::list <CamFrame>::iterator ImagePipeline::getFirstFrame() {
     return it;
 }
 
-const std::list <CamFrame>::iterator ImagePipeline::nextFrame(const std::list <CamFrame>::iterator& it) {
+const std::list <CamFrame>::iterator FramePipeline::nextFrame(const std::list <CamFrame>::iterator& it) {
     std::list <CamFrame>::iterator next = std::next(it, 1);
     while (next == mList.end())
     {
@@ -44,7 +44,7 @@ const std::list <CamFrame>::iterator ImagePipeline::nextFrame(const std::list <C
     return next;
 }
 
-void ImagePipeline::clearBuffer() {
+void FramePipeline::clearBuffer() {
     if(mList.size() != 0) {
         std::unique_lock lock(mMutex);
         frameCount = 1;
@@ -52,7 +52,7 @@ void ImagePipeline::clearBuffer() {
     }
 }
 
-uint32_t ImagePipeline::getFrameCount() const {
+uint32_t FramePipeline::getFrameCount() const {
     return frameCount;
 }
 

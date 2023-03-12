@@ -1,5 +1,5 @@
-#ifndef IMAGEPIPELINE_H
-#define IMAGEPIPELINE_H
+#ifndef FRAMEPIPELINE_H
+#define FRAMEPIPELINE_H
 
 #include "camframe.h"
 #include <list>
@@ -7,12 +7,12 @@
 #include <mutex>
 #include <shared_mutex>
 
-class ImagePipeline
+class FramePipeline
 {
 public:
-    ImagePipeline(size_t size = 5);
+    FramePipeline(size_t size = 5);
 
-    ~ImagePipeline();
+    ~FramePipeline();
 
     void setFrame(CamFrame& frame);
 
@@ -34,4 +34,4 @@ private:
 
 };
 
-#endif // IMAGEPIPELINE_H
+#endif // FRAMEPIPELINE_H

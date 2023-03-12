@@ -12,20 +12,20 @@ HEADERS  += \
     $$PWD/include/cameraqhyccd.h \
     $$PWD/include/camframe.h \
     $$PWD/include/camstruct.h \
+    $$PWD/include/framepipeline.h \
     $$PWD/include/imageblurmetric.h \
     $$PWD/include/imageprocess.h \
     $$PWD/include/objectivecontroller.h\
-    $$PWD/include/imagepipeline.h\
     $$PWD/include/serialib.h
 
 SOURCES += \
         $$PWD/src/camframe.cpp \
         $$PWD/src/autoexposurehandler.cpp\
         $$PWD/src/cameraqhyccd.cpp \
+        $$PWD/src/framepipeline.cpp \
         $$PWD/src/imageblurmetric.cpp \
         $$PWD/src/imageprocess.cpp \
         $$PWD/src/objectivecontroller.cpp \
-        $$PWD/src/imagepipeline.cpp\
         $$PWD/src/serialib.cpp
 
 

@@ -3,7 +3,7 @@
 
 #include <QObject>
 
-#include "imagepipeline.h"
+#include "framepipeline.h"
 
 #include "camerathread.h"
 #include "processingthread.h"

@@ -6,7 +6,7 @@
 
 #include "cameraqhyccd.h"
 #include "imageprocess.h"
-#include "imagepipeline.h"
+#include "framepipeline.h"
 
 #include "objectivecontroller.h"
 

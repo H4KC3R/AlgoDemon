@@ -3,31 +3,35 @@
 #include <QThread>
 #include <QMutex>
 #include "cameraqhyccd.h"
-#include "imagepipeline.h"
+#include "framepipeline.h"
 
 class CameraThread : public QThread
 {
     Q_OBJECT
 
 public:
-    CameraThread(ImagePipeline* pipeline);
+    CameraThread(FramePipeline* pipeline);
     bool connectToCamera(char* id, StreamMode mode);
     void disconnectCamera();
+    void initializeControls(CameraControls control, double& min, double& max, double& step, double& currentVal);
 
-
-    void startCaptureThread();
+    void startSingleCapture();
     void stopCaptureThread();
     bool isCameraConnected();
 
 private:
     bool isConnected = false;
-    ImagePipeline* pImagePipeline;
+    bool isMono;
+
     CameraQHYCCD* pCamera;
+    FramePipeline* pFramePipeline;
+    CamFrame* frame;
     QMutex stoppedMutex;
+    QMutex updateControlsMutex;
     volatile bool stopped;
 
 public slots:
-    on_settingsChanged();
+    onControlChanged();
 
     // QThread interface
 protected:

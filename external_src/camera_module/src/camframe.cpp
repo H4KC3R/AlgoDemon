@@ -3,9 +3,6 @@
 CamFrame::CamFrame(uint32_t length) {
     pData = new uint8_t[length];
 
-    qDebug() << "created" << pData;
-
-
     mTime = std::chrono::steady_clock::now();
     mWidth = 0;
     mHeight = 0;
@@ -16,8 +13,6 @@ CamFrame::CamFrame(uint32_t length) {
 
 CamFrame::CamFrame(const CamFrame &frame) {
     pData = new uint8_t[frame.mLength];
-
-    qDebug() << "created" << pData;
 
     std::memcpy(pData, frame.pData, frame.mLength);
 
@@ -30,7 +25,6 @@ CamFrame::CamFrame(const CamFrame &frame) {
 }
 
 CamFrame::~CamFrame() {
-    qDebug() << "deleted" << pData;
     delete[] pData;
 }
 
