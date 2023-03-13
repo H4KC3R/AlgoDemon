@@ -14,13 +14,13 @@ namespace ImageProcess {
 
 int getOpenCvType(BitMode bpp, int channels);
 
-cv::Mat whiteBalanceImg(const cv::Mat& src);
+bool whiteBalanceImg(cv::Mat& src, cv::Mat& dst);
 
-cv::Mat debayerImg(const cv::Mat& src);
+bool debayerImg(cv::Mat& src, cv::Mat& dst);
 
-cv::Mat contrastImg(const cv::Mat& src, double coeff);
+bool contrastImg(cv::Mat& src, cv::Mat& dst, double coeff);
 
-cv::Mat gammaContrastImg(const cv::Mat& src, double kGamma);
+bool gammaContrastImg(cv::Mat& src, cv::Mat& dst, double kGamma);
 
 }
 

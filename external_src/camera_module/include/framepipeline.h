@@ -26,12 +26,16 @@ public:
 
     uint32_t getFrameCount() const;
 
+    void activatePipelineRead(bool activateFlag);
+
 private:
     size_t mSize;
     uint32_t frameCount;
     std::list<CamFrame> mList;
     std::shared_mutex mMutex;
 
+    std::mutex activateFlagMutex;
+    volatile bool pipelineActive;
 };
 
 #endif // FRAMEPIPELINE_H

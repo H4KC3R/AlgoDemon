@@ -9,7 +9,10 @@ AutoExposureHandler::AutoExposureHandler(double maxExposure, double minExposure,
 }
 
 
-bool AutoExposureHandler::correct(cv::Mat image, double currExposure, double currGain) {
+bool AutoExposureHandler::correct(cv::Mat& image, double currExposure, double currGain) {
+    if(image.type() != CV_8UC1)
+        return false;
+
     int bins = 256;
     int histSize[] = {bins};
     // Set ranges for histogram bins

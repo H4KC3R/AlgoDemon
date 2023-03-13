@@ -38,7 +38,7 @@ public:
     AutoExposureHandler(double maxExposure, double minExposure, double maxGain,
                         double minGain, AutoExposureParams params);
 
-    bool correct(cv::Mat image, double currExposure, double currGain);
+    bool correct(cv::Mat& image, double currExposure, double currGain);
 
     // ************************** Getters ************************** //
     double getMaxExposure()             { return mMaxExposure; }

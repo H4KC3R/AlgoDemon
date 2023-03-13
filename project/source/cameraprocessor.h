@@ -15,31 +15,29 @@ class CameraProcessor : public QObject
 public:
     CameraProcessor();
     ~CameraProcessor();
-    ImagePipeline *imagePipeline;
+    FramePipeline* framePipeline;
 
     CameraThread *cameraThread;
     ProcessingThread* processingThread;
     FocusingThread* focusingThread;
 
-    bool connectToCamera(char* id);
+    bool connectToCamera(char* id, StreamMode mode);
     void disconnectCamera();
 
-    void startCaptureThread();
-    void stopCaptureThread();
+    void runProcess();
 
+    void stopCameraThread();
     void stopProcessingThread();
-    void stopFocusingThread();
 
     void startFocusingThread();
     void stopFocusingThread();
 
-    void deleteCaptureThread();
+    void deleteCameraThread();
     void deleteProcessingThread();
     void deleteFocusingThread();
 
-private:
-
-signals:
+    void clearFramePipeline();
+    void deleteFramePipeline();
 
 };
 

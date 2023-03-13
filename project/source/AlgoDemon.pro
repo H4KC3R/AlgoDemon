@@ -16,6 +16,7 @@ SOURCES += \
     focusingthread.cpp \
     main.cpp \
     mainwindow.cpp \
+    mattoqimage.cpp \
     processingthread.cpp
 
 HEADERS += \
@@ -23,6 +24,7 @@ HEADERS += \
     camerathread.h \
     focusingthread.h \
     mainwindow.h \
+    mattoqimage.h \
     processingthread.h \
     structures.h
 

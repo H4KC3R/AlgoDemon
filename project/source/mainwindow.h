@@ -5,10 +5,7 @@
 #include <QMap>
 
 #include "cameraqhyccd.h"
-#include "imageprocess.h"
-#include "framepipeline.h"
-
-#include "objectivecontroller.h"
+#include "cameraprocessor.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -27,22 +24,27 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-signals:
-    void imageReady(cv::Mat img);
-    void captureFinished();
-    void focusGetted(double val);
+    void uiSignalSlotsInit();
+    void proccessorSignalSlotsInit();
+    void initializeCameraControls();
 
-private  slots:
-    void on_imageReady(cv::Mat img);
-    void on_captureFinished();
-    void on_focusGetted(double val);
+signals:
+    void newImageProcessingFlags(ImageProcessingFlags imageProcessingFlags);
+    void autoExposureEnabled(double gain, double exposure);
+
+    void EGChanged(double gain, double exposure);
+    void depthChanged(BitMode bit);
+    void roiChanged(RoiBox roi);
+
+private slots:
+    void updateFrame(const QImage &frame);
+    void updateEG(double gain, double exposure);
+    void showError(QString errorMsg);
 
 private:
     Ui::MainWindow *ui;
 
     // ****************************** Camera ****************************** //
-
-    void initializePipeline();
 
     void showImage(cv::Mat& image);
 
@@ -99,14 +101,9 @@ private:
     void on_objectiveGetFocusButton_clicked();
 
 private:
-    ImagePipeline* mPipeline;
-
     QMap<QString, QString> cameraIdModel;
+    CameraProcessor processor;
 
-    CameraQHYCCD* mCamera;
     ObjectiveController* mObjective;
-
-    bool processNewImage = false;
-    bool isConnected = false;
 };
 #endif // MAINWINDOW_H

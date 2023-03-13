@@ -98,8 +98,11 @@
            </property>
            <item>
             <widget class="QToolBox" name="cameraControlToolBox">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
              <property name="currentIndex">
-              <number>0</number>
+              <number>1</number>
              </property>
              <widget class="QWidget" name="cameraToolBoxPage">
               <property name="geometry">
@@ -791,7 +794,7 @@
                   <item>
                    <widget class="QFrame" name="focusControlFrame">
                     <property name="enabled">
-                     <bool>false</bool>
+                     <bool>true</bool>
                     </property>
                     <property name="frameShape">
                      <enum>QFrame::StyledPanel</enum>
@@ -814,6 +817,9 @@
                      </property>
                      <item>
                       <widget class="QCheckBox" name="cameraEnableFocusCheckBox">
+                       <property name="enabled">
+                        <bool>false</bool>
+                       </property>
                        <property name="text">
                         <string>Задать область фокусировки</string>
                        </property>
@@ -874,7 +880,7 @@
                   <item>
                    <widget class="QFrame" name="contrastsFrame">
                     <property name="enabled">
-                     <bool>false</bool>
+                     <bool>true</bool>
                     </property>
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -935,7 +941,11 @@
                          <number>0</number>
                         </property>
                         <item row="2" column="1">
-                         <widget class="QSpinBox" name="contrastAlphaSpinBox"/>
+                         <widget class="QSpinBox" name="contrastAlphaSpinBox">
+                          <property name="enabled">
+                           <bool>false</bool>
+                          </property>
+                         </widget>
                         </item>
                         <item row="2" column="0">
                          <widget class="QLabel" name="contrastAlphaLabel">
@@ -956,6 +966,9 @@
                      </item>
                      <item>
                       <widget class="QSlider" name="contrastHSlider">
+                       <property name="enabled">
+                        <bool>false</bool>
+                       </property>
                        <property name="orientation">
                         <enum>Qt::Horizontal</enum>
                        </property>
@@ -963,6 +976,9 @@
                      </item>
                      <item>
                       <widget class="QFrame" name="gammaContrastFrame">
+                       <property name="enabled">
+                        <bool>true</bool>
+                       </property>
                        <property name="sizePolicy">
                         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                          <horstretch>0</horstretch>
@@ -989,7 +1005,11 @@
                          <number>0</number>
                         </property>
                         <item row="1" column="3">
-                         <widget class="QSpinBox" name="gammaCoeffSpinBox"/>
+                         <widget class="QSpinBox" name="gammaCoeffSpinBox">
+                          <property name="enabled">
+                           <bool>false</bool>
+                          </property>
+                         </widget>
                         </item>
                         <item row="1" column="1">
                          <widget class="QLabel" name="gammaCoeffLabel">
@@ -1010,6 +1030,9 @@
                      </item>
                      <item>
                       <widget class="QSlider" name="gammaContrastHSlider">
+                       <property name="enabled">
+                        <bool>false</bool>
+                       </property>
                        <property name="orientation">
                         <enum>Qt::Horizontal</enum>
                        </property>
@@ -1021,7 +1044,7 @@
                   <item>
                    <widget class="QFrame" name="autoExposureFrame">
                     <property name="enabled">
-                     <bool>false</bool>
+                     <bool>true</bool>
                     </property>
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -1064,6 +1087,9 @@
                      </item>
                      <item row="0" column="0">
                       <widget class="QCheckBox" name="autoExposureCheckBox">
+                       <property name="enabled">
+                        <bool>false</bool>
+                       </property>
                        <property name="text">
                         <string>Автоэкспозиция</string>
                        </property>

@@ -7,39 +7,31 @@ int ImageProcess::getOpenCvType(BitMode bpp, int channels) {
         return CV_MAKE_TYPE(CV_16U, channels);
 }
 
-cv::Mat ImageProcess::whiteBalanceImg(const cv::Mat& src) {
-    cv::Mat result;
+bool ImageProcess::whiteBalanceImg(cv::Mat& src, cv::Mat& dst) {
     cv::Ptr<cv::xphoto::WhiteBalancer> wb = cv::xphoto::createSimpleWB();
-    wb->balanceWhite(src, result);
-    return result;
+    wb->balanceWhite(src, dst);
+    return true;
 }
 
-cv::Mat ImageProcess::debayerImg(const cv::Mat& src) {
-    cv::Mat result;
-    result = src;
-    cv::cvtColor(src, result, cv::COLOR_BayerRG2BGR);
-    return result;
+bool ImageProcess::debayerImg(cv::Mat& src, cv::Mat& dst) {
+    cv::cvtColor(src, dst, cv::COLOR_BayerRG2BGR);
+    return true;
 }
 
-cv::Mat ImageProcess::contrastImg(const cv::Mat& src, double coeff) {
+bool ImageProcess::contrastImg(cv::Mat& src, cv::Mat& dst, double coeff) {
     if(coeff < 0)
-        throw std::logic_error("The contrast coefficient should not be negative!");
-    cv::Mat result;
-    result = src;
-    src.convertTo(result, -1, coeff);
-    return result;
+        return false;
+    src.convertTo(dst, -1, coeff);
+    return true;
 }
 
-cv::Mat ImageProcess::gammaContrastImg(const cv::Mat& src, double kGamma) {
-    cv::Mat result;
-    result = src;
-
+bool ImageProcess::gammaContrastImg(cv::Mat& src, cv::Mat& dst, double kGamma) {
     cv::Mat lookUpTable(1, 256, CV_8U);
     uchar* p = lookUpTable.ptr();
 
     for(int i = 0; i < 256; ++i)
         p[i] = cv::saturate_cast<uchar>(pow(i / 255.0, kGamma) * 255.0);
 
-    cv::LUT(src, lookUpTable, result);
+    cv::LUT(src, lookUpTable, dst);
     return result;
 }
