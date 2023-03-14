@@ -25,6 +25,7 @@ public:
     ~MainWindow();
 
     void uiSignalSlotsInit();
+    void setInitialGUIState();
     void proccessorSignalSlotsInit();
     void initializeCameraControls();
 
@@ -37,6 +38,8 @@ signals:
     void roiChanged(RoiBox roi);
 
 private slots:
+    void onProcessFinished();
+
     void updateFrame(const QImage &frame);
     void updateEG(double gain, double exposure);
     void showError(QString errorMsg);

@@ -20,17 +20,14 @@ public:
     void stopLiveCaptureThread();
     bool isCameraConnected();
 
-    bool getIsMono() const;
-    bool getIsLive() const;
+    CamParameters getParams() const;
 
 private:
     bool isConnected = false;
-    bool isMono;
-    bool isLive;
 
     CameraQHYCCD* pCamera;
     FramePipeline* pFramePipeline;
-    CamFrame* frame;
+    CamFrame frame;
     QMutex stoppedMutex;
     QMutex updateControlsMutex;
     volatile bool stopped;

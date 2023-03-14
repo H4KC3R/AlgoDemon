@@ -11,6 +11,6 @@
 #include <opencv2/xphoto/white_balance.hpp>
 #include <opencv2/imgproc.hpp>
 
-QImage MatToQImage(const Mat&);
+QImage MatToQImage(const cv::Mat&);
 
 #endif // MATTOQIMAGE_H

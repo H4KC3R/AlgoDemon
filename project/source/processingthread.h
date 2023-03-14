@@ -4,9 +4,10 @@
 #include <QObject>
 #include <QMutex>
 #include <QThread>
+#include <QtGui>
+
 #include "structures.h"
 #include "framepipeline.h"
-#include "imageprocess.h"
 #include "autoexposurehandler.h"
 
 class ProcessingThread : public QThread
@@ -23,7 +24,7 @@ public:
 
 private:
     FramePipeline* pFramePipeline;
-    QImage frame;
+    QImage qFrame;
 
     QMutex stoppedMutex;
     QMutex updateMembersMutex;

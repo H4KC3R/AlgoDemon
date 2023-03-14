@@ -24,7 +24,8 @@ public:
     bool connectToCamera(char* id, StreamMode mode);
     void disconnectCamera();
 
-    void runProcess();
+    bool runProcess();
+    void stopProcess();
 
     void stopCameraThread();
     void stopProcessingThread();
@@ -38,6 +39,9 @@ public:
 
     void clearFramePipeline();
     void deleteFramePipeline();
+
+signals:
+    void processFinished();
 
 };
 

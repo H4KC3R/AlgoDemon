@@ -9,8 +9,8 @@ CameraProcessor::~CameraProcessor() {
 }
 
 bool CameraProcessor::connectToCamera(char *id, StreamMode mode) {
-    framePipeline = new FramePipeline(imageBufferSize,dropFrame);
-    cameraThread = new CameraThread(imageBuffer);
+    framePipeline = new FramePipeline();
+    cameraThread = new CameraThread(framePipeline);
 
     // Подключаемся к камере
     if(cameraThread->connectToCamera(id, mode)) {
@@ -20,15 +20,22 @@ bool CameraProcessor::connectToCamera(char *id, StreamMode mode) {
         cameraThread->getControlSettings(gain, minGain, maxGain, step, val);
         cameraThread->getControlSettings(exposure, minExposure, maxExposure, step, val);
 
-        AutoExposureParams params{};
-        processingThread = new ProcessingThread(imageBuffer, cameraThread->getIsMono(),
+        AutoExposureParams autoExposureParameters;
+        autoExposureParameters.maxPercent = 50;
+        autoExposureParameters.mean = 100;
+        autoExposureParameters.maxRelCoeff = 50;
+        autoExposureParameters.minRelCoef = 100;
+
+        CamParameters camParameters = cameraThread->getParams();
+
+        processingThread = new ProcessingThread(framePipeline, camParameters.mIsMono,
                                                 maxExposure, minExposure,
-                                                maxGain, minGain, params);
+                                                maxGain, minGain, autoExposureParameters);
         return true;
     }
     else {
-        deleteCaptureThread();
-        deleteImageBuffer();
+        deleteCameraThread();
+        deleteFramePipeline();
         return false;
     }
 }
@@ -40,28 +47,37 @@ void CameraProcessor::disconnectCamera() {
         stopCameraThread();
 
     clearFramePipeline();
-    captureThread->disconnectCamera();
+    cameraThread->disconnectCamera();
 
     deleteCameraThread();
     deleteProcessingThread();
     deleteFramePipeline();
 }
 
-void CameraProcessor::runProcess() {
+bool CameraProcessor::runProcess() {
     if(processingThread->isRunning() || cameraThread->isRunning())
-        return;
+        return false;
 
     framePipeline->clearBuffer();
 
     framePipeline->activatePipelineRead(true);
     cameraThread->start();
     processingThread->start();
+    return true;
+}
+
+void CameraProcessor::stopProcess() {
+    if(processingThread->isRunning() || cameraThread->isRunning()) {
+        stopProcessingThread();
+        stopCameraThread();
+        emit processFinished();
+    }
 }
 
 void CameraProcessor::stopCameraThread() {
-    captureThread->stopCaptureThread();
+    cameraThread->stopLiveCaptureThread();
     framePipeline->activatePipelineRead(false);
-    captureThread->wait();
+    cameraThread->wait();
 }
 
 void CameraProcessor::stopProcessingThread() {

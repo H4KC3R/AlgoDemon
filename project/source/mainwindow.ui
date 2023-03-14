@@ -7,11 +7,11 @@
     <x>0</x>
     <y>0</y>
     <width>986</width>
-    <height>720</height>
+    <height>726</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Algorithm DEMON</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <property name="font">
@@ -108,7 +108,7 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>-108</y>
+                <y>0</y>
                 <width>285</width>
                 <height>694</height>
                </rect>
@@ -748,7 +748,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>299</width>
-                <height>586</height>
+                <height>592</height>
                </rect>
               </property>
               <attribute name="label">

@@ -9,12 +9,13 @@
 class CamFrame
 {
 public:
-    CamFrame(uint32_t length);
+    CamFrame();
     CamFrame(const CamFrame& frame);
+    void allocateFrame(uint32_t length);
     ~CamFrame();
 
 public:
-   uint8_t* pData;
+   uint8_t* pData = nullptr;
    std::chrono::time_point<std::chrono::steady_clock> mTime;
 
    uint32_t mWidth = 0;

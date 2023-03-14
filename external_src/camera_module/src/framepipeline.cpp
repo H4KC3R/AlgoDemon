@@ -25,7 +25,9 @@ int FramePipeline::getPipelineSize() {
 
 const std::list <CamFrame>::iterator FramePipeline::getFirstFrame() {
     std::list <CamFrame>::iterator it = mList.begin();
-    while(it == mList.end() && pipelineActive) {
+    while(it == mList.end()) {
+        if(!pipelineActive)
+            break;
         std::shared_lock lock(mMutex);
         if(mList.size() != 0) {
             it = mList.begin();
@@ -36,8 +38,9 @@ const std::list <CamFrame>::iterator FramePipeline::getFirstFrame() {
 
 const std::list <CamFrame>::iterator FramePipeline::nextFrame(const std::list <CamFrame>::iterator& it) {
     std::list <CamFrame>::iterator next = std::next(it, 1);
-    while (next == mList.end() && pipelineActive)
-    {
+    while (next == mList.end()) {
+        if(!pipelineActive)
+            break;
         std::shared_lock lock(mMutex);
         next = std::next(it, 1);
     }
@@ -57,7 +60,6 @@ uint32_t FramePipeline::getFrameCount() const {
 }
 
 void FramePipeline::activatePipelineRead(bool activateFlag) {
-    std::lock_guard<std::mutex> lock(activateFlagMutex);
     pipelineActive = activateFlag;
 }
 

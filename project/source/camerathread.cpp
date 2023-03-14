@@ -7,7 +7,7 @@ CameraThread::CameraThread(FramePipeline *pipeline) : QThread(),
 }
 
 void CameraThread::run() {
-    if(myCamera->startLiveCapture()) {
+    if(pCamera->startLiveCapture()) {
         bool frameReady = false;
         while(1) {
             ////////////////  Остановка потока  /////////////////
@@ -40,12 +40,15 @@ void CameraThread::run() {
                                       roiToSet.sizeX, roiToSet.sizeY);
             }
 
-            updateMembersMutex.unlock();
+            updateControlsMutex.unlock();
             /////////////////////////////////////////////////////////////
 
+            qDebug() << "Acquiring";
             while(frameReady == false)
-                frameReady = pCamera->getImage(frame->w, frame->h, frame->bpp,
-                                               frame->channels, frame->data);
+                frameReady = pCamera->getImage(frame.mWidth, frame.mHeight, frame.mBpp,
+                                                       frame.mChannels, frame.pData);
+
+            qDebug() << "Finished";
             pFramePipeline->setFrame(frame);
             frameReady = false;
         }
@@ -62,15 +65,12 @@ bool CameraThread::connectToCamera(char *id, StreamMode mode) {
 
     if(pCamera->connect(mode)) {
         isConnected = true;
-        CamParameters params = myCamera->getCameraParameters();
+        CamParameters params = pCamera->getCameraParameters();
         uint32_t length = params.mMaximgh * params.mMaximgw * 2;
-        frame = new CamFrame(length);
+        frame.allocateFrame(length);
 
         if(!params.mIsLiveMode)
             pCamera->setImageBitMode(bit16);
-
-        isLive = params.mIsLiveMode;
-        isMono = params.mIsMono;
         return true;
     }
 
@@ -83,29 +83,27 @@ void CameraThread::disconnectCamera() {
         pCamera->disconnect();
         delete pCamera;
         pCamera = nullptr;
-
-        delete frame;
-        frame = nullptr;
     }
 }
 
 bool CameraThread::getControlSettings(CameraControls control, double& min, double& max, double& step, double& currentVal) {
-    switch(control){
-    case transferbit:
-        if(!isLive)
+    CamParameters params = pCamera->getCameraParameters();
+    if (control == transferbit) {
+        if(!params.mIsLiveMode)
             pCamera->setImageBitMode(bit16);
         currentVal = pCamera->getImageBitMode();
         bitToSet = (BitMode)currentVal;
-        break;
-    case gain:
+    }
+    else if (control == gain){
         currentVal = pCamera->getGain();
         gainToSet = currentVal;
-        break;
-    case exposure:
+    }
+    else if(exposure) {
         currentVal = pCamera->getExposure();
         exposureToSet = currentVal;
-        break;
     }
+    else
+        return false;
 
     bool result = pCamera->getControlMinMaxStep(control, min, max, step);
     return result;
@@ -133,8 +131,8 @@ void CameraThread::startSingleCapture() {
     /////////////////////////////////////////////////////////////
 
     if(pCamera->startSingleCapture()) {
-        pCamera->getImage(frame->w, frame->h, frame->bpp,
-                           frame->channels, frame->data);
+        pCamera->getImage(frame.mWidth, frame.mHeight, frame.mBpp,
+                           frame.mChannels, frame.pData);
         pFramePipeline->setFrame(frame);
     }
 }
@@ -149,12 +147,9 @@ bool CameraThread::isCameraConnected() {
     return isConnected;
 }
 
-bool CameraThread::getIsMono() const {
-    return isMono;
-}
+CamParameters CameraThread::getParams() const {
+    return pCamera->getCameraParameters();
 
-bool CameraThread::getIsLive() const {
-    return isLive;
 }
 
 void CameraThread::onEGChanged(double gain, double exposure) {

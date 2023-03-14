@@ -1,3 +1,4 @@
+#include "imageprocess.h"
 #include "processingthread.h"
 #include "mattoqimage.h"
 
@@ -6,6 +7,7 @@ ProcessingThread::ProcessingThread(FramePipeline *pipeline, bool isMonoFlag,
                                    double minGain, AutoExposureParams params) : QThread(),
     pFramePipeline(pipeline), isMono(isMonoFlag)
 {
+    stopped = false;
     autoExposureHandler = new AutoExposureHandler(maxExposure, minExposure, maxGain, minGain, params);
 }
 
@@ -26,6 +28,7 @@ void ProcessingThread::run() {
         stoppedMutex.lock();
         if (stopped) {
             stopped=false;
+            qDebug() << "stopped";
             stoppedMutex.unlock();
             break;
         }
@@ -33,14 +36,14 @@ void ProcessingThread::run() {
         /////////////////////////////////////////////////////////////
 
         updateMembersMutex.lock();
-        int type = ImageProcess::getOpenCvType((BitMode)frame->bpp, frame->channels);
-        cvFrame = cv::Mat(frame->h, frame->w, type, frame->data);
+        int type = ImageProcess::getOpenCvType((BitMode)frame->mBpp, frame->mChannels);
+        cvFrame = cv::Mat(frame->mHeight, frame->mWidth, type, frame->pData);
 
         ////////////////////////////////////
         // Обработка изображения //
         ////////////////////////////////////
-        if(!isMono && debayerOn)
-            ImageProcess::debayerImg(cvFrame, cvFrame);
+        qDebug() << "Debayer";
+        ImageProcess::debayerImg(cvFrame, cvFrame);
 
         if(!isMono && whiteBalanceOn)
             ImageProcess::whiteBalanceImg(cvFrame, cvFrame);
@@ -69,7 +72,8 @@ void ProcessingThread::run() {
         // Конец //
         ////////////////////////////////////
 
-        auto qFrame = MatToQImage(matFrame);
+        qDebug() << "processing";
+        qFrame = MatToQImage(cvFrame);
         updateMembersMutex.unlock();
 
         emit newFrame(qFrame);
@@ -77,7 +81,7 @@ void ProcessingThread::run() {
     }
 }
 
-void ProcessingThread::updateImageProcessingFlags(ImageProcessingFlags imageProcessingFlags) {
+void ProcessingThread::updateImageProcessingSettings(ImageProcessingFlags imageProcessingFlags) {
     QMutexLocker locker(&updateMembersMutex);
     this->debayerOn = imageProcessingFlags.debayerOn;
     this->whiteBalanceOn = imageProcessingFlags.whiteBalanceOn;

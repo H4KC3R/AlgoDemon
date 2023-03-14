@@ -33,5 +33,5 @@ bool ImageProcess::gammaContrastImg(cv::Mat& src, cv::Mat& dst, double kGamma) {
         p[i] = cv::saturate_cast<uchar>(pow(i / 255.0, kGamma) * 255.0);
 
     cv::LUT(src, lookUpTable, dst);
-    return result;
+    return true;
 }

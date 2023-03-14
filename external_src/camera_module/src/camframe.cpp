@@ -1,17 +1,18 @@
 #include "camframe.h"
 
-CamFrame::CamFrame(uint32_t length) {
-    pData = new uint8_t[length];
-
+CamFrame::CamFrame() {
     mTime = std::chrono::steady_clock::now();
     mWidth = 0;
     mHeight = 0;
     mBpp = 0;
     mChannels = 0;
-    mLength = length;
+    mLength = 0;
 }
 
 CamFrame::CamFrame(const CamFrame &frame) {
+    if(pData != nullptr)
+        delete[] pData;
+
     pData = new uint8_t[frame.mLength];
 
     std::memcpy(pData, frame.pData, frame.mLength);
@@ -24,8 +25,17 @@ CamFrame::CamFrame(const CamFrame &frame) {
     mLength = frame.mLength;;
 }
 
+void CamFrame::allocateFrame(uint32_t length) {
+    if(pData != nullptr)
+        delete[] pData;
+
+    pData = new uint8_t[length];
+    mLength = length;;
+}
+
 CamFrame::~CamFrame() {
-    delete[] pData;
+    if(pData != nullptr)
+        delete[] pData;
 }
 
 
