@@ -80,9 +80,11 @@ void MainWindow::setInitialGUIState() {
     ui->debayerCheckBox->setEnabled(false);
     ui->whiteBalanceCheckBox->setEnabled(false);
 
+    ui->contrastEnableCheckBox->setEnabled(false);
     ui->contrastAlphaSpinBox->setEnabled(false);
     ui->contrastHSlider->setEnabled(false);
 
+    ui->gammaContrastEnableCheckBox->setEnabled(false);
     ui->gammaCoeffSpinBox->setEnabled(false);
     ui->gammaContrastHSlider->setEnabled(false);
 

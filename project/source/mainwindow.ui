@@ -961,6 +961,13 @@
                           </property>
                          </widget>
                         </item>
+                        <item row="1" column="1">
+                         <widget class="QCheckBox" name="contrastEnableCheckBox">
+                          <property name="text">
+                           <string/>
+                          </property>
+                         </widget>
+                        </item>
                        </layout>
                       </widget>
                      </item>
@@ -1022,6 +1029,13 @@
                          <widget class="QLabel" name="gammaContrastLabel">
                           <property name="text">
                            <string>Гамма контраст</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="0" column="3">
+                         <widget class="QCheckBox" name="gammaContrastEnableCheckBox">
+                          <property name="text">
+                           <string/>
                           </property>
                          </widget>
                         </item>
