@@ -13,18 +13,18 @@ QT += serialport
 SOURCES += \
     cameraprocessor.cpp \
     camerathread.cpp \
-    focusingthread.cpp \
     main.cpp \
     mainwindow.cpp \
     mattoqimage.cpp \
+    objectivethread.cpp \
     processingthread.cpp
 
 HEADERS += \
     cameraprocessor.h \
     camerathread.h \
-    focusingthread.h \
     mainwindow.h \
     mattoqimage.h \
+    objectivethread.h \
     processingthread.h \
     structures.h
 

@@ -3,8 +3,7 @@
 #include <QLabel>
 #include <QMessageBox>
 #include <QGraphicsView>
-#include <QtConcurrent/QtConcurrent>
-#include "QtConcurrent/qtconcurrentrun.h"
+
 
 #include <QSerialPortInfo>
 #include <QSerialPort>

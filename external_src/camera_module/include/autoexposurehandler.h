@@ -8,6 +8,11 @@
 #include <opencv2/imgproc.hpp>
 
 struct AutoExposureParams{
+    double maxExposure;
+    double minExposure;
+    double maxGain;
+    double minGain;
+
     double maxPercent = 0;
     double minRelCoef;
     double maxRelCoeff;
@@ -17,11 +22,6 @@ struct AutoExposureParams{
 class AutoExposureHandler
 {
 private:
-    double mMaxExposure = 0;
-    double mMinExposure = 0;
-    double mMaxGain = 0;
-    double mMinGain = 0;
-
     int mProcessCounter = 0;
     int mMaxFrameCoeff = 20;
     int mDivideCoeff = 2;
@@ -35,16 +35,15 @@ private:
 
 public:
 
-    AutoExposureHandler(double maxExposure, double minExposure, double maxGain,
-                        double minGain, AutoExposureParams params);
+    AutoExposureHandler(AutoExposureParams params);
 
     bool correct(cv::Mat& image, double currExposure, double currGain);
 
     // ************************** Getters ************************** //
-    double getMaxExposure()             { return mMaxExposure; }
-    double getMinExposure()             { return mMinExposure; }
-    double getMaxGain()                 { return mMaxGain; }
-    double getMinGain()                 { return mMinGain; }
+    double getMaxExposure()             { return mParams.maxExposure; }
+    double getMinExposure()             { return mParams.minExposure; }
+    double getMaxGain()                 { return mParams.maxGain; }
+    double getMinGain()                 { return mParams.minGain; }
 
     int getMaxFrameCoeff()              { return mMaxFrameCoeff; }
     int getDivideCoeff()                { return mDivideCoeff; }
@@ -57,10 +56,10 @@ public:
     AutoExposureParams getParams()      { return mParams; }
 
     // ************************** Setters ************************** //
-    void setMaxExposure(double maxExposure)                 { mMaxExposure = maxExposure; }
-    void setMinExposure(double minExposure)                 { mMinExposure = minExposure; }
-    void setMaxGain(double maxGain)                         { mMaxGain = maxGain; }
-    void setMinGain(double minGain)                         { mMinGain = minGain; }
+    void setMaxExposure(double maxExposure)                 { mParams.maxExposure = maxExposure; }
+    void setMinExposure(double minExposure)                 { mParams.minExposure = minExposure; }
+    void setMaxGain(double maxGain)                         { mParams.maxGain = maxGain; }
+    void setMinGain(double minGain)                         { mParams.minGain = minGain; }
 
     void setMaxFrameCoeff(int maxFrameCoeff)                { mMaxFrameCoeff = maxFrameCoeff; }
     void setDivideCoeff(int divideCoeff)                    { mDivideCoeff = divideCoeff; }

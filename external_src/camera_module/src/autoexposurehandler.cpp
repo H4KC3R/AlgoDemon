@@ -1,9 +1,7 @@
 #include "autoexposurehandler.h"
 
 
-AutoExposureHandler::AutoExposureHandler(double maxExposure, double minExposure, double maxGain,
-                    double minGain, AutoExposureParams params) : mMaxExposure(maxExposure),
-    mMinExposure(minExposure), mMaxGain(maxGain), mMinGain(minGain), mParams(params)
+AutoExposureHandler::AutoExposureHandler(AutoExposureParams params) : mParams(params)
 {
 
 }
@@ -53,16 +51,16 @@ bool AutoExposureHandler::correct(cv::Mat& image, double currExposure, double cu
 
         mExposureToSet = currExposure + exposureStep / mDivideCoeff;
 
-        if(mExposureToSet > mMinExposure && currGain <= mMaxGain)
+        if(mExposureToSet > mParams.minExposure && currGain <= mParams.maxGain)
             mGainToSet = currGain + gainStep;
-        else if(mExposureToSet < mMinExposure)
-            mGainToSet = mMinGain;
+        else if(mExposureToSet < mParams.minExposure)
+            mGainToSet = mParams.minGain;
 
-        if(mExposureToSet > mMaxExposure)
-            mExposureToSet = mMaxExposure;
+        if(mExposureToSet > mParams.maxExposure)
+            mExposureToSet = mParams.maxExposure;
 
-        if(mGainToSet > mMaxGain)
-            mGainToSet = mMaxGain;
+        if(mGainToSet > mParams.maxGain)
+            mGainToSet = mParams.maxGain;
 
         return true;
       }

@@ -35,7 +35,7 @@ bool ObjectiveController::disconnectController() {
     return false;
 }
 
-void ObjectiveController::setDiaphragmLevel(const int value) {
+void ObjectiveController::setDiaphragmLevel(const double value) {
     mError.clear();
     int index;
     auto itr = std::find(mAppertures.begin(), mAppertures.end(), value);
@@ -100,6 +100,10 @@ std::vector<double> ObjectiveController::getAppertures() {
 void ObjectiveController::setAppertures(std::vector<double> appertures) {
     if(!appertures.empty())
         mAppertures = appertures;
+}
+
+bool ObjectiveController::isContollerActive() {
+    return testControllerActive();
 }
 
 bool ObjectiveController::testControllerActive() {

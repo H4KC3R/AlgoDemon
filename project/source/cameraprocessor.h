@@ -7,7 +7,6 @@
 
 #include "camerathread.h"
 #include "processingthread.h"
-#include "focusingthread.h"
 
 class CameraProcessor : public QObject
 {
