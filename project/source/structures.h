@@ -4,7 +4,6 @@
 struct ImageProcessingFlags{
     bool debayerOn;
     bool whiteBalanceOn;
-    bool autoExposureOn;
 
     bool contrastOn;
     double contrastParam;

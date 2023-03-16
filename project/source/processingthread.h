@@ -8,16 +8,18 @@
 
 #include "structures.h"
 #include "framepipeline.h"
-#include "autoexposurehandler.h"
+
+#include <opencv2/core.hpp>
+#include <opencv2/imgcodecs.hpp>
+#include <opencv2/highgui.hpp>
+#include <opencv2/xphoto/white_balance.hpp>
+#include <opencv2/imgproc.hpp>
 
 class ProcessingThread : public QThread
 {
     Q_OBJECT
 public:
-    ProcessingThread(FramePipeline* pipeline, bool isMonoFlag,
-                     double maxExposure, double minExposure, double maxGain,
-                     double minGain, AutoExposureParams params);
-    AutoExposureHandler* autoExposureHandler;
+    ProcessingThread(FramePipeline* pipeline, bool isMonoFlag);
 
     ~ProcessingThread();
     void stopProcessingThread();
@@ -42,7 +44,6 @@ private:
     bool whiteBalanceOn;
     bool contrastOn;
     bool gammaContrastOn;
-    bool autoExposureOn;
 
     double contrastParam;
     double gammaContrastParam;
@@ -54,12 +55,9 @@ protected:
 
 private slots:
     void updateImageProcessingSettings(ImageProcessingFlags imageProcessingFlags);
-    void onAutoExposureEnabled(double gain, double exposure);
 
 signals:
     void newFrame(const QImage &frame);
-    void newEGValues(double gain, double exposure);
-    void error(QString errorMessage);
 };
 
 #endif // PROCESSINGTHREAD_H

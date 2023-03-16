@@ -11,7 +11,7 @@ QT += serialport
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    cameraprocessor.cpp \
+    appprocessor.cpp \
     camerathread.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -20,7 +20,7 @@ SOURCES += \
     processingthread.cpp
 
 HEADERS += \
-    cameraprocessor.h \
+    appprocessor.h \
     camerathread.h \
     mainwindow.h \
     mattoqimage.h \

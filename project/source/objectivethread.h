@@ -5,31 +5,38 @@
 #include <QMutex>
 #include <QThread>
 #include <QtGui>
+#include <QVector>
 
 #include "framepipeline.h"
 #include "objectivecontroller.h"
 #include "autoexposurehandler.h"
-#include "imageblurmetric.h"
 
 class ObjectiveThread : public QThread
 {
     Q_OBJECT
 
 public:
-    ObjectiveThread(FramePipeline* frame, AutoExposureParams params);
+    ObjectiveThread(FramePipeline* frame, bool isMonoFlag, double maxExposure, double minExposure,
+                    double maxGain, double minGain,AutoExposureParams params);
     ~ObjectiveThread();
     AutoExposureHandler* autoExposureHandler;
 
 public:
     double findZero();
 
-    bool connectObjective(char* serialPort);
+    bool connectObjective(const char* serialPort);
     bool disconnectObjective();
     string setDiaphragmLevel(double value);
     string setFocusing(int value);
     string getCurrentFocusing(double& value);
 
-    void stopFocusingThread();
+    std::vector<double> getAppertureList();
+    void setAppertureList(std::vector<double> appertures);
+
+    void stopObjectiveThread();
+
+    bool getIsMono() const;
+    void setIsMono(bool newIsMono);
 
 private:
     volatile bool stopped;
@@ -47,19 +54,25 @@ private:
     double mCurrentExposure;
     double mCurrentGain;
 
+    cv::Rect myRoi;
+    double currentFocusingPosition;
+
     ////////////////  Флаги /////////////////
+    bool isMono;
     bool mAutoExposureOn;
     bool mFocusingOn;
     ////////////////////////////////////////
 
 private slots:
     void onAutoExposureEnabled(double status, double gain, double exposure);
-    void focusingEnabled(bool status);
+    void onAutoExposureSettingChanged(AutoExposureParams params);
+    void focusingEnabled(bool status, cv::Rect roi);
 
 signals:
     void newFocusingResult(const QImage& frame,double position);
     void newEGValues(double gain, double exposure);
-    void error(QString error);
+    void objectiveError(QString msg);
+    void imageProcessingError(QString msg);
 
     // QThread interface
 protected:

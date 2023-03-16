@@ -1,18 +1,22 @@
-#include "imageprocess.h"
 #include "processingthread.h"
-#include "mattoqimage.h"
 
-ProcessingThread::ProcessingThread(FramePipeline *pipeline, bool isMonoFlag,
-                                   double maxExposure, double minExposure, double maxGain,
-                                   double minGain, AutoExposureParams params) : QThread(),
+#include "mattoqimage.h"
+#include "imageprocess.h"
+
+ProcessingThread::ProcessingThread(FramePipeline *pipeline, bool isMonoFlag) : QThread(),
     pFramePipeline(pipeline), isMono(isMonoFlag)
 {
+    debayerOn = false;
+    whiteBalanceOn = false;
+    contrastOn = false;
+    gammaContrastOn = false;
+
+    contrastParam = 1;
+    gammaContrastParam = 1;
     stopped = false;
-    autoExposureHandler = new AutoExposureHandler(maxExposure, minExposure, maxGain, minGain, params);
 }
 
 ProcessingThread::~ProcessingThread() {
-    delete autoExposureHandler;
 }
 
 void ProcessingThread::stopProcessingThread() {
@@ -43,7 +47,8 @@ void ProcessingThread::run() {
         // Обработка изображения //
         ////////////////////////////////////
         qDebug() << "Debayer";
-        ImageProcess::debayerImg(cvFrame, cvFrame);
+        if(!isMono && debayerOn)
+            ImageProcess::debayerImg(cvFrame, cvFrame);
 
         if(!isMono && whiteBalanceOn)
             ImageProcess::whiteBalanceImg(cvFrame, cvFrame);
@@ -54,20 +59,6 @@ void ProcessingThread::run() {
         if(!isMono && gammaContrastOn)
             ImageProcess::gammaContrastImg(cvFrame, cvFrame, gammaContrastParam);
 
-        if(autoExposureOn) {
-            if(!isMono)
-                cv::cvtColor(cvFrame, cvFrameGrayscale,  cv::COLOR_BGR2GRAY);
-            else
-                cvFrameGrayscale = cvFrame.clone();
-
-            if(autoExposureHandler->correct(cvFrameGrayscale, currentExposure, currentGain)) {
-                currentGain = autoExposureHandler->getGain();
-                currentExposure = autoExposureHandler->getExposure();
-                emit newEGValues(currentGain, currentExposure);
-            }
-            else
-                emit error("Неверный формат изображения!\nТребуется: 8 бит");
-        }
         ////////////////////////////////////
         // Конец //
         ////////////////////////////////////
@@ -87,14 +78,7 @@ void ProcessingThread::updateImageProcessingSettings(ImageProcessingFlags imageP
     this->whiteBalanceOn = imageProcessingFlags.whiteBalanceOn;
     this->contrastOn = imageProcessingFlags.contrastOn;
     this->gammaContrastOn = imageProcessingFlags.gammaContrastOn;
-    this->autoExposureOn = imageProcessingFlags.autoExposureOn;
 
     this->contrastParam = imageProcessingFlags.contrastParam;
     this->gammaContrastParam = imageProcessingFlags.gammaContrastParam;
-}
-
-void ProcessingThread::onAutoExposureEnabled(double gain, double exposure) {
-    QMutexLocker locker(&updateMembersMutex);
-    this->currentGain = gain;
-    this->currentExposure = exposure;
 }

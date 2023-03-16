@@ -1,14 +1,22 @@
 #include "objectivethread.h"
+#include "imageprocess.h"
+#include "imageblurmetric.h"
+#include "mattoqimage.h"
 
-ObjectiveThread::ObjectiveThread(FramePipeline* pipeline, AutoExposureParams params)
+ObjectiveThread::ObjectiveThread(FramePipeline* pipeline, bool isMonoFlag,
+                                 double maxExposure, double minExposure,
+                                 double maxGain, double minGain,
+                                 AutoExposureParams params)
     : QThread(),
-      pFramePipeline(pipeline)
+      pFramePipeline(pipeline),
+      isMono(isMonoFlag)
 {
     pObjective = nullptr;
-    autoExposureHandler = new AutoExposureHandler(params);
+    autoExposureHandler = new AutoExposureHandler(params, maxExposure, minExposure, maxGain, minGain);
     stopped = false;
-    autoExposureOn = false;
-    focusingOn = false;
+    mAutoExposureOn = false;
+    mFocusingOn = false;
+    currentFocusingPosition = 0;
 }
 
 ObjectiveThread::~ObjectiveThread() {
@@ -22,7 +30,7 @@ double ObjectiveThread::findZero() {
     return 0;
 }
 
-bool ObjectiveThread::connectObjective(char* serialPort) {
+bool ObjectiveThread::connectObjective(const char* serialPort) {
     QMutexLocker locker(&objectiveControlMutex);
     try {
         pObjective = new ObjectiveController(serialPort);
@@ -59,13 +67,32 @@ string ObjectiveThread::setFocusing(int value) {
 string ObjectiveThread::getCurrentFocusing(double& value) {
     QMutexLocker locker(&objectiveControlMutex);
     value = pObjective->getCurrentFocusing();
+    currentFocusingPosition = value;
     return pObjective->currentError();
 }
 
-void ObjectiveThread::stopFocusingThread() {
+std::vector<double> ObjectiveThread::getAppertureList() {
+    QMutexLocker locker(&objectiveControlMutex);
+    return pObjective->getAppertures();
+}
+
+void ObjectiveThread::setAppertureList(std::vector<double> appertures) {
+    QMutexLocker locker(&objectiveControlMutex);
+    pObjective->setAppertures(appertures);
+}
+
+void ObjectiveThread::stopObjectiveThread() {
     stoppedMutex.lock();
     stopped=true;
     stoppedMutex.unlock();
+}
+
+bool ObjectiveThread::getIsMono() const {
+    return isMono;
+}
+
+void ObjectiveThread::setIsMono(bool newIsMono) {
+    isMono = newIsMono;
 }
 
 void ObjectiveThread::onAutoExposureEnabled(double status, double gain, double exposure) {
@@ -73,13 +100,19 @@ void ObjectiveThread::onAutoExposureEnabled(double status, double gain, double e
     this->mAutoExposureOn = status;
     this->mCurrentGain = gain;
     this->mCurrentExposure = exposure;
-
 }
 
-void ObjectiveThread::focusingEnabled(bool status) {
+void ObjectiveThread::onAutoExposureSettingChanged(AutoExposureParams params) {
     QMutexLocker locker(&updateSettingsMutex);
-    if(pObjective && pObjective->isContollerActive())
+    autoExposureHandler->setParams(params);
+}
+
+void ObjectiveThread::focusingEnabled(bool status, cv::Rect roi) {
+    QMutexLocker locker(&updateSettingsMutex);
+    if(pObjective && pObjective->isContollerActive()) {
         this->mFocusingOn = status;
+        myRoi = roi;
+    }
 }
 
 void ObjectiveThread::run() {
@@ -100,23 +133,31 @@ void ObjectiveThread::run() {
            int type = ImageProcess::getOpenCvType((BitMode)frame->mBpp, frame->mChannels);
            cvFrame = cv::Mat(frame->mHeight, frame->mWidth, type, frame->pData);
 
-           /// TO DO GRAYSCALE FORMAT
+           ///////// GRAYSCALE Формат /////////
+           if(!isMono)
+               cv::cvtColor(cvFrame, cvFrame, cv::COLOR_BayerRG2GRAY);
 
            ////////////////////////////////////
            // Обработка изображения //
            ////////////////////////////////////
            if(mAutoExposureOn) {
                if(autoExposureHandler->correct(cvFrame, mCurrentExposure, mCurrentGain)) {
-                   currentGain = autoExposureHandler->getGain();
-                   currentExposure = autoExposureHandler->getExposure();
-                   emit newEGValues(currentGain, currentExposure);
+                   mCurrentGain = autoExposureHandler->getGain();
+                   mCurrentExposure = autoExposureHandler->getExposure();
+                   emit newEGValues(mCurrentGain, mCurrentExposure);
                }
                else
-                   emit error("Неверный формат изображения!\nТребуется: 8 бит");
+                   emit imageProcessingError("Неверный формат изображения!\nТребуется: 8 бит");
            }
 
            if(mFocusingOn) {
-
+               double result;
+               QMutexLocker locker(&objectiveControlMutex);
+               if(ImageBlurMetric::getBlurFFT(cvFrame(myRoi), result)) {
+                   currentFocusingPosition = pObjective->getCurrentFocusing();
+               }
+               else
+                   emit imageProcessingError("Изображение должно быть в GrayScale формате!\n");
            }
 
            ////////////////////////////////////
@@ -124,10 +165,10 @@ void ObjectiveThread::run() {
            ////////////////////////////////////
 
            qDebug() << "Objective Thread";
-           qFrame = MatToQImage(cvFrame);
-           updateMembersMutex.unlock();
+           qFrame = MatToQImage(cvFrame(myRoi));
+           updateSettingsMutex.unlock();
 
-           emit newFrame(qFrame);
+           emit newFocusingResult(qFrame, currentFocusingPosition);
            frame = pFramePipeline->nextFrame(frame);
        }
 }

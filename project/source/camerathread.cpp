@@ -10,7 +10,7 @@ void CameraThread::run() {
     if(pCamera->startLiveCapture()) {
         bool frameReady = false;
         while(1) {
-            ////////////////  Остановка потока  /////////////////
+            /////////////////////  Остановка потока  //////////////////////
             stoppedMutex.lock();
             if (stopped) {
                 stopped=false;
@@ -19,7 +19,7 @@ void CameraThread::run() {
                 break;
             }
             stoppedMutex.unlock();
-            /////////////////////////////////////////////////////////////
+            //////////////////////////////////////////////////////////////
 
             ////////////////  Установка настроек камеры  /////////////////
             updateControlsMutex.lock();

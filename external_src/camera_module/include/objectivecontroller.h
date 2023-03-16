@@ -35,7 +35,6 @@ public:
     bool isContollerActive();
 
 private:
-
     bool testControllerActive();
     string getFocusingCmd(const int value);
     string getAppertureCmd(const int value);

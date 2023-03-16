@@ -5,7 +5,7 @@
 #include <QMap>
 
 #include "cameraqhyccd.h"
-#include "cameraprocessor.h"
+#include "appprocessor.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -105,8 +105,6 @@ private:
 
 private:
     QMap<QString, QString> cameraIdModel;
-    CameraProcessor processor;
-
-    ObjectiveController* mObjective;
+    AppProcessor processor;
 };
 #endif // MAINWINDOW_H

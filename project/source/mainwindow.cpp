@@ -88,6 +88,11 @@ void MainWindow::setInitialGUIState() {
     ui->gammaContrastHSlider->setEnabled(false);
 
     ui->autoExposureCheckBox->setEnabled(false);
+
+    ui->maxPercentHSlider->setEnabled(false);
+    ui->maxRelCoeffHSlider->setEnabled(false);
+    ui->meanHSlider->setEnabled(false);
+    ui->minRelCoeffHSlider->setEnabled(false);
 }
 
 void MainWindow::proccessorSignalSlotsInit() {
@@ -237,7 +242,7 @@ void MainWindow::onProcessFinished() {
 // **************************** Slots ********************************* //
 
 void MainWindow::updateFrame(const QImage &frame){
-    ui->imageLabel->setPixmap(QPixmap::fromImage(frame));
+    //ui->imageLabel->setPixmap(QPixmap::fromImage(frame));
 }
 
 void MainWindow::updateEG(double gain, double exposure){
@@ -388,8 +393,7 @@ void MainWindow::on_objectiveComConnectButton_clicked() {
     try {
         QByteArray ba = ui->objectiveComPortsComboBox->currentText().toLocal8Bit();
         const char* serialPort = ba.data();
-        mObjective = new ObjectiveController(serialPort);
-        if(mObjective->connectToController(serialPort)) {
+        if(processor.objectiveThread->connectObjective(serialPort)) {
             ui->objectiveComPortsComboBox->setEnabled(false);
             ui->objectiveComConnectButton->setEnabled(false);
 
@@ -402,7 +406,8 @@ void MainWindow::on_objectiveComConnectButton_clicked() {
             ui->objectiveGetFocusButton->setEnabled(true);
             ui->objectiveFocusValSpinbox->setEnabled(true);
 
-            auto appertures = mObjective->getAppertures();
+            auto appertures = processor.objectiveThread->getAppertureList();
+            ui->objectiveSetAppertureComboBox->clear();
             for (auto& i : appertures)
                 ui->objectiveSetAppertureComboBox->addItem(QString::number(i));
         }
@@ -415,7 +420,7 @@ void MainWindow::on_objectiveComConnectButton_clicked() {
 }
 
 void MainWindow::on_objectiveComDisconnectButton_clicked() {
-    if(mObjective->disconnectController()) {
+    if(processor.objectiveThread->disconnectObjective()) {
         ui->objectiveComPortsComboBox->setEnabled(true);
         ui->objectiveComConnectButton->setEnabled(true);
 
@@ -433,8 +438,45 @@ void MainWindow::on_objectiveComDisconnectButton_clicked() {
 void MainWindow::on_objectiveLensFileButton_clicked() {
     QString fileName = QFileDialog::getOpenFileName(this,
          tr("Аппертуры"), "/home", tr("JSON Files (*.json)"));
-    ui->objectiveLensFileLineEdit->setText(fileName);
 
+    QFile file;
+    file.setFileName(fileName);
+    if(file.open(QIODevice::ReadOnly | QIODevice::Text)){
+        QByteArray bytes = file.readAll();
+        file.close();
+
+        /////////////////////  JSON PARSER  //////////////////////
+        QJsonParseError jsonError;
+        QJsonDocument document = QJsonDocument::fromJson( bytes, &jsonError );
+        if(jsonError.error != QJsonParseError::NoError ) {
+            QMessageBox::warning(this, "Внимание", "Ошибка чтения JSON файла!\n");
+            return ;
+        }
+
+        if(document.isObject()) {
+            QJsonObject jsonObj = document.object();
+            if(jsonObj.keys().indexOf("appertures") == -1)
+                QMessageBox::warning(this, "Внимание",
+                                     "Неверный формат JSON файла!\n");
+            else {
+                auto value = jsonObj.take("appertures");
+                if(value.isArray()) {
+                    auto jsonAppertures = value.toArray();
+                    std::vector<double> appertures;
+                    ui->objectiveSetAppertureComboBox->clear();
+
+                    foreach (const QJsonValue & v, jsonAppertures) {
+                        appertures.push_back(v.toDouble());
+                        ui->objectiveSetAppertureComboBox->addItem(QString::number(v.toDouble()));
+                    }
+
+                    processor.objectiveThread->setAppertureList(appertures);
+                    ui->objectiveLensFileLineEdit->setText(fileName);
+                }
+            }
+        }
+    }
+    //////////////////////////////////////////////////////////
 }
 
 void MainWindow::on_objectiveSetAppertureButton_clicked() {
@@ -444,10 +486,13 @@ void MainWindow::on_objectiveSetAppertureButton_clicked() {
     ui->objectiveGetFocusButton->setEnabled(false);
 
     ui->objectiveErrorLineEdit->clear();
-    int val = ui->objectiveSetAppertureComboBox->currentIndex();
-    mObjective->setDiaphragmLevel(val);
-    if(!mObjective->currentError().empty())
-        ui->objectiveErrorLineEdit->setText(QString::fromStdString(mObjective->currentError()));
+
+    QString strVal = ui->objectiveSetAppertureComboBox->currentText();
+    double doubleVal = strVal.toDouble();
+
+    string error = processor.objectiveThread->setDiaphragmLevel(doubleVal);
+    if(!error.empty())
+        ui->objectiveErrorLineEdit->setText(QString::fromStdString(error));
 
     ui->objectiveLensFileButton->setEnabled(true);
     ui->objectiveSetAppertureButton->setEnabled(true);
@@ -463,9 +508,9 @@ void MainWindow::on_objectiveSetFocusButton_clicked() {
 
     ui->objectiveErrorLineEdit->clear();
     int val = ui->objectiveSetFocusSpinBox->value();
-    mObjective->setFocusing(val);
-    if(!mObjective->currentError().empty())
-        ui->objectiveErrorLineEdit->setText(QString::fromStdString(mObjective->currentError()));
+    string error = processor.objectiveThread->setFocusing(val);
+    if(!error.empty())
+        ui->objectiveErrorLineEdit->setText(QString::fromStdString(error));
 
     ui->objectiveLensFileButton->setEnabled(true);
     ui->objectiveSetAppertureButton->setEnabled(true);
@@ -479,6 +524,17 @@ void MainWindow::on_objectiveGetFocusButton_clicked() {
     ui->objectiveSetFocusButton->setEnabled(false);
     ui->objectiveGetFocusButton->setEnabled(false);
     ui->objectiveErrorLineEdit->clear();
+
+    double focusingPosition;
+    string error = processor.objectiveThread->getCurrentFocusing(focusingPosition);
+
+    if(!error.empty())
+        ui->objectiveErrorLineEdit->setText(QString::fromStdString(error));
+
+    ui->objectiveLensFileButton->setEnabled(true);
+    ui->objectiveSetAppertureButton->setEnabled(true);
+    ui->objectiveSetFocusButton->setEnabled(true);
+    ui->objectiveGetFocusButton->setEnabled(true);
 }
 
 
