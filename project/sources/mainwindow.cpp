@@ -1,4 +1,4 @@
-#include "mainwindow.h"
+    #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QLabel>
 #include <QMessageBox>
@@ -23,6 +23,11 @@ MainWindow::MainWindow(QWidget *parent)
         QMessageBox::warning(this, "Внимание", "Драйверы для камеры не установлены!\nКамера недоступна!");
         ui->cameraTab->setEnabled(false);
     }
+
+    scene = new QGraphicsScene(0, 0, 100, 30, this);
+    scene->addRect(scene->sceneRect());
+
+    ui->display->setScene(scene);
 
     uiSignalSlotsInit();
     setInitialGUIState();

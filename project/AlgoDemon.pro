@@ -31,7 +31,8 @@ HEADERS += \
 FORMS += \
     mainwindow.ui
 
-RESOURCES +=
+RESOURCES += \
+    resources.qrc
 
 INCLUDEPATH += include
 

@@ -1,6 +1,10 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "QGraphicsView"
+#include "QGraphicsScene"
+#include "QGraphicsItem"
+
 #include <QMainWindow>
 #include <QMap>
 
@@ -46,6 +50,7 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    QGraphicsScene* scene;
 
     // ****************************** Camera ****************************** //
 

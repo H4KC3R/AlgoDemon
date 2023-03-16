@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>Algorithm DEMON</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="resources.qrc">
+    <normaloff>:/resources/icons8-demon-64.png</normaloff>:/resources/icons8-demon-64.png</iconset>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <property name="font">
     <font>
@@ -1655,6 +1659,8 @@
    </property>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="resources.qrc"/>
+ </resources>
  <connections/>
 </ui>
