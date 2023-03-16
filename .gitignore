@@ -4,7 +4,6 @@
 build**
 *~
 *.autosave
-*.a
 *.core
 *.moc
 *.o
@@ -70,6 +69,5 @@ CMakeLists.txt.user*
 
 # Binaries
 # --------
-*.dll
 *.exe
 
