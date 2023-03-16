@@ -1,4 +1,4 @@
-    #include "mainwindow.h"
+#include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QLabel>
 #include <QMessageBox>
@@ -24,10 +24,11 @@ MainWindow::MainWindow(QWidget *parent)
         ui->cameraTab->setEnabled(false);
     }
 
-    scene = new QGraphicsScene(0, 0, 100, 30, this);
-    scene->addRect(scene->sceneRect());
-
+    scene = new QGraphicsScene(this);
     ui->display->setScene(scene);
+
+    QPixmap img(":/resources/stars.jpg");
+    scene->addPixmap(img);
 
     uiSignalSlotsInit();
     setInitialGUIState();
