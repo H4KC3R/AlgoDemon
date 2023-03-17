@@ -11,6 +11,9 @@
 #include "cameraqhyccd.h"
 #include "appprocessor.h"
 
+#include "widgets/viewportcontroller.h"
+#include "widgets/graphicsview.h"
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -51,7 +54,11 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+
+    dororo::GraphicsView* displayView;
     QGraphicsScene* displayScene;
+    QGraphicsPixmapItem* imageMapItem;
+    dororo::ViewportController* roiController;
 
     // ****************************** Camera ****************************** //
 
@@ -92,6 +99,10 @@ private:
     void on_cameraStartCaptureButton_clicked();
 
     void on_cameraStopCaptureButton_clicked();
+
+    void on_cameraEnableFocus_cliked(bool enabled);
+
+    void on_cameraFocusButton_clicked();
 
     // **************************** Objective ****************************** //
 

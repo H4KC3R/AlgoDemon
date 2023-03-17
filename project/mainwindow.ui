@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>986</width>
-    <height>726</height>
+    <height>746</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -113,8 +113,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>285</width>
-                <height>694</height>
+                <width>336</width>
+                <height>795</height>
                </rect>
               </property>
               <attribute name="label">
@@ -751,8 +751,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>229</width>
-                <height>340</height>
+                <width>353</width>
+                <height>552</height>
                </rect>
               </property>
               <attribute name="label">
@@ -1069,8 +1069,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>192</width>
-                <height>278</height>
+                <width>353</width>
+                <height>552</height>
                </rect>
               </property>
               <attribute name="label">
@@ -1587,9 +1587,18 @@
           <enum>QFrame::Raised</enum>
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_7">
-          <item>
-           <widget class="QGraphicsView" name="displayView"/>
-          </item>
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
          </layout>
         </widget>
        </item>
@@ -1654,7 +1663,7 @@
      <x>0</x>
      <y>0</y>
      <width>986</width>
-     <height>21</height>
+     <height>25</height>
     </rect>
    </property>
   </widget>

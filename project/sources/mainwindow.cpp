@@ -4,7 +4,6 @@
 #include <QMessageBox>
 #include <QGraphicsView>
 
-
 #include <QSerialPortInfo>
 #include <QSerialPort>
 #include <QFileDialog>
@@ -27,6 +26,9 @@ MainWindow::MainWindow(QWidget *parent)
     initializeDisplay();
     uiSignalSlotsInit();
     setInitialGUIState();
+
+    ui->cameraEnableFocusCheckBox->setEnabled(true);
+    ui->cameraFocusButton->setEnabled(true);
 }
 
 MainWindow::~MainWindow() {
@@ -47,6 +49,9 @@ void MainWindow::uiSignalSlotsInit() {
 
     connect(ui->cameraStartCaptureButton, &QPushButton::clicked, this, &MainWindow::on_cameraStartCaptureButton_clicked);
     connect(ui->cameraStopCaptureButton, &QPushButton::clicked, this, &MainWindow::on_cameraStopCaptureButton_clicked);
+
+    connect(ui->cameraEnableFocusCheckBox, &QCheckBox::clicked, this, &MainWindow::on_cameraEnableFocus_cliked);
+    connect(ui->cameraFocusButton, &QPushButton::clicked, this, &MainWindow::on_cameraFocusButton_clicked);
 
     connect(ui->objectiveComFindButton, &QPushButton::clicked, this, &MainWindow::on_objectiveComFindButton_clicked);
     connect(ui->objectiveComConnectButton, &QPushButton::clicked, this, &MainWindow::on_objectiveComConnectButton_clicked);
@@ -97,11 +102,20 @@ void MainWindow::setInitialGUIState() {
 }
 
 void MainWindow::initializeDisplay() {
+    displayView = new dororo::GraphicsView(this);
+    ui->horizontalLayout_7->addWidget(displayView);
+
     displayScene = new QGraphicsScene(this);
-    ui->displayView->setScene(displayScene);
+    displayView->setScene(displayScene);
 
     QPixmap img(":/resources/stars.jpg");
-    displayScene->addPixmap(img);
+    imageMapItem = displayScene->addPixmap(img);
+    roiController = new dororo::ViewportController(imageMapItem);
+
+    roiController->setRect(100, 100, 250, 250);
+    roiController->setPen(QPen(Qt::GlobalColor::yellow));
+
+    roiController->hide();
 }
 
 void MainWindow::proccessorSignalSlotsInit() {
@@ -387,6 +401,29 @@ void MainWindow::on_cameraStopCaptureButton_clicked() {
     processor.stopProcess();
 }
 
+void MainWindow::on_cameraEnableFocus_cliked(bool enabled) {
+    if(enabled)
+        roiController->show();
+    else
+        roiController->hide();
+}
+
+void MainWindow::on_cameraFocusButton_clicked() {
+    QRectF roi = roiController->rect();
+
+    QImage image(":/resources/stars.jpg");
+    cv::Mat mat(image.height(), image.width(), CV_8UC4, (uchar*)image.bits(), image.bytesPerLine());
+
+    double x, y, width, height;
+    roi.getRect(&x, &y, &width, &height);
+
+
+    cv::Mat roiImg(mat, cv::Rect(x, y, width, height));
+    cv::imshow("roi", roiImg);
+    cv::waitKey(0);
+
+}
+
 // **************************** Objective ****************************** //
 
 void MainWindow::on_objectiveComFindButton_clicked() {
@@ -546,19 +583,19 @@ void MainWindow::on_objectiveGetFocusButton_clicked() {
     ui->objectiveGetFocusButton->setEnabled(true);
 }
 
-void MainWindow::showEvent(QShowEvent *event)
+void MainWindow::showEvent(QShowEvent*)
 {
     if(!displayScene)
         return;
     QRectF bounds = displayScene->itemsBoundingRect();
-    ui->displayView->fitInView(bounds, Qt::IgnoreAspectRatio);
+    displayView->fitInView(bounds, Qt::KeepAspectRatio);
 }
 
-void MainWindow::resizeEvent(QResizeEvent *event) {
+void MainWindow::resizeEvent(QResizeEvent*) {
     if(!displayScene)
         return;
     QRectF bounds = displayScene->itemsBoundingRect();
-    ui->displayView->fitInView(bounds, Qt::IgnoreAspectRatio);
+    displayView->fitInView(bounds, Qt::KeepAspectRatio);
 }
 
 
