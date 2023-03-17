@@ -30,6 +30,7 @@ public:
 
     void uiSignalSlotsInit();
     void setInitialGUIState();
+    void initializeDisplay();
     void proccessorSignalSlotsInit();
     void initializeCameraControls();
 
@@ -50,7 +51,7 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    QGraphicsScene* scene;
+    QGraphicsScene* displayScene;
 
     // ****************************** Camera ****************************** //
 
@@ -111,5 +112,13 @@ private:
 private:
     QMap<QString, QString> cameraIdModel;
     AppProcessor processor;
+
+    // QWidget interface
+protected:
+    void showEvent(QShowEvent *event);
+
+    // QWidget interface
+protected:
+    void resizeEvent(QResizeEvent *event);
 };
 #endif // MAINWINDOW_H

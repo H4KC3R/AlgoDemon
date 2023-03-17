@@ -751,8 +751,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>299</width>
-                <height>558</height>
+                <width>229</width>
+                <height>340</height>
                </rect>
               </property>
               <attribute name="label">
@@ -1069,8 +1069,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>299</width>
-                <height>558</height>
+                <width>192</width>
+                <height>278</height>
                </rect>
               </property>
               <attribute name="label">
@@ -1588,7 +1588,7 @@
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_7">
           <item>
-           <widget class="QGraphicsView" name="display"/>
+           <widget class="QGraphicsView" name="displayView"/>
           </item>
          </layout>
         </widget>

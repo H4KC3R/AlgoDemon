@@ -24,12 +24,7 @@ MainWindow::MainWindow(QWidget *parent)
         ui->cameraTab->setEnabled(false);
     }
 
-    scene = new QGraphicsScene(this);
-    ui->display->setScene(scene);
-
-    QPixmap img(":/resources/stars.jpg");
-    scene->addPixmap(img);
-
+    initializeDisplay();
     uiSignalSlotsInit();
     setInitialGUIState();
 }
@@ -99,6 +94,14 @@ void MainWindow::setInitialGUIState() {
     ui->maxRelCoeffHSlider->setEnabled(false);
     ui->meanHSlider->setEnabled(false);
     ui->minRelCoeffHSlider->setEnabled(false);
+}
+
+void MainWindow::initializeDisplay() {
+    displayScene = new QGraphicsScene(this);
+    ui->displayView->setScene(displayScene);
+
+    QPixmap img(":/resources/stars.jpg");
+    displayScene->addPixmap(img);
 }
 
 void MainWindow::proccessorSignalSlotsInit() {
@@ -248,7 +251,7 @@ void MainWindow::onProcessFinished() {
 // **************************** Slots ********************************* //
 
 void MainWindow::updateFrame(const QImage &frame){
-    //ui->imageLabel->setPixmap(QPixmap::fromImage(frame));
+    displayScene->addPixmap(QPixmap::fromImage(frame));
 }
 
 void MainWindow::updateEG(double gain, double exposure){
@@ -541,6 +544,21 @@ void MainWindow::on_objectiveGetFocusButton_clicked() {
     ui->objectiveSetAppertureButton->setEnabled(true);
     ui->objectiveSetFocusButton->setEnabled(true);
     ui->objectiveGetFocusButton->setEnabled(true);
+}
+
+void MainWindow::showEvent(QShowEvent *event)
+{
+    if(!displayScene)
+        return;
+    QRectF bounds = displayScene->itemsBoundingRect();
+    ui->displayView->fitInView(bounds, Qt::IgnoreAspectRatio);
+}
+
+void MainWindow::resizeEvent(QResizeEvent *event) {
+    if(!displayScene)
+        return;
+    QRectF bounds = displayScene->itemsBoundingRect();
+    ui->displayView->fitInView(bounds, Qt::IgnoreAspectRatio);
 }
 
 
