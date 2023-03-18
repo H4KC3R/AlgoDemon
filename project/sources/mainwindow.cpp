@@ -27,9 +27,7 @@ MainWindow::MainWindow(QWidget *parent)
     uiSignalSlotsInit();
     objectiveSignalSlotsInit();
     setInitialGUIState();
-
-    ui->cameraEnableFocusCheckBox->setEnabled(true);
-    ui->cameraFocusButton->setEnabled(true);
+    initializeStructures();
 }
 
 MainWindow::~MainWindow() {
@@ -44,20 +42,21 @@ void MainWindow::onProcessFinished() {
 }
 
 void MainWindow::onHardFault(QString errorMsg) {
-
+    processor.stopProcess();
+    QMessageBox::warning(this, "Внимание", errorMsg);
 }
 
 void MainWindow::onSoftFault(QString errorMsg) {
-
+    QMessageBox::warning(this, "Внимание", errorMsg);
 }
 
 void MainWindow::updateFrame(const QImage &frame){
     displayScene->addPixmap(QPixmap::fromImage(frame));
 }
 
-void MainWindow::updateFocusingResult(const QImage &frame, double position)
-{
-
+void MainWindow::updateFocusingResult(const QImage &frame, double position) {
+    ui->cameraFocusRoiLabel->setPixmap(QPixmap::fromImage(frame));
+    ui->objectiveFocusValSpinbox->setValue(position);
 }
 
 void MainWindow::updateEG(double gain, double exposure){
@@ -66,13 +65,13 @@ void MainWindow::updateEG(double gain, double exposure){
 }
 
 void MainWindow::onObjectiveError(QString msg) {
-
+    ui->objectiveErrorLineEdit->clear();
+    ui->objectiveErrorLineEdit->setText(msg);
 }
 
 void MainWindow::onImageProcessingError(QString msg) {
-
+    QMessageBox::warning(this, "Внимание", msg);
 }
-
 
 // *********************************************************************** //
 
@@ -214,7 +213,7 @@ void MainWindow::objectiveSignalSlotsInit() {
             this, SLOT(onImageProcessingError(QString)));
 
     // GUI thread (emitter) and Objective thread (receiver/listener)
-    connect(this, SIGNAL(autoExposureEnabled(bool, double,double)),
+    connect(this, SIGNAL(autoExposureEnabled(bool,double,double)),
             processor.objectiveThread, SLOT(onAutoExposureEnabled(bool,double,double)));
     connect(this, SIGNAL(autoExposureSettingChanged(AutoExposureParams)),
             processor.objectiveThread, SLOT(onAutoExposureSettingChanged(AutoExposureParams)));
@@ -340,6 +339,20 @@ void MainWindow::initializeCameraControls() {
     ui->cameraCaptureGroupBox->setEnabled(true);
 }
 
+void MainWindow::initializeStructures() {
+    param.maxPercent = ui->maxPercentHSlider->value();
+    param.mean = ui->meanHSlider->value();
+    param.maxRelCoeff = ui->maxRelCoeffHSlider->value();
+    param.minRelCoef = ui->minRelCoeffHSlider->value();
+
+    imageProcessingFlags.debayerOn = false;
+    imageProcessingFlags.whiteBalanceOn = false;
+    imageProcessingFlags.contrastOn = false;
+    imageProcessingFlags.contrastValue = ui->contrastAlphaSpinBox->value();
+    imageProcessingFlags.gammaContrastOn = false;
+    imageProcessingFlags.gammaContrastValue = ui->gammaCoeffSpinBox->value();
+}
+
 // ************************** Camera Connection ************************** //
 
 void MainWindow::on_findCamerasButton_clicked() {
@@ -387,27 +400,26 @@ void MainWindow::on_disconnectCameraButton_clicked() {
         //  Processor (emitter) and GUI thread (receiver/listener)
         disconnect(&processor, SIGNAL(processFinished()), this, SLOT(onProcessFinished()));
 
+        //  Camera thread (emitter) and GUI thread (receiver/listener)
+        disconnect(processor.cameraThread, SIGNAL(hardFault(QString)), this, SLOT(onHardFault(QString)));
+        disconnect(processor.cameraThread, SIGNAL(softFault(QString)), this, SLOT(onSoftFault(QString)));
+
         //  Processing thread (emitter) and GUI thread (receiver/listener)
         disconnect(processor.processingThread, SIGNAL(newFrame(QImage)), this, SLOT(updateFrame(QImage)));
-        disconnect(processor.processingThread, SIGNAL(newEGValues(double, double)), this, SLOT(updateEG(double, double)));
-        disconnect(processor.processingThread, SIGNAL(error(QString)), this, SLOT(showError(QString)));
-
-        // GUI thread (emitter) and Processing thread (receiver/listener)
-        disconnect(this, SIGNAL(autoExposureEnabled(double,double)),
-                processor.processingThread, SLOT(onAutoExposureEnabled(double,double)));
-        disconnect(this, SIGNAL(newImageProcessingFlags(ImageProcessingFlags)),
-                processor.processingThread, SLOT(updateImageProcessingSettings(ImageProcessingFlags)));
-
-        //  Camera thread (emitter) and GUI thread (receiver/listener)
-        disconnect(processor.cameraThread, SIGNAL(error(QString)), this, SLOT(showError(QString)));
 
         // GUI thread (emitter) and Camera thread (receiver/listener)
+        disconnect(this, SIGNAL(bitChanged(BitMode)),
+                processor.cameraThread, SLOT(onBitChanged(BitMode)));
+        disconnect(this, SIGNAL(fpsChanged(double)),
+                processor.cameraThread, SLOT(onFpsChanged(double)));
         disconnect(this, SIGNAL(EGChanged(double,double)),
                 processor.cameraThread, SLOT(onEGChanged(double,double)));
-        disconnect(this, SIGNAL(depthChanged(BitMode)),
-                processor.cameraThread, SLOT(onDepthChanged(BitMode)));
         disconnect(this, SIGNAL(roiChanged(RoiBox)),
                 processor.cameraThread, SLOT(onRoiChanged(RoiBox)));
+
+        // GUI thread (emitter) and Processing thread (receiver/listener)
+        disconnect(this, SIGNAL(newImageProcessingFlags(ImageProcessingFlags)),
+                processor.processingThread, SLOT(updateImageProcessingSettings(ImageProcessingFlags)));
 
         setInitialGUIState();
         processor.disconnectCamera();
@@ -463,27 +475,37 @@ void MainWindow::on_cameraSetRoiButton_clicked() {
 // ************************** Image Processing ************************** //
 
 void MainWindow::on_debayerCheckBox_clicked(bool enabled) {
-
+    imageProcessingFlags.debayerOn = enabled;
+    emit newImageProcessingFlags(imageProcessingFlags);
 }
 
 void MainWindow::on_whiteBalanceCheckBox_clicked(bool enabled) {
-
+    imageProcessingFlags.whiteBalanceOn = enabled;
+    emit newImageProcessingFlags(imageProcessingFlags);
 }
 
 void MainWindow::on_contrastEnableCheckBox_clicked(bool enabled) {
-
+    imageProcessingFlags.contrastOn = enabled;
+    ui->contrastAlphaSpinBox->setEnabled(enabled);
+    imageProcessingFlags.contrastValue = ui->contrastAlphaSpinBox->value();
+    emit newImageProcessingFlags(imageProcessingFlags);
 }
 
 void MainWindow::on_contrastAlphaSpinBox_valueChanged(double value) {
-
+    imageProcessingFlags.contrastValue = value;
+    emit newImageProcessingFlags(imageProcessingFlags);
 }
 
 void MainWindow::on_gammaContrastEnableCheckBox_clicked(bool enabled) {
-
+    imageProcessingFlags.gammaContrastOn = enabled;
+    ui->gammaCoeffSpinBox->setEnabled(enabled);
+    imageProcessingFlags.gammaContrastValue = ui->gammaCoeffSpinBox->value();
+    emit newImageProcessingFlags(imageProcessingFlags);
 }
 
 void MainWindow::on_gammaCoeffSpinBox_valueChanged(double value) {
-
+    imageProcessingFlags.gammaContrastValue = value;
+    emit newImageProcessingFlags(imageProcessingFlags);
 }
 
 // ************************ Camera Image Capture ************************ //
@@ -509,40 +531,40 @@ void MainWindow::on_cameraEnableFocus_cliked(bool enabled) {
 
 void MainWindow::on_cameraFocusButton_clicked() {
     QRectF roi = roiController->rect();
-
-    QImage image(":/resources/stars.jpg");
-    cv::Mat mat(image.height(), image.width(), CV_8UC4, (uchar*)image.bits(), image.bytesPerLine());
-
     double x, y, width, height;
     roi.getRect(&x, &y, &width, &height);
+    bool status = ui->cameraEnableFocusCheckBox->isChecked();
 
-
-    cv::Mat roiImg(mat, cv::Rect(x, y, width, height));
-    cv::imshow("roi", roiImg);
-    cv::waitKey(0);
-
+    emit focusingEnabled(status, cv::Rect(x, y, width, height));
 }
 
 // ************************ Camera AutoExposure ************************* //
 
 void MainWindow::on_autoExposureCheckBox_clicked() {
-
+    bool status = ui->autoExposureCheckBox->isChecked();
+    double gain = ui->cameraGainDSpinBox->value();
+    double exposure = ui->cameraExposureDSpinBox->value();
+    emit autoExposureEnabled(status, gain, exposure);
 }
 
 void MainWindow::on_maxPercentHSlider_valueChanged(int value) {
-
+    param.maxPercent = value;
+    emit autoExposureSettingChanged(param);
 }
 
 void MainWindow::on_meanHSlider_valueChanged(int value) {
-
+    param.mean = value;
+    emit autoExposureSettingChanged(param);
 }
 
 void MainWindow::on_maxRelCoeffHSlider_valueChanged(int value) {
-
+    param.maxRelCoeff = value;
+    emit autoExposureSettingChanged(param);
 }
 
 void MainWindow::on_minRelCoeffHSlider_valueChanged(int value) {
-
+    param.minRelCoef = value;
+    emit autoExposureSettingChanged(param);
 }
 
 // ************************* Objective Control ************************** //
@@ -632,7 +654,7 @@ void MainWindow::on_objectiveLensFileButton_clicked() {
                     std::vector<double> appertures;
                     ui->objectiveSetAppertureComboBox->clear();
 
-                    foreach (const QJsonValue & v, jsonAppertures) {
+                    foreach (const QJsonValue &v, jsonAppertures) {
                         appertures.push_back(v.toDouble());
                         ui->objectiveSetAppertureComboBox->addItem(QString::number(v.toDouble()));
                     }
@@ -703,6 +725,8 @@ void MainWindow::on_objectiveGetFocusButton_clicked() {
     ui->objectiveSetFocusButton->setEnabled(true);
     ui->objectiveGetFocusButton->setEnabled(true);
 }
+
+// *********************************************************************** //
 
 void MainWindow::showEvent(QShowEvent*)
 {

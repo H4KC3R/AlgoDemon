@@ -66,6 +66,9 @@ private:
     QGraphicsPixmapItem* imageMapItem;
     dororo::ViewportController* roiController;
 
+    AutoExposureParams param;
+    ImageProcessingFlags imageProcessingFlags;
+
     // *********************************************************************** //
 
     void uiSignalSlotsInit();
@@ -79,6 +82,8 @@ private:
     void objectiveSignalSlotsInit();
 
     void initializeCameraControls();
+
+    void initializeStructures();
 
     // ************************** Camera Connection ************************** //
 
