@@ -142,8 +142,17 @@ uint32_t CameraQHYCCD::getImageBitMode(){
     return ((uint32_t)GetQHYCCDParam(pCamhandle, CONTROL_TRANSFERBIT));
 }
 
-bool CameraQHYCCD::setGain(double value) {
-    uint32_t ret = SetQHYCCDParam(pCamhandle, CONTROL_GAIN, value);
+bool CameraQHYCCD::setFps(double fps) {
+    uint32_t ret = SetQHYCCDParam(pCamhandle, CONTROL_USBTRAFFIC, fps);
+    return (ret == QHYCCD_SUCCESS);
+}
+
+double CameraQHYCCD::getFps() {
+    return GetQHYCCDParam(pCamhandle, CONTROL_USBTRAFFIC);
+}
+
+bool CameraQHYCCD::setGain(double gain) {
+    uint32_t ret = SetQHYCCDParam(pCamhandle, CONTROL_GAIN, gain);
     return (ret == QHYCCD_SUCCESS);
 }
 

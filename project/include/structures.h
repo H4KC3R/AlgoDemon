@@ -6,10 +6,10 @@ struct ImageProcessingFlags{
     bool whiteBalanceOn;
 
     bool contrastOn;
-    double contrastParam;
+    double contrastValue;
 
     bool gammaContrastOn;
-    double gammaContrastParam;
+    double gammaContrastValue;
 };
 
 struct RoiBox{

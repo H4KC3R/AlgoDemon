@@ -33,24 +33,32 @@ private:
     volatile bool stopped;
 
     ////////////////  Флаги /////////////////
+    volatile bool isBitChanged;
+    BitMode bitToSet;
+
+    volatile bool isFpsChanged;
+    double fpsToSet;
+
     volatile bool isEGChanged = false;
     double gainToSet;
     double exposureToSet;
 
-    volatile bool isBitChanged;
-    BitMode bitToSet;
-
-    volatile bool roiChanged;
+    volatile bool isRoiChanged;
     RoiBox roiToSet;
     ////////////////////////////////////////
 
+private:
+    void setSettings();
+
 public slots:
+    void onFpsChanged(double fps);
     void onEGChanged(double gain, double exposure);
-    void onDepthChanged(BitMode bit);
+    void onBitChanged(BitMode bit);
     void onRoiChanged(RoiBox roi);
 
 signals:
-    void error(QString errorMessage);
+    void hardFault(QString errorMessage);
+    void softFault(QString errorMessage);
 
     // QThread interface
 protected:

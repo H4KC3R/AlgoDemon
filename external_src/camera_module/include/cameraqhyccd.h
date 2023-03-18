@@ -2,7 +2,6 @@
 #define CAMERAQHYCCD_H
 
 #include "CameraSDK_include/qhyccd.h"
-#include "framepipeline.h"
 #include "camstruct.h"
 #include "camenums.h"
 
@@ -39,7 +38,11 @@ public:
 
     uint32_t getImageBitMode();
 
-    bool setGain(double value);
+    bool setFps(double fps);
+
+    double getFps(void);
+
+    bool setGain(double gain);
 
     double getGain(void);
 

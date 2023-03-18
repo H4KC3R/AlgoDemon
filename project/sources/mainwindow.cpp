@@ -25,6 +25,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     initializeDisplay();
     uiSignalSlotsInit();
+    objectiveSignalSlotsInit();
     setInitialGUIState();
 
     ui->cameraEnableFocusCheckBox->setEnabled(true);
@@ -35,24 +36,85 @@ MainWindow::~MainWindow() {
     delete ui;
 }
 
+// **************************** Slots ********************************* //
+
+void MainWindow::onProcessFinished() {
+    ui->cameraStartCaptureButton->setEnabled(true);
+    ui->cameraStopCaptureButton->setEnabled(false);
+}
+
+void MainWindow::onHardFault(QString errorMsg) {
+
+}
+
+void MainWindow::onSoftFault(QString errorMsg) {
+
+}
+
+void MainWindow::updateFrame(const QImage &frame){
+    displayScene->addPixmap(QPixmap::fromImage(frame));
+}
+
+void MainWindow::updateFocusingResult(const QImage &frame, double position)
+{
+
+}
+
+void MainWindow::updateEG(double gain, double exposure){
+    ui->cameraGainDSpinBox->setValue(gain);
+    ui->cameraExposureDSpinBox->setValue(exposure);
+}
+
+void MainWindow::onObjectiveError(QString msg) {
+
+}
+
+void MainWindow::onImageProcessingError(QString msg) {
+
+}
+
+
+// *********************************************************************** //
+
 void MainWindow::uiSignalSlotsInit() {
+    //  Camera Connection
     connect(ui->findCamerasButton, &QPushButton::clicked, this, &MainWindow::on_findCamerasButton_clicked);
     connect(ui->connectCameraButton, &QPushButton::clicked, this, &MainWindow::on_connectCameraButton_clicked);
     connect(ui->disconnectCameraButton, &QPushButton::clicked, this, &MainWindow::on_disconnectCameraButton_clicked);
 
+    //  Camera Settings
+    connect(ui->cameraBitComboBox, &QComboBox::currentIndexChanged, this, &MainWindow::on_cameraBitComboBox_currentIndexChanged);
+    connect(ui->cameraFpsSpinBox, &QSpinBox::valueChanged, this, &MainWindow::on_cameraFpsSpinBox_valueChanged);
     connect(ui->cameraGainDSpinBox, &QDoubleSpinBox::valueChanged, this, &MainWindow::on_cameraGainDSpinBox_valueChanged);
     connect(ui->cameraGainHSlider, &QSlider::valueChanged, this, &MainWindow::on_cameraGainHSlider_valueChanged);
     connect(ui->cameraExposureDSpinBox, &QDoubleSpinBox::valueChanged, this, &MainWindow::on_cameraExposureDSpinBox_valueChanged);
     connect(ui->cameraExposureHSlider, &QSlider::valueChanged, this, &MainWindow::on_cameraExposureHSlider_valueChanged);
-    connect(ui->cameraDepthComboBox, &QComboBox::currentIndexChanged, this, &MainWindow::on_cameraDepthComboBox_currentIndexChanged);
     connect(ui->cameraSetRoiButton, &QPushButton::clicked, this, &MainWindow::on_cameraSetRoiButton_clicked);
 
+    // Image Process
+    connect(ui->debayerCheckBox, &QCheckBox::clicked, this, &MainWindow::on_debayerCheckBox_clicked);
+    connect(ui->whiteBalanceCheckBox, &QCheckBox::clicked, this, &MainWindow::on_whiteBalanceCheckBox_clicked);
+    connect(ui->contrastEnableCheckBox, &QCheckBox::clicked, this, &MainWindow::on_contrastEnableCheckBox_clicked);
+    connect(ui->contrastAlphaSpinBox, &QDoubleSpinBox::valueChanged, this, &MainWindow::on_contrastAlphaSpinBox_valueChanged);
+    connect(ui->gammaContrastEnableCheckBox, &QCheckBox::clicked, this, &MainWindow::on_gammaContrastEnableCheckBox_clicked);
+    connect(ui->gammaCoeffSpinBox, &QDoubleSpinBox::valueChanged, this, &MainWindow::on_gammaCoeffSpinBox_valueChanged);
+
+    // Camera Image Capture
     connect(ui->cameraStartCaptureButton, &QPushButton::clicked, this, &MainWindow::on_cameraStartCaptureButton_clicked);
     connect(ui->cameraStopCaptureButton, &QPushButton::clicked, this, &MainWindow::on_cameraStopCaptureButton_clicked);
 
+    // Camera Focusing
     connect(ui->cameraEnableFocusCheckBox, &QCheckBox::clicked, this, &MainWindow::on_cameraEnableFocus_cliked);
     connect(ui->cameraFocusButton, &QPushButton::clicked, this, &MainWindow::on_cameraFocusButton_clicked);
+\
+    // Camera Autoexposure
+    connect(ui->autoExposureCheckBox, &QCheckBox::clicked, this, &MainWindow::on_autoExposureCheckBox_clicked);
+    connect(ui->maxPercentHSlider, &QSlider::valueChanged, this, &MainWindow::on_maxPercentHSlider_valueChanged);
+    connect(ui->meanHSlider, &QSlider::valueChanged, this, &MainWindow::on_meanHSlider_valueChanged);
+    connect(ui->maxRelCoeffHSlider, &QSlider::valueChanged, this, &MainWindow::on_maxRelCoeffHSlider_valueChanged);
+    connect(ui->minRelCoeffHSlider, &QSlider::valueChanged, this, &MainWindow::on_minRelCoeffHSlider_valueChanged);
 
+    // Objective Control
     connect(ui->objectiveComFindButton, &QPushButton::clicked, this, &MainWindow::on_objectiveComFindButton_clicked);
     connect(ui->objectiveComConnectButton, &QPushButton::clicked, this, &MainWindow::on_objectiveComConnectButton_clicked);
     connect(ui->objectiveComDisconnectButton, &QPushButton::clicked, this, &MainWindow::on_objectiveComDisconnectButton_clicked);
@@ -69,12 +131,12 @@ void MainWindow::setInitialGUIState() {
     ui->connectCameraButton->setEnabled(true);
     ui->disconnectCameraButton->setEnabled(false);
 
-    ui->cameraDepthComboBox->setEnabled(false);
+    ui->cameraBitComboBox->setEnabled(false);
+    ui->cameraFpsSpinBox->setEnabled(false);
     ui->cameraGainDSpinBox->setEnabled(false);
     ui->cameraGainHSlider->setEnabled(false);
     ui->cameraExposureDSpinBox->setEnabled(false);
     ui->cameraExposureHSlider->setEnabled(false);
-
     ui->cameraRoiGroupBox->setEnabled(false);
 
     ui->cameraStopCaptureButton->setEnabled(false);
@@ -82,19 +144,15 @@ void MainWindow::setInitialGUIState() {
 
     ui->cameraEnableFocusCheckBox->setEnabled(false);
     ui->cameraFocusButton->setEnabled(false);
+
     ui->debayerCheckBox->setEnabled(false);
     ui->whiteBalanceCheckBox->setEnabled(false);
-
     ui->contrastEnableCheckBox->setEnabled(false);
     ui->contrastAlphaSpinBox->setEnabled(false);
-    ui->contrastHSlider->setEnabled(false);
-
     ui->gammaContrastEnableCheckBox->setEnabled(false);
     ui->gammaCoeffSpinBox->setEnabled(false);
-    ui->gammaContrastHSlider->setEnabled(false);
 
     ui->autoExposureCheckBox->setEnabled(false);
-
     ui->maxPercentHSlider->setEnabled(false);
     ui->maxRelCoeffHSlider->setEnabled(false);
     ui->meanHSlider->setEnabled(false);
@@ -122,50 +180,79 @@ void MainWindow::proccessorSignalSlotsInit() {
     //  Processor (emitter) and GUI thread (receiver/listener)
     connect(&processor, SIGNAL(processFinished()), this, SLOT(onProcessFinished()));
 
+    //  Camera thread (emitter) and GUI thread (receiver/listener)
+    connect(processor.cameraThread, SIGNAL(hardFault(QString)), this, SLOT(onHardFault(QString)));
+    connect(processor.cameraThread, SIGNAL(softFault(QString)), this, SLOT(onSoftFault(QString)));
+
     //  Processing thread (emitter) and GUI thread (receiver/listener)
     connect(processor.processingThread, SIGNAL(newFrame(QImage)), this, SLOT(updateFrame(QImage)));
-    connect(processor.processingThread, SIGNAL(newEGValues(double, double)), this, SLOT(updateEG(double, double)));
-    connect(processor.processingThread, SIGNAL(error(QString)), this, SLOT(showError(QString)));
-
-    // GUI thread (emitter) and Processing thread (receiver/listener)
-    connect(this, SIGNAL(autoExposureEnabled(double,double)),
-            processor.processingThread, SLOT(onAutoExposureEnabled(double,double)));
-    connect(this, SIGNAL(newImageProcessingFlags(ImageProcessingFlags)),
-            processor.processingThread, SLOT(updateImageProcessingSettings(ImageProcessingFlags)));
-
-    //  Camera thread (emitter) and GUI thread (receiver/listener)
-    connect(processor.cameraThread, SIGNAL(error(QString)), this, SLOT(showError(QString)));
 
     // GUI thread (emitter) and Camera thread (receiver/listener)
+    connect(this, SIGNAL(bitChanged(BitMode)),
+            processor.cameraThread, SLOT(onBitChanged(BitMode)));
+    connect(this, SIGNAL(fpsChanged(double)),
+            processor.cameraThread, SLOT(onFpsChanged(double)));
     connect(this, SIGNAL(EGChanged(double,double)),
             processor.cameraThread, SLOT(onEGChanged(double,double)));
-    connect(this, SIGNAL(depthChanged(BitMode)),
-            processor.cameraThread, SLOT(onDepthChanged(BitMode)));
     connect(this, SIGNAL(roiChanged(RoiBox)),
             processor.cameraThread, SLOT(onRoiChanged(RoiBox)));
+
+    // GUI thread (emitter) and Processing thread (receiver/listener)
+    connect(this, SIGNAL(newImageProcessingFlags(ImageProcessingFlags)),
+            processor.processingThread, SLOT(updateImageProcessingSettings(ImageProcessingFlags)));
+}
+
+void MainWindow::objectiveSignalSlotsInit() {
+    //  Objective thread (emitter) and GUI thread (receiver/listener)
+    connect(processor.objectiveThread, SIGNAL(newFocusingResult(QImage,double)),
+            this, SLOT(updateFocusingResult(QImage,double)));
+    connect(processor.objectiveThread, SIGNAL(newEGValues(double,double)),
+            this, SLOT(updateEG(double,double)));
+    connect(processor.objectiveThread, SIGNAL(objectiveError(QString)),
+            this, SLOT(onObjectiveError(QString)));
+    connect(processor.objectiveThread, SIGNAL(imageProcessingError(QString)),
+            this, SLOT(onImageProcessingError(QString)));
+
+    // GUI thread (emitter) and Objective thread (receiver/listener)
+    connect(this, SIGNAL(autoExposureEnabled(bool, double,double)),
+            processor.objectiveThread, SLOT(onAutoExposureEnabled(bool,double,double)));
+    connect(this, SIGNAL(autoExposureSettingChanged(AutoExposureParams)),
+            processor.objectiveThread, SLOT(onAutoExposureSettingChanged(AutoExposureParams)));
+    connect(this, SIGNAL(focusingEnabled(bool,cv::Rect)),
+            processor.objectiveThread, SLOT(onFocusingEnabled(bool,cv::Rect)));
 }
 
 void MainWindow::initializeCameraControls() {
     double min, max, step, currentVal;
     CamParameters camParameters = processor.cameraThread->getParams();
 
-    ////////////////// BitMode ///////////////////
+    ///////////////////// BitMode ///////////////////
     if(processor.cameraThread->getControlSettings(transferbit, min, max, step, currentVal)) {
-        ui->cameraDepthComboBox->setEnabled(true);
+        ui->cameraBitComboBox->setEnabled(true);
         BitMode currentMode =(BitMode)currentVal;
         // Почему то, в режиме фото при 8 битах не получается снять кадр
         if(!camParameters.mIsLiveMode)
-            ui->cameraDepthComboBox->removeItem(0);
+            ui->cameraBitComboBox->removeItem(0);
         else {
             if (currentMode == bit8)
-                ui->cameraDepthComboBox->setCurrentIndex(0);
+                ui->cameraBitComboBox->setCurrentIndex(0);
             else
-                ui->cameraDepthComboBox->setCurrentIndex(1);
+                ui->cameraBitComboBox->setCurrentIndex(1);
         }
     }
-    /////////////////////////////////////////////
+    ////////////////////////////////////////////////
 
-    ///////////////////// Gain /////////////////////
+    ////////////////////// FPS /////////////////////
+    if(processor.cameraThread->getControlSettings(fps, min, max, step, currentVal)) {
+        ui->cameraFpsSpinBox->setEnabled(true);
+        ui->cameraFpsSpinBox->setMaximum(max);
+        ui->cameraFpsSpinBox->setMinimum(min);
+        ui->cameraFpsSpinBox->setSingleStep(step);
+        ui->cameraFpsSpinBox->setValue(currentVal);
+    }
+    ////////////////////////////////////////////////
+
+    ///////////////////// Gain ////////////////////
     if (processor.cameraThread->getControlSettings(gain, min, max, step, currentVal)) {
         ui->cameraGainDSpinBox->setEnabled(true);
         ui->cameraGainDSpinBox->setMaximum(max);
@@ -184,9 +271,9 @@ void MainWindow::initializeCameraControls() {
 
         ui->cameraGainDSpinBox->setValue(currentVal);
     }
-    ///////////////////////////////////////////////
+    ////////////////////////////////////////////////
 
-    ////////////////// Exposure ///////////////////
+    /////////////////// Exposure //////////////////
     if (processor.cameraThread->getControlSettings(exposure, min, max, step, currentVal)) {
         ui->cameraExposureDSpinBox->setEnabled(true);
         ui->cameraExposureDSpinBox->setMaximum(max);
@@ -203,18 +290,16 @@ void MainWindow::initializeCameraControls() {
 
         ui->cameraExposureDSpinBox->setValue(currentVal);
     }
-    //////////////////////////////////////////////
+    ////////////////////////////////////////////////
 
-    ////////////////// CameraType ///////////////////
+    /////////////////// CameraType ////////////////
     if(camParameters.mIsMono) {
         ui->cameraTypeValueLabel->setText("Монохромная");
 
         ui->debayerCheckBox->setEnabled(false);
         ui->whiteBalanceCheckBox->setEnabled(false);
         ui->contrastAlphaSpinBox->setEnabled(false);
-        ui->contrastHSlider->setEnabled(false);
         ui->gammaCoeffSpinBox->setEnabled(false);
-        ui->gammaContrastHSlider->setEnabled(false);
 
         ui->autoExposureCheckBox->setEnabled(true);
         ui->cameraEnableFocusCheckBox->setEnabled(true);
@@ -231,9 +316,7 @@ void MainWindow::initializeCameraControls() {
         ui->debayerCheckBox->setEnabled(true);
         ui->whiteBalanceCheckBox->setEnabled(true);
         ui->contrastAlphaSpinBox->setEnabled(true);
-        ui->contrastHSlider->setEnabled(true);
         ui->gammaCoeffSpinBox->setEnabled(true);
-        ui->gammaContrastHSlider->setEnabled(true);
 
         ui->autoExposureCheckBox->setEnabled(true);
         ui->cameraEnableFocusCheckBox->setEnabled(true);
@@ -246,38 +329,18 @@ void MainWindow::initializeCameraControls() {
     }
     ////////////////////////////////////////////////
 
-   ui->cameraRoiGroupBox->setEnabled(true);
-   ui->cameraStartCaptureButton->setEnabled(true);
-
-   ui->cameraComboBox->setEnabled(false);
-   ui->connectCameraButton->setEnabled(false);
-   ui->modeCameraComboBox->setEnabled(false);
-
-   ui->disconnectCameraButton->setEnabled(true);
-   ui->cameraCaptureGroupBox->setEnabled(true);
-}
-
-void MainWindow::onProcessFinished() {
+    ui->cameraRoiGroupBox->setEnabled(true);
     ui->cameraStartCaptureButton->setEnabled(true);
-    ui->cameraStopCaptureButton->setEnabled(false);
+
+    ui->cameraComboBox->setEnabled(false);
+    ui->connectCameraButton->setEnabled(false);
+    ui->modeCameraComboBox->setEnabled(false);
+
+    ui->disconnectCameraButton->setEnabled(true);
+    ui->cameraCaptureGroupBox->setEnabled(true);
 }
 
-// **************************** Slots ********************************* //
-
-void MainWindow::updateFrame(const QImage &frame){
-    displayScene->addPixmap(QPixmap::fromImage(frame));
-}
-
-void MainWindow::updateEG(double gain, double exposure){
-    ui->cameraGainDSpinBox->setValue(gain);
-    ui->cameraExposureDSpinBox->setValue(exposure);
-}
-
-void MainWindow::showError(QString errorMsg){
-    QMessageBox::warning(this, "Внимание", errorMsg);
-}
-
-// ************************** Camera Handler ************************** //
+// ************************** Camera Connection ************************** //
 
 void MainWindow::on_findCamerasButton_clicked() {
     int num = CameraQHYCCD::searchCamera();
@@ -353,6 +416,19 @@ void MainWindow::on_disconnectCameraButton_clicked() {
         QMessageBox::warning(this,"Внимание","Камера отключена.");
 }
 
+// ************************** Camera Settings *************************** //
+
+void MainWindow::on_cameraBitComboBox_currentIndexChanged(int) {
+    if(ui->cameraBitComboBox->currentIndex() == 0)
+        emit bitChanged(bit8);
+    else
+        emit bitChanged(bit16);
+}
+
+void MainWindow::on_cameraFpsSpinBox_valueChanged(int value) {
+    emit fpsChanged(value);
+}
+
 void MainWindow::on_cameraGainDSpinBox_valueChanged(double val) {
     ui->cameraGainHSlider->setValue(val);
     emit EGChanged(ui->cameraGainDSpinBox->value(),
@@ -373,13 +449,6 @@ void MainWindow::on_cameraExposureHSlider_valueChanged(int val){
     ui->cameraExposureDSpinBox->setValue(val * 1000);
 }
 
-void MainWindow::on_cameraDepthComboBox_currentIndexChanged(int index) {
-    if(ui->cameraDepthComboBox->currentIndex() == 0)
-        emit depthChanged(bit8);
-    else
-        emit depthChanged(bit16);
-}
-
 void MainWindow::on_cameraSetRoiButton_clicked() {
     RoiBox roi;
     roi.startX = ui->cameraStartXSpinBox->value();
@@ -391,6 +460,34 @@ void MainWindow::on_cameraSetRoiButton_clicked() {
     emit roiChanged(roi);
 }
 
+// ************************** Image Processing ************************** //
+
+void MainWindow::on_debayerCheckBox_clicked(bool enabled) {
+
+}
+
+void MainWindow::on_whiteBalanceCheckBox_clicked(bool enabled) {
+
+}
+
+void MainWindow::on_contrastEnableCheckBox_clicked(bool enabled) {
+
+}
+
+void MainWindow::on_contrastAlphaSpinBox_valueChanged(double value) {
+
+}
+
+void MainWindow::on_gammaContrastEnableCheckBox_clicked(bool enabled) {
+
+}
+
+void MainWindow::on_gammaCoeffSpinBox_valueChanged(double value) {
+
+}
+
+// ************************ Camera Image Capture ************************ //
+
 void MainWindow::on_cameraStartCaptureButton_clicked() {
     processor.runProcess();
     ui->cameraStartCaptureButton->setEnabled(false);
@@ -400,6 +497,8 @@ void MainWindow::on_cameraStartCaptureButton_clicked() {
 void MainWindow::on_cameraStopCaptureButton_clicked() {
     processor.stopProcess();
 }
+
+// ************************** Camera Focusing *************************** //
 
 void MainWindow::on_cameraEnableFocus_cliked(bool enabled) {
     if(enabled)
@@ -424,7 +523,29 @@ void MainWindow::on_cameraFocusButton_clicked() {
 
 }
 
-// **************************** Objective ****************************** //
+// ************************ Camera AutoExposure ************************* //
+
+void MainWindow::on_autoExposureCheckBox_clicked() {
+
+}
+
+void MainWindow::on_maxPercentHSlider_valueChanged(int value) {
+
+}
+
+void MainWindow::on_meanHSlider_valueChanged(int value) {
+
+}
+
+void MainWindow::on_maxRelCoeffHSlider_valueChanged(int value) {
+
+}
+
+void MainWindow::on_minRelCoeffHSlider_valueChanged(int value) {
+
+}
+
+// ************************* Objective Control ************************** //
 
 void MainWindow::on_objectiveComFindButton_clicked() {
     auto ports = QSerialPortInfo::availablePorts();

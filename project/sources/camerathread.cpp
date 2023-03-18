@@ -23,23 +23,7 @@ void CameraThread::run() {
 
             ////////////////  Установка настроек камеры  /////////////////
             updateControlsMutex.lock();
-            if(isEGChanged) {
-                isEGChanged = false;
-                pCamera->setExposure(exposureToSet);
-                pCamera->setGain(gainToSet);
-            }
-
-            if(isBitChanged) {
-                isBitChanged = false;
-                pCamera->setImageBitMode(bitToSet);
-            }
-
-            if(roiChanged) {
-                roiChanged = false;
-                pCamera->setImageSize(roiToSet.startX, roiToSet.startY,
-                                      roiToSet.sizeX, roiToSet.sizeY);
-            }
-
+            setSettings();
             updateControlsMutex.unlock();
             /////////////////////////////////////////////////////////////
 
@@ -53,6 +37,8 @@ void CameraThread::run() {
             frameReady = false;
         }
     }
+    else
+        emit hardFault("Невозможно начать съемку!\nПроверьте соединение");
 }
 
 bool CameraThread::connectToCamera(char *id, StreamMode mode) {
@@ -73,7 +59,6 @@ bool CameraThread::connectToCamera(char *id, StreamMode mode) {
             pCamera->setImageBitMode(bit16);
         return true;
     }
-
     else
         return false;
 }
@@ -98,9 +83,13 @@ bool CameraThread::getControlSettings(CameraControls control, double& min, doubl
         currentVal = pCamera->getGain();
         gainToSet = currentVal;
     }
-    else if(exposure) {
+    else if(control == exposure) {
         currentVal = pCamera->getExposure();
         exposureToSet = currentVal;
+    }
+    else if(control == fps){
+        currentVal = pCamera->getFps();
+        fpsToSet = currentVal;
     }
     else
         return false;
@@ -111,23 +100,7 @@ bool CameraThread::getControlSettings(CameraControls control, double& min, doubl
 
 void CameraThread::startSingleCapture() {
     ////////////////  Установка настроек камеры  /////////////////
-    if(isEGChanged) {
-        isEGChanged = false;
-        pCamera->setExposure(exposureToSet);
-        pCamera->setGain(gainToSet);
-    }
-
-    if(isBitChanged) {
-        isBitChanged = false;
-        pCamera->setImageBitMode(bitToSet);
-    }
-
-    if(roiChanged) {
-        roiChanged = false;
-        pCamera->setImageSize(roiToSet.startX, roiToSet.startY,
-                              roiToSet.sizeX, roiToSet.sizeY);
-    }
-
+    setSettings();
     /////////////////////////////////////////////////////////////
 
     if(pCamera->startSingleCapture()) {
@@ -152,17 +125,48 @@ CamParameters CameraThread::getParams() const {
 
 }
 
+void CameraThread::setSettings() {
+    if(isBitChanged) {
+        isBitChanged = false;
+        pCamera->setImageBitMode(bitToSet);
+    }
+
+    if(isFpsChanged) {
+        isFpsChanged = false;
+        pCamera->setFps(fpsToSet);
+    }
+
+    if(isEGChanged) {
+        isEGChanged = false;
+        pCamera->setExposure(exposureToSet);
+        pCamera->setGain(gainToSet);
+    }
+
+
+    if(isRoiChanged) {
+        isRoiChanged = false;
+        pCamera->setImageSize(roiToSet.startX, roiToSet.startY,
+                              roiToSet.sizeX, roiToSet.sizeY);
+    }
+}
+
+void CameraThread::onBitChanged(BitMode bit) {
+    QMutexLocker locker(&updateControlsMutex);
+    this->bitToSet = bit;
+    this->isBitChanged = true;
+}
+
+void CameraThread::onFpsChanged(double fps) {
+    QMutexLocker locker(&updateControlsMutex);
+    this->fpsToSet = fps;
+    this->isFpsChanged = true;
+}
+
 void CameraThread::onEGChanged(double gain, double exposure) {
     QMutexLocker locker(&updateControlsMutex);
     this->gainToSet = gain;
     this->exposureToSet = exposure;
     this->isEGChanged = true;
-}
-
-void CameraThread::onDepthChanged(BitMode bit) {
-    QMutexLocker locker(&updateControlsMutex);
-    this->bitToSet = bit;
-    this->isBitChanged = true;
 }
 
 void CameraThread::onRoiChanged(RoiBox roi) {
@@ -175,12 +179,12 @@ void CameraThread::onRoiChanged(RoiBox roi) {
         roi.startY = 0;
         roi.sizeX = params.mMaximgw;
         roi.sizeY = params.mMaximgh;
-        this->roiChanged = true;
+        this->isRoiChanged = true;
     }
     else if((roi.startX + roi.sizeX <= params.mMaximgw) && (roi.startY + roi.sizeY <= params.mMaximgh)) {
         this->roiToSet = roi;
-        this->roiChanged = true;
+        this->isRoiChanged = true;
     }
     else
-        emit error("Заданный размер выходит за пределы допустимого размера!\n");
+        emit softFault("Заданный размер выходит за пределы допустимого размера!\n");
 }

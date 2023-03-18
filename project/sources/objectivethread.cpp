@@ -95,7 +95,7 @@ void ObjectiveThread::setIsMono(bool newIsMono) {
     isMono = newIsMono;
 }
 
-void ObjectiveThread::onAutoExposureEnabled(double status, double gain, double exposure) {
+void ObjectiveThread::onAutoExposureEnabled(bool status, double gain, double exposure) {
     QMutexLocker locker(&updateSettingsMutex);
     this->mAutoExposureOn = status;
     this->mCurrentGain = gain;
@@ -107,7 +107,7 @@ void ObjectiveThread::onAutoExposureSettingChanged(AutoExposureParams params) {
     autoExposureHandler->setParams(params);
 }
 
-void ObjectiveThread::focusingEnabled(bool status, cv::Rect roi) {
+void ObjectiveThread::onFocusingEnabled(bool status, cv::Rect roi) {
     QMutexLocker locker(&updateSettingsMutex);
     if(pObjective && pObjective->isContollerActive()) {
         this->mFocusingOn = status;

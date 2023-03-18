@@ -64,9 +64,9 @@ private:
     ////////////////////////////////////////
 
 private slots:
-    void onAutoExposureEnabled(double status, double gain, double exposure);
+    void onAutoExposureEnabled(bool status, double gain, double exposure);
     void onAutoExposureSettingChanged(AutoExposureParams params);
-    void focusingEnabled(bool status, cv::Rect roi);
+    void onFocusingEnabled(bool status, cv::Rect roi);
 
 signals:
     void newFocusingResult(const QImage& frame,double position);

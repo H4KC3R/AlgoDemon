@@ -8,7 +8,6 @@
 #include <QMainWindow>
 #include <QMap>
 
-#include "cameraqhyccd.h"
 #include "appprocessor.h"
 
 #include "widgets/viewportcontroller.h"
@@ -31,58 +30,69 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-    void uiSignalSlotsInit();
-    void setInitialGUIState();
-    void initializeDisplay();
-    void proccessorSignalSlotsInit();
-    void initializeCameraControls();
-
 signals:
-    void newImageProcessingFlags(ImageProcessingFlags imageProcessingFlags);
-    void autoExposureEnabled(double gain, double exposure);
-
+    void bitChanged(BitMode bit);
+    void fpsChanged(double fps);
     void EGChanged(double gain, double exposure);
-    void depthChanged(BitMode bit);
     void roiChanged(RoiBox roi);
+
+    void newImageProcessingFlags(ImageProcessingFlags imageProcessingFlags);
+
+    void autoExposureEnabled(bool status, double gain, double exposure);
+    void autoExposureSettingChanged(AutoExposureParams params);
+    void focusingEnabled(bool status, cv::Rect roi);
 
 private slots:
     void onProcessFinished();
 
+    void onHardFault(QString errorMsg);
+    void onSoftFault(QString errorMsg);
+
     void updateFrame(const QImage &frame);
+
+    void updateFocusingResult(const QImage& frame,double position);
     void updateEG(double gain, double exposure);
-    void showError(QString errorMsg);
+    void onObjectiveError(QString msg);
+    void onImageProcessingError(QString msg);
 
 private:
     Ui::MainWindow *ui;
+
+    QMap<QString, QString> cameraIdModel;
+    AppProcessor processor;
 
     dororo::GraphicsView* displayView;
     QGraphicsScene* displayScene;
     QGraphicsPixmapItem* imageMapItem;
     dororo::ViewportController* roiController;
 
-    // ****************************** Camera ****************************** //
+    // *********************************************************************** //
 
-    void showImage(cv::Mat& image);
+    void uiSignalSlotsInit();
 
-    void initializeCameraControls(CameraQHYCCD* mCamera);
+    void setInitialGUIState();
 
-    void startSingleCapture();
+    void initializeDisplay();
 
-    void startLiveCapture();
+    void proccessorSignalSlotsInit();
 
-    void startCapture();
+    void objectiveSignalSlotsInit();
 
-    void stopCapture();
+    void initializeCameraControls();
 
-    void processImage();
-
-    // ************************** Camera Handler ************************** //
+    // ************************** Camera Connection ************************** //
 
     void on_findCamerasButton_clicked();
 
     void on_connectCameraButton_clicked();
 
     void on_disconnectCameraButton_clicked();
+
+    // ************************** Camera Settings *************************** //
+
+    void on_cameraBitComboBox_currentIndexChanged(int index);
+
+    void on_cameraFpsSpinBox_valueChanged(int value);
 
     void on_cameraGainDSpinBox_valueChanged(double val);
 
@@ -92,19 +102,47 @@ private:
 
     void on_cameraExposureHSlider_valueChanged(int val);
 
-    void on_cameraDepthComboBox_currentIndexChanged(int index);
-
     void on_cameraSetRoiButton_clicked();
+
+    // ************************** Image Processing ************************** //
+
+    void on_debayerCheckBox_clicked(bool enabled);
+
+    void on_whiteBalanceCheckBox_clicked(bool enabled);
+
+    void on_contrastEnableCheckBox_clicked(bool enabled);
+
+    void on_contrastAlphaSpinBox_valueChanged(double value);
+
+    void on_gammaContrastEnableCheckBox_clicked(bool enabled);
+
+    void on_gammaCoeffSpinBox_valueChanged(double value);
+
+    // ************************ Camera Image Capture ************************ //
 
     void on_cameraStartCaptureButton_clicked();
 
     void on_cameraStopCaptureButton_clicked();
 
+    // ************************** Camera Focusing *************************** //
+
     void on_cameraEnableFocus_cliked(bool enabled);
 
     void on_cameraFocusButton_clicked();
 
-    // **************************** Objective ****************************** //
+    // ************************ Camera AutoExposure ************************* //
+
+    void on_autoExposureCheckBox_clicked();
+
+    void on_maxPercentHSlider_valueChanged(int value);
+
+    void on_meanHSlider_valueChanged(int value);
+
+    void on_maxRelCoeffHSlider_valueChanged(int value);
+
+    void on_minRelCoeffHSlider_valueChanged(int value);
+
+    // ************************* Objective Control ************************** //
 
     void on_objectiveComFindButton_clicked();
 
@@ -119,10 +157,6 @@ private:
     void on_objectiveSetFocusButton_clicked();
 
     void on_objectiveGetFocusButton_clicked();
-
-private:
-    QMap<QString, QString> cameraIdModel;
-    AppProcessor processor;
 
     // QWidget interface
 protected:

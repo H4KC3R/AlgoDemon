@@ -32,11 +32,7 @@ private:
     QMutex updateMembersMutex;
     volatile bool stopped;
 
-    double currentExposure;
-    double currentGain;
-
     cv::Mat cvFrame;
-    cv::Mat cvFrameGrayscale;
 
     ////////////////  Флаги /////////////////
     bool isMono;
@@ -45,8 +41,8 @@ private:
     bool contrastOn;
     bool gammaContrastOn;
 
-    double contrastParam;
-    double gammaContrastParam;
+    double contrastValue;
+    double gammaContrastValue;
     ////////////////////////////////////////
 
     // QThread interface

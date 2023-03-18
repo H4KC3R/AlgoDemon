@@ -113,8 +113,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>336</width>
-                <height>795</height>
+                <width>285</width>
+                <height>731</height>
                </rect>
               </property>
               <attribute name="label">
@@ -339,7 +339,7 @@
                    </widget>
                   </item>
                   <item>
-                   <widget class="QFrame" name="cameraDepthFrame">
+                   <widget class="QFrame" name="cameraBitFrame">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -366,14 +366,14 @@
                       <number>0</number>
                      </property>
                      <item>
-                      <widget class="QLabel" name="cameraDepthLabel">
+                      <widget class="QLabel" name="cameraBitLabel">
                        <property name="text">
                         <string>Бит</string>
                        </property>
                       </widget>
                      </item>
                      <item>
-                      <widget class="QComboBox" name="cameraDepthComboBox">
+                      <widget class="QComboBox" name="cameraBitComboBox">
                        <property name="enabled">
                         <bool>false</bool>
                        </property>
@@ -387,6 +387,44 @@
                          <string>16bits</string>
                         </property>
                        </item>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QFrame" name="cameraFpsFrame">
+                    <property name="frameShape">
+                     <enum>QFrame::StyledPanel</enum>
+                    </property>
+                    <property name="frameShadow">
+                     <enum>QFrame::Raised</enum>
+                    </property>
+                    <layout class="QHBoxLayout" name="horizontalLayout_4">
+                     <property name="leftMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="topMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="rightMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="bottomMargin">
+                      <number>0</number>
+                     </property>
+                     <item>
+                      <widget class="QLabel" name="cameraFpsLabel">
+                       <property name="text">
+                        <string>FPS</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QSpinBox" name="cameraFpsSpinBox">
+                       <property name="enabled">
+                        <bool>false</bool>
+                       </property>
                       </widget>
                      </item>
                     </layout>
@@ -751,8 +789,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>353</width>
-                <height>552</height>
+                <width>299</width>
+                <height>578</height>
                </rect>
               </property>
               <attribute name="label">
@@ -799,6 +837,18 @@
                    <widget class="QFrame" name="focusControlFrame">
                     <property name="enabled">
                      <bool>true</bool>
+                    </property>
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>300</width>
+                      <height>300</height>
+                     </size>
                     </property>
                     <property name="frameShape">
                      <enum>QFrame::StyledPanel</enum>
@@ -944,24 +994,17 @@
                         <property name="bottomMargin">
                          <number>0</number>
                         </property>
-                        <item row="2" column="1">
-                         <widget class="QSpinBox" name="contrastAlphaSpinBox">
-                          <property name="enabled">
-                           <bool>false</bool>
-                          </property>
-                         </widget>
-                        </item>
-                        <item row="2" column="0">
-                         <widget class="QLabel" name="contrastAlphaLabel">
-                          <property name="text">
-                           <string>Коэффицент</string>
-                          </property>
-                         </widget>
-                        </item>
                         <item row="1" column="0">
                          <widget class="QLabel" name="contrastLabel">
                           <property name="text">
                            <string>Контраст</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="3" column="0">
+                         <widget class="QLabel" name="contrastAlphaLabel">
+                          <property name="text">
+                           <string>Коэффицент</string>
                           </property>
                          </widget>
                         </item>
@@ -972,17 +1015,14 @@
                           </property>
                          </widget>
                         </item>
+                        <item row="3" column="1">
+                         <widget class="QDoubleSpinBox" name="contrastAlphaSpinBox">
+                          <property name="enabled">
+                           <bool>false</bool>
+                          </property>
+                         </widget>
+                        </item>
                        </layout>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QSlider" name="contrastHSlider">
-                       <property name="enabled">
-                        <bool>false</bool>
-                       </property>
-                       <property name="orientation">
-                        <enum>Qt::Horizontal</enum>
-                       </property>
                       </widget>
                      </item>
                      <item>
@@ -1015,13 +1055,6 @@
                         <property name="bottomMargin">
                          <number>0</number>
                         </property>
-                        <item row="1" column="3">
-                         <widget class="QSpinBox" name="gammaCoeffSpinBox">
-                          <property name="enabled">
-                           <bool>false</bool>
-                          </property>
-                         </widget>
-                        </item>
                         <item row="1" column="1">
                          <widget class="QLabel" name="gammaCoeffLabel">
                           <property name="text">
@@ -1043,17 +1076,14 @@
                           </property>
                          </widget>
                         </item>
+                        <item row="1" column="3">
+                         <widget class="QDoubleSpinBox" name="gammaCoeffSpinBox">
+                          <property name="enabled">
+                           <bool>false</bool>
+                          </property>
+                         </widget>
+                        </item>
                        </layout>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QSlider" name="gammaContrastHSlider">
-                       <property name="enabled">
-                        <bool>false</bool>
-                       </property>
-                       <property name="orientation">
-                        <enum>Qt::Horizontal</enum>
-                       </property>
                       </widget>
                      </item>
                     </layout>
@@ -1069,8 +1099,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>353</width>
-                <height>552</height>
+                <width>299</width>
+                <height>578</height>
                </rect>
               </property>
               <attribute name="label">
@@ -1663,7 +1693,7 @@
      <x>0</x>
      <y>0</y>
      <width>986</width>
-     <height>25</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>

@@ -11,8 +11,8 @@ ProcessingThread::ProcessingThread(FramePipeline *pipeline, bool isMonoFlag) : Q
     contrastOn = false;
     gammaContrastOn = false;
 
-    contrastParam = 1;
-    gammaContrastParam = 1;
+    contrastValue = 1.0;
+    gammaContrastValue = 1.0;
     stopped = false;
 }
 
@@ -46,7 +46,6 @@ void ProcessingThread::run() {
         ////////////////////////////////////
         // Обработка изображения //
         ////////////////////////////////////
-        qDebug() << "Debayer";
         if(!isMono && debayerOn)
             ImageProcess::debayerImg(cvFrame, cvFrame);
 
@@ -54,10 +53,10 @@ void ProcessingThread::run() {
             ImageProcess::whiteBalanceImg(cvFrame, cvFrame);
 
         if(!isMono && contrastOn)
-            ImageProcess::contrastImg(cvFrame, cvFrame, contrastParam);
+            ImageProcess::contrastImg(cvFrame, cvFrame, contrastValue);
 
         if(!isMono && gammaContrastOn)
-            ImageProcess::gammaContrastImg(cvFrame, cvFrame, gammaContrastParam);
+            ImageProcess::gammaContrastImg(cvFrame, cvFrame, gammaContrastValue);
 
         ////////////////////////////////////
         // Конец //
@@ -79,6 +78,6 @@ void ProcessingThread::updateImageProcessingSettings(ImageProcessingFlags imageP
     this->contrastOn = imageProcessingFlags.contrastOn;
     this->gammaContrastOn = imageProcessingFlags.gammaContrastOn;
 
-    this->contrastParam = imageProcessingFlags.contrastParam;
-    this->gammaContrastParam = imageProcessingFlags.gammaContrastParam;
+    this->contrastValue = imageProcessingFlags.contrastValue;
+    this->gammaContrastValue = imageProcessingFlags.gammaContrastValue;
 }
