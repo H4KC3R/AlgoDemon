@@ -122,7 +122,6 @@ bool CameraThread::isCameraConnected() {
 
 CamParameters CameraThread::getParams() const {
     return pCamera->getCameraParameters();
-
 }
 
 void CameraThread::setSettings() {
@@ -141,7 +140,6 @@ void CameraThread::setSettings() {
         pCamera->setExposure(exposureToSet);
         pCamera->setGain(gainToSet);
     }
-
 
     if(isRoiChanged) {
         isRoiChanged = false;

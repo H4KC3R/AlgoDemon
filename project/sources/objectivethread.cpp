@@ -16,18 +16,13 @@ ObjectiveThread::ObjectiveThread(FramePipeline* pipeline, bool isMonoFlag,
     stopped = false;
     mAutoExposureOn = false;
     mFocusingOn = false;
-    currentFocusingPosition = 0;
+    currentPosition = 0;
 }
 
 ObjectiveThread::~ObjectiveThread() {
     delete autoExposureHandler;
     if(pObjective)
         delete pObjective;
-}
-
-double ObjectiveThread::findZero() {
-    QMutexLocker locker(&objectiveControlMutex);
-    return 0;
 }
 
 bool ObjectiveThread::connectObjective(const char* serialPort) {
@@ -67,7 +62,6 @@ string ObjectiveThread::setFocusing(int value) {
 string ObjectiveThread::getCurrentFocusing(double& value) {
     QMutexLocker locker(&objectiveControlMutex);
     value = pObjective->getCurrentFocusing();
-    currentFocusingPosition = value;
     return pObjective->currentError();
 }
 
@@ -111,6 +105,8 @@ void ObjectiveThread::onFocusingEnabled(bool status, cv::Rect roi) {
     QMutexLocker locker(&updateSettingsMutex);
     if(pObjective && pObjective->isContollerActive()) {
         this->mFocusingOn = status;
+        maxSharpnessMetric = 0;
+        sharpImagePositon = 0;
         myRoi = roi;
     }
 }
@@ -118,58 +114,69 @@ void ObjectiveThread::onFocusingEnabled(bool status, cv::Rect roi) {
 void ObjectiveThread::run() {
     auto frame = pFramePipeline->getFirstFrame();
     while(1) {
-           ////////////////  Остановка потока  /////////////////
-           stoppedMutex.lock();
-           if (stopped) {
-               stopped=false;
-               qDebug() << "stopped";
-               stoppedMutex.unlock();
-               break;
-           }
-           stoppedMutex.unlock();
-           /////////////////////////////////////////////////////////////
+        ////////////////  Остановка потока  /////////////////
+        stoppedMutex.lock();
+        if (stopped) {
+            stopped=false;
+            qDebug() << "stopped";
+            stoppedMutex.unlock();
+            break;
+        }
+        stoppedMutex.unlock();
+        /////////////////////////////////////////////////////////////
 
-           updateSettingsMutex.lock();
-           int type = ImageProcess::getOpenCvType((BitMode)frame->mBpp, frame->mChannels);
-           cvFrame = cv::Mat(frame->mHeight, frame->mWidth, type, frame->pData);
+        updateSettingsMutex.lock();
+        int type = ImageProcess::getOpenCvType((BitMode)frame->mBpp, frame->mChannels);
+        cvFrame = cv::Mat(frame->mHeight, frame->mWidth, type, frame->pData);
 
-           ///////// GRAYSCALE Формат /////////
-           if(!isMono)
-               cv::cvtColor(cvFrame, cvFrame, cv::COLOR_BayerRG2GRAY);
+        ///////// GRAYSCALE Формат /////////
+        if(!isMono)
+            cv::cvtColor(cvFrame, cvFrame, cv::COLOR_BayerRG2GRAY);
 
-           ////////////////////////////////////
-           // Обработка изображения //
-           ////////////////////////////////////
-           if(mAutoExposureOn) {
-               if(autoExposureHandler->correct(cvFrame, mCurrentExposure, mCurrentGain)) {
-                   mCurrentGain = autoExposureHandler->getGain();
-                   mCurrentExposure = autoExposureHandler->getExposure();
-                   emit newEGValues(mCurrentGain, mCurrentExposure);
-               }
-               else
-                   emit imageProcessingError("Неверный формат изображения!\nТребуется: 8 бит");
-           }
+        ////////////////////////////////////
+        // Обработка изображения //
+        ////////////////////////////////////
+        if(mAutoExposureOn) {
+            if(autoExposureHandler->correct(cvFrame, mCurrentExposure, mCurrentGain)) {
+                mCurrentGain = autoExposureHandler->getGain();
+                mCurrentExposure = autoExposureHandler->getExposure();
+                emit newEGValues(mCurrentGain, mCurrentExposure);
+            }
+            else
+                emit imageProcessingError("Неверный формат изображения!\nТребуется: 8 бит");
+        }
 
-           if(mFocusingOn) {
-               double result;
-               QMutexLocker locker(&objectiveControlMutex);
-               if(ImageBlurMetric::getBlurFFT(cvFrame(myRoi), result)) {
-                   currentFocusingPosition = pObjective->getCurrentFocusing();
-               }
-               else
-                   emit imageProcessingError("Изображение должно быть в GrayScale формате!\n");
-           }
+        if(mFocusingOn) {
+            double sharpnessMetric;
+            if(ImageBlurMetric::getBlurFFT(cvFrame(myRoi), sharpnessMetric)) {
+                QMutexLocker locker(&objectiveControlMutex);
+                currentPosition = (int)pObjective->getCurrentFocusing();
+                if((currentPosition + step) == 10000) {
+                    mFocusingOn = false;
+                    pObjective->setFocusing(currentPosition);
+                }
+                else {
+                    if(sharpnessMetric >= maxSharpnessMetric) {
+                        maxSharpnessMetric = sharpnessMetric;
+                        sharpImagePositon = currentPosition;
+                    }
+                    pObjective->setFocusing(currentPosition + step);
+                }
+            }
+            else
+                emit imageProcessingError("Изображение должно быть в GrayScale формате!\n");
+        }
+    }
 
-           ////////////////////////////////////
-           // Конец //
-           ////////////////////////////////////
+    ////////////////////////////////////
+    // Конец //
+    ////////////////////////////////////
 
-           qDebug() << "Objective Thread";
-           qFrame = MatToQImage(cvFrame(myRoi));
-           updateSettingsMutex.unlock();
+    qDebug() << "Objective Thread";
+    qFrame = MatToQImage(cvFrame(myRoi));
+    updateSettingsMutex.unlock();
 
-           emit newFocusingResult(qFrame, currentFocusingPosition);
-           frame = pFramePipeline->nextFrame(frame);
-       }
+    emit newFocusingResult(qFrame, currentPosition);
+    frame = pFramePipeline->nextFrame(frame);
 }
 

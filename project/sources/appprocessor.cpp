@@ -129,7 +129,10 @@ void AppProcessor::clearFramePipeline() {
 }
 
 void AppProcessor::deleteFramePipeline() {
-    delete framePipeline;
+    if(framePipeline) {
+        delete framePipeline;
+        framePipeline = nullptr;
+    }
 }
 
 

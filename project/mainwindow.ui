@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Algorithm DEMON</string>
+   <string>Algorithm Demon</string>
   </property>
   <property name="windowIcon">
    <iconset resource="resources.qrc">
@@ -106,15 +106,15 @@
               <bool>true</bool>
              </property>
              <property name="currentIndex">
-              <number>1</number>
+              <number>0</number>
              </property>
              <widget class="QWidget" name="cameraToolBoxPage">
               <property name="geometry">
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>336</width>
-                <height>837</height>
+                <width>285</width>
+                <height>731</height>
                </rect>
               </property>
               <attribute name="label">
@@ -789,8 +789,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>353</width>
-                <height>552</height>
+                <width>299</width>
+                <height>578</height>
                </rect>
               </property>
               <attribute name="label">
@@ -1020,6 +1020,15 @@
                           <property name="enabled">
                            <bool>false</bool>
                           </property>
+                          <property name="minimum">
+                           <double>1.000000000000000</double>
+                          </property>
+                          <property name="maximum">
+                           <double>3.000000000000000</double>
+                          </property>
+                          <property name="value">
+                           <double>1.000000000000000</double>
+                          </property>
                          </widget>
                         </item>
                        </layout>
@@ -1099,8 +1108,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>353</width>
-                <height>552</height>
+                <width>299</width>
+                <height>578</height>
                </rect>
               </property>
               <attribute name="label">
@@ -1693,7 +1702,7 @@
      <x>0</x>
      <y>0</y>
      <width>986</width>
-     <height>25</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>

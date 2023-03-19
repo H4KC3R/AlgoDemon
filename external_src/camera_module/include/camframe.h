@@ -4,7 +4,6 @@
 #include <chrono>
 #include <algorithm>
 #include <cstring>
-#include <QCoreApplication>
 
 class CamFrame
 {

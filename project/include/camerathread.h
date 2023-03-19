@@ -1,5 +1,6 @@
 #ifndef CAMERATHREAD_H
 #define CAMERATHREAD_H
+#include <QCoreApplication>
 #include <QThread>
 #include <QMutex>
 #include "structures.h"

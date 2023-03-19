@@ -22,8 +22,6 @@ public:
     AutoExposureHandler* autoExposureHandler;
 
 public:
-    double findZero();
-
     bool connectObjective(const char* serialPort);
     bool disconnectObjective();
     string setDiaphragmLevel(double value);
@@ -55,7 +53,11 @@ private:
     double mCurrentGain;
 
     cv::Rect myRoi;
-    double currentFocusingPosition;
+
+    double maxSharpnessMetric;
+    int currentPosition;
+    int sharpImagePositon;
+    int step = 100;
 
     ////////////////  Флаги /////////////////
     bool isMono;

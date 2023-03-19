@@ -15,7 +15,7 @@ class AppProcessor : public QObject
 public:
     AppProcessor();
     ~AppProcessor();
-    FramePipeline* framePipeline;
+    FramePipeline* framePipeline = nullptr;
 
     CameraThread *cameraThread;
     ProcessingThread* processingThread;
