@@ -1,0 +1,79 @@
+* {
+background-color: #1d1c1f;
+}
+
+*:disabled {
+color: rgb(98, 98, 98);
+}
+
+QLineEdit {
+border-radius: 10px;
+border: 2px solid #FF00CC;
+}
+
+QWidget {
+color: #CC00FF;
+}
+
+QLabel {
+color: #FF00FF;
+}
+
+QComboBox {
+border: 1px solid #F2EA02;
+}
+
+QDoubleSpinBox {
+border: 1px solid #F2EA02;
+}
+
+QSpinBox {
+border: 1px solid #F2EA02;
+}
+
+QPushButton {
+border-radius: 1px;
+border: 1px solid #F2EA02;
+}
+
+QPushButton:hover {
+background-color: #666;
+}
+
+QPushButton:pressed {
+background-color: #888;
+}
+
+QSlider::groove:horizontal {
+border: 1px solid #9D00FF;
+height: 5px;
+border-radius: 3px;
+}
+
+QSlider::handle:horizontal
+{
+background: #FF00FF;
+border: 3px solid black;
+width: 10px;
+margin: -5px 0;
+}
+
+QSlider::add-page:qlineargradient {
+background: #9D00FF;
+border-top-right-radius: 9px;
+border-bottom-right-radius: 9px;
+border-top-left-radius: 0px;
+border-bottom-left-radius: 0px;
+}
+
+QSlider::sub-page:qlineargradient {
+background: blue;
+border-top-right-radius: 0px;
+border-bottom-right-radius: 0px;
+border-top-left-radius: 9px;
+border-bottom-left-radius: 9px;
+}
+
+QTabBar::tab {
+background: #1d1c1f;
+}
