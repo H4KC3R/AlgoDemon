@@ -27,6 +27,8 @@ public:
     bool runProcess();
     void stopProcess();
 
+    void runSingle();
+
     void stopCameraThread();
     void stopProcessingThread();
     void stopObjectiveThread();

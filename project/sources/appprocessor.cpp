@@ -96,6 +96,16 @@ void AppProcessor::stopProcess() {
     }
 }
 
+void AppProcessor::runSingle() {
+    framePipeline->clearBuffer();
+    framePipeline->activatePipelineRead(true);
+
+    cameraThread->startSingleCapture();
+    processingThread->startSingleProcess();
+
+    emit processFinished();
+}
+
 void AppProcessor::stopCameraThread() {
     cameraThread->stopLiveCaptureThread();
     framePipeline->activatePipelineRead(false);

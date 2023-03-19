@@ -22,6 +22,8 @@ public:
     ProcessingThread(FramePipeline* pipeline, bool isMonoFlag);
 
     ~ProcessingThread();
+
+    void startSingleProcess();
     void stopProcessingThread();
 
 private:

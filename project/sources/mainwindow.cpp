@@ -511,7 +511,11 @@ void MainWindow::on_gammaCoeffSpinBox_valueChanged(double value) {
 // ************************ Camera Image Capture ************************ //
 
 void MainWindow::on_cameraStartCaptureButton_clicked() {
-    processor.runProcess();
+    if(processor.cameraThread->getIsLive())
+        processor.runProcess();
+    else
+        processor.runSingle();
+
     ui->cameraStartCaptureButton->setEnabled(false);
     ui->cameraStopCaptureButton->setEnabled(true);
 }
@@ -548,21 +552,25 @@ void MainWindow::on_autoExposureCheckBox_clicked() {
 }
 
 void MainWindow::on_maxPercentHSlider_valueChanged(int value) {
+    ui->maxPercenValueLabel->setText(QString::number(value));
     param.maxPercent = value;
     emit autoExposureSettingChanged(param);
 }
 
 void MainWindow::on_meanHSlider_valueChanged(int value) {
+    ui->meanValueLabel->setText(QString::number(value));
     param.mean = value;
     emit autoExposureSettingChanged(param);
 }
 
 void MainWindow::on_maxRelCoeffHSlider_valueChanged(int value) {
+    ui->maxRelCoeffValueLabel->setText(QString::number(value));
     param.maxRelCoeff = value;
     emit autoExposureSettingChanged(param);
 }
 
 void MainWindow::on_minRelCoeffHSlider_valueChanged(int value) {
+    ui->minRelCoeffValueLabel->setText(QString::number(value));
     param.minRelCoef = value;
     emit autoExposureSettingChanged(param);
 }

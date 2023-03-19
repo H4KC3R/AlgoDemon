@@ -85,6 +85,8 @@ private:
 
     void initializeStructures();
 
+    void SingleCapture();
+
     // ************************** Camera Connection ************************** //
 
     void on_findCamerasButton_clicked();

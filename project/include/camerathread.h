@@ -23,8 +23,11 @@ public:
 
     CamParameters getParams() const;
 
+    bool getIsLive() const;
+
 private:
     bool isConnected = false;
+    bool isLive = false;
 
     CameraQHYCCD* pCamera;
     FramePipeline* pFramePipeline;

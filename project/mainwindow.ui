@@ -32,7 +32,7 @@
    </property>
    <property name="font">
     <font>
-     <family>MS Shell Dlg 2</family>
+     <family>Segoe UI</family>
      <pointsize>10</pointsize>
      <italic>false</italic>
      <bold>false</bold>
@@ -41,6 +41,7 @@
    <property name="styleSheet">
     <string notr="true">* {
 	background-color: #1d1c1f;
+	font: 10pt &quot;Segoe UI&quot;;
 }
 
 *:disabled{
@@ -208,15 +209,15 @@ QTabBar::tab  {
               <bool>false</bool>
              </property>
              <property name="currentIndex">
-              <number>0</number>
+              <number>2</number>
              </property>
              <widget class="QWidget" name="cameraToolBoxPage">
               <property name="geometry">
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>282</width>
-                <height>705</height>
+                <width>318</width>
+                <height>768</height>
                </rect>
               </property>
               <attribute name="label">
@@ -551,7 +552,7 @@ QTabBar::tab  {
                       <number>0</number>
                      </property>
                      <property name="bottomMargin">
-                      <number>0</number>
+                      <number>5</number>
                      </property>
                      <item>
                       <widget class="QDoubleSpinBox" name="cameraGainDSpinBox">
@@ -674,7 +675,7 @@ QTabBar::tab  {
                       <number>0</number>
                      </property>
                      <property name="bottomMargin">
-                      <number>0</number>
+                      <number>5</number>
                      </property>
                      <item>
                       <widget class="QLabel" name="label_2">
@@ -891,8 +892,8 @@ QTabBar::tab  {
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>325</width>
-                <height>568</height>
+                <width>335</width>
+                <height>557</height>
                </rect>
               </property>
               <attribute name="label">
@@ -1096,13 +1097,6 @@ QTabBar::tab  {
                         <property name="bottomMargin">
                          <number>0</number>
                         </property>
-                        <item row="1" column="0">
-                         <widget class="QLabel" name="contrastLabel">
-                          <property name="text">
-                           <string>Контраст</string>
-                          </property>
-                         </widget>
-                        </item>
                         <item row="3" column="0">
                          <widget class="QLabel" name="contrastAlphaLabel">
                           <property name="text">
@@ -1113,7 +1107,7 @@ QTabBar::tab  {
                         <item row="1" column="1">
                          <widget class="QCheckBox" name="contrastEnableCheckBox">
                           <property name="text">
-                           <string/>
+                           <string>Контраст</string>
                           </property>
                          </widget>
                         </item>
@@ -1166,6 +1160,13 @@ QTabBar::tab  {
                         <property name="bottomMargin">
                          <number>0</number>
                         </property>
+                        <item row="1" column="3">
+                         <widget class="QDoubleSpinBox" name="gammaCoeffSpinBox">
+                          <property name="enabled">
+                           <bool>false</bool>
+                          </property>
+                         </widget>
+                        </item>
                         <item row="1" column="1">
                          <widget class="QLabel" name="gammaCoeffLabel">
                           <property name="text">
@@ -1173,24 +1174,10 @@ QTabBar::tab  {
                           </property>
                          </widget>
                         </item>
-                        <item row="0" column="1">
-                         <widget class="QLabel" name="gammaContrastLabel">
-                          <property name="text">
-                           <string>Гамма контраст</string>
-                          </property>
-                         </widget>
-                        </item>
                         <item row="0" column="3">
                          <widget class="QCheckBox" name="gammaContrastEnableCheckBox">
                           <property name="text">
-                           <string/>
-                          </property>
-                         </widget>
-                        </item>
-                        <item row="1" column="3">
-                         <widget class="QDoubleSpinBox" name="gammaCoeffSpinBox">
-                          <property name="enabled">
-                           <bool>false</bool>
+                           <string>Гамма контраст</string>
                           </property>
                          </widget>
                         </item>
@@ -1210,8 +1197,8 @@ QTabBar::tab  {
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>325</width>
-                <height>568</height>
+                <width>335</width>
+                <height>557</height>
                </rect>
               </property>
               <attribute name="label">
@@ -1324,57 +1311,56 @@ QTabBar::tab  {
                    <number>0</number>
                   </property>
                   <property name="bottomMargin">
-                   <number>0</number>
+                   <number>5</number>
                   </property>
-                  <item row="0" column="0">
-                   <widget class="QLabel" name="maxPercentLabel">
-                    <property name="text">
-                     <string>Max Percent</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="2" column="0">
-                   <widget class="QSlider" name="maxPercentHSlider">
-                    <property name="enabled">
-                     <bool>false</bool>
-                    </property>
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                   </widget>
-                  </item>
                   <item row="5" column="0">
-                   <widget class="QLabel" name="maxRelCoeffLabel">
-                    <property name="text">
-                     <string>maxRelCoeff</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="8" column="0">
-                   <widget class="QLabel" name="minRelCoeffLabel">
-                    <property name="text">
-                     <string>minRelCoeff</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="3" column="0">
                    <widget class="QLabel" name="meanLabelHSlider">
                     <property name="text">
                      <string>Mean</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="4" column="0">
-                   <widget class="QSlider" name="meanHSlider">
+                  <item row="11" column="0">
+                   <widget class="QSlider" name="maxRelCoeffHSlider">
                     <property name="enabled">
                      <bool>false</bool>
+                    </property>
+                    <property name="value">
+                     <number>99</number>
                     </property>
                     <property name="orientation">
                      <enum>Qt::Horizontal</enum>
                     </property>
                    </widget>
                   </item>
-                  <item row="9" column="0">
+                  <item row="4" column="0">
+                   <widget class="QSlider" name="maxPercentHSlider">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
+                    <property name="value">
+                     <number>99</number>
+                    </property>
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="0">
+                   <widget class="QLabel" name="maxPercenValueLabel">
+                    <property name="text">
+                     <string>99</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="13" column="0">
+                   <widget class="QLabel" name="minRelCoeffLabel">
+                    <property name="text">
+                     <string>minRelCoeff</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="15" column="0">
                    <widget class="QSlider" name="minRelCoeffHSlider">
                     <property name="enabled">
                      <bool>false</bool>
@@ -1384,13 +1370,54 @@ QTabBar::tab  {
                     </property>
                    </widget>
                   </item>
+                  <item row="1" column="0">
+                   <widget class="QLabel" name="maxPercentLabel">
+                    <property name="text">
+                     <string>Max Percent</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="9" column="0">
+                   <widget class="QLabel" name="maxRelCoeffValueLabel">
+                    <property name="text">
+                     <string>99</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="8" column="0">
+                   <widget class="QLabel" name="maxRelCoeffLabel">
+                    <property name="text">
+                     <string>maxRelCoeff</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="6" column="0">
+                   <widget class="QLabel" name="meanValueLabel">
+                    <property name="text">
+                     <string>210</string>
+                    </property>
+                   </widget>
+                  </item>
                   <item row="7" column="0">
-                   <widget class="QSlider" name="maxRelCoeffHSlider">
+                   <widget class="QSlider" name="meanHSlider">
                     <property name="enabled">
                      <bool>false</bool>
                     </property>
+                    <property name="maximum">
+                     <number>255</number>
+                    </property>
+                    <property name="value">
+                     <number>210</number>
+                    </property>
                     <property name="orientation">
                      <enum>Qt::Horizontal</enum>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="14" column="0">
+                   <widget class="QLabel" name="minRelCoeffValueLabel">
+                    <property name="text">
+                     <string>0</string>
                     </property>
                    </widget>
                   </item>
@@ -1510,6 +1537,9 @@ QTabBar::tab  {
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">color: rgb(255, 0, 0);</string>
                 </property>
                 <property name="text">
                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Внимание! Необходимо задать файл&lt;br/&gt;с корректными значениями аппертуры,&lt;br/&gt;для вашей модели!&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -1704,7 +1734,7 @@ QTabBar::tab  {
        </sizepolicy>
       </property>
       <property name="frameShape">
-       <enum>QFrame::Box</enum>
+       <enum>QFrame::NoFrame</enum>
       </property>
       <property name="frameShadow">
        <enum>QFrame::Raised</enum>
@@ -1728,7 +1758,7 @@ QTabBar::tab  {
           <string notr="true"/>
          </property>
          <property name="frameShape">
-          <enum>QFrame::StyledPanel</enum>
+          <enum>QFrame::NoFrame</enum>
          </property>
          <property name="frameShadow">
           <enum>QFrame::Raised</enum>

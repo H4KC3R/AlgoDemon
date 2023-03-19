@@ -54,6 +54,7 @@ bool CameraThread::connectToCamera(char *id, StreamMode mode) {
         CamParameters params = pCamera->getCameraParameters();
         uint32_t length = params.mMaximgh * params.mMaximgw * 2;
         frame.allocateFrame(length);
+        isLive = params.mIsLiveMode;
 
         if(!params.mIsLiveMode)
             pCamera->setImageBitMode(bit16);
@@ -122,6 +123,10 @@ bool CameraThread::isCameraConnected() {
 
 CamParameters CameraThread::getParams() const {
     return pCamera->getCameraParameters();
+}
+
+bool CameraThread::getIsLive() const {
+    return isLive;
 }
 
 void CameraThread::setSettings() {
