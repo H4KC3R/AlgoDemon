@@ -13,7 +13,7 @@ class CameraThread : public QThread
 
 public:
     CameraThread(FramePipeline* pipeline);
-    bool connectToCamera(char* id, StreamMode mode);
+    bool connectToCamera(char* id, StreamMode mode, BitMode bit);
     void disconnectCamera();
     bool getControlSettings(CameraControls control, double& min, double& max, double& step, double& currentVal);
 
@@ -37,9 +37,6 @@ private:
     volatile bool stopped;
 
     ////////////////  Флаги /////////////////
-    volatile bool isBitChanged;
-    BitMode bitToSet;
-
     volatile bool isFpsChanged;
     double fpsToSet;
 
@@ -57,7 +54,6 @@ private:
 public slots:
     void onFpsChanged(double fps);
     void onEGChanged(double gain, double exposure);
-    void onBitChanged(BitMode bit);
     void onRoiChanged(RoiBox roi);
 
 signals:

@@ -24,11 +24,11 @@ AppProcessor::~AppProcessor() {
     deleteObjectiveThread();
 }
 
-bool AppProcessor::connectToCamera(char *id, StreamMode mode) {
+bool AppProcessor::connectToCamera(char *id, StreamMode mode, BitMode bit) {
     cameraThread = new CameraThread(framePipeline);
 
     // Подключаемся к камере
-    if(cameraThread->connectToCamera(id, mode)) {
+    if(cameraThread->connectToCamera(id, mode, bit)) {
         double step, val;
         double maxGain, minGain, maxExposure, minExposure;
 
@@ -69,9 +69,6 @@ void AppProcessor::disconnectCamera() {
 
     deleteCameraThread();
     deleteProcessingThread();
-    deleteObjectiveThread();
-
-    deleteFramePipeline();
 }
 
 bool AppProcessor::runProcess() {
@@ -88,12 +85,16 @@ bool AppProcessor::runProcess() {
 }
 
 void AppProcessor::stopProcess() {
-    if(processingThread->isRunning() || cameraThread->isRunning()) {
+    if(objectiveThread->isRunning())
         stopObjectiveThread();
+
+    if(processingThread->isRunning())
         stopProcessingThread();
+
+    if(cameraThread->isRunning())
         stopCameraThread();
-        emit processFinished();
-    }
+
+    emit processFinished();
 }
 
 void AppProcessor::runSingle() {

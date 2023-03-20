@@ -21,18 +21,17 @@ void CameraThread::run() {
             stoppedMutex.unlock();
             //////////////////////////////////////////////////////////////
 
-            ////////////////  Установка настроек камеры  /////////////////
             updateControlsMutex.lock();
+            ////////////////  Установка настроек камеры  /////////////////
             setSettings();
-            updateControlsMutex.unlock();
             /////////////////////////////////////////////////////////////
 
-            qDebug() << "Acquiring";
             while(frameReady == false)
                 frameReady = pCamera->getImage(frame.mWidth, frame.mHeight, frame.mBpp,
                                                        frame.mChannels, frame.pData);
 
-            qDebug() << "Finished";
+            updateControlsMutex.unlock();
+
             pFramePipeline->setFrame(frame);
             frameReady = false;
         }
@@ -41,7 +40,7 @@ void CameraThread::run() {
         emit hardFault("Невозможно начать съемку!\nПроверьте соединение");
 }
 
-bool CameraThread::connectToCamera(char *id, StreamMode mode) {
+bool CameraThread::connectToCamera(char *id, StreamMode mode, BitMode bit) {
     try {
         pCamera = new CameraQHYCCD(id);
     }
@@ -58,6 +57,8 @@ bool CameraThread::connectToCamera(char *id, StreamMode mode) {
 
         if(!params.mIsLiveMode)
             pCamera->setImageBitMode(bit16);
+        else
+            pCamera->setImageBitMode(bit);
         return true;
     }
     else
@@ -73,12 +74,8 @@ void CameraThread::disconnectCamera() {
 }
 
 bool CameraThread::getControlSettings(CameraControls control, double& min, double& max, double& step, double& currentVal) {
-    CamParameters params = pCamera->getCameraParameters();
     if (control == transferbit) {
-        if(!params.mIsLiveMode)
-            pCamera->setImageBitMode(bit16);
         currentVal = pCamera->getImageBitMode();
-        bitToSet = (BitMode)currentVal;
     }
     else if (control == gain){
         currentVal = pCamera->getGain();
@@ -130,11 +127,6 @@ bool CameraThread::getIsLive() const {
 }
 
 void CameraThread::setSettings() {
-    if(isBitChanged) {
-        isBitChanged = false;
-        pCamera->setImageBitMode(bitToSet);
-    }
-
     if(isFpsChanged) {
         isFpsChanged = false;
         pCamera->setFps(fpsToSet);
@@ -151,12 +143,6 @@ void CameraThread::setSettings() {
         pCamera->setImageSize(roiToSet.startX, roiToSet.startY,
                               roiToSet.sizeX, roiToSet.sizeY);
     }
-}
-
-void CameraThread::onBitChanged(BitMode bit) {
-    QMutexLocker locker(&updateControlsMutex);
-    this->bitToSet = bit;
-    this->isBitChanged = true;
 }
 
 void CameraThread::onFpsChanged(double fps) {

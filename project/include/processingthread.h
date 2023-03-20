@@ -34,6 +34,7 @@ private:
     QMutex updateMembersMutex;
     volatile bool stopped;
 
+    CamFrame tmpFrame;
     cv::Mat cvFrame;
 
     ////////////////  Флаги /////////////////

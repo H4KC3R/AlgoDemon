@@ -51,11 +51,11 @@ void MainWindow::onSoftFault(QString errorMsg) {
 }
 
 void MainWindow::updateFrame(const QImage &frame){
-    displayScene->addPixmap(QPixmap::fromImage(frame));
+    imageMapItem.setPixmap(QPixmap::fromImage(frame));
 }
 
 void MainWindow::updateFocusingResult(const QImage &frame, double position) {
-    ui->cameraFocusRoiLabel->setPixmap(QPixmap::fromImage(frame));
+    //ui->cameraFocusRoiLabel->setPixmap(QPixmap::fromImage(frame));
     ui->objectiveFocusValSpinbox->setValue(position);
 }
 
@@ -82,7 +82,6 @@ void MainWindow::uiSignalSlotsInit() {
     connect(ui->disconnectCameraButton, &QPushButton::clicked, this, &MainWindow::on_disconnectCameraButton_clicked);
 
     //  Camera Settings
-    connect(ui->cameraBitComboBox, &QComboBox::currentIndexChanged, this, &MainWindow::on_cameraBitComboBox_currentIndexChanged);
     connect(ui->cameraFpsSpinBox, &QSpinBox::valueChanged, this, &MainWindow::on_cameraFpsSpinBox_valueChanged);
     connect(ui->cameraGainDSpinBox, &QDoubleSpinBox::valueChanged, this, &MainWindow::on_cameraGainDSpinBox_valueChanged);
     connect(ui->cameraGainHSlider, &QSlider::valueChanged, this, &MainWindow::on_cameraGainHSlider_valueChanged);
@@ -105,7 +104,7 @@ void MainWindow::uiSignalSlotsInit() {
     // Camera Focusing
     connect(ui->cameraEnableFocusCheckBox, &QCheckBox::clicked, this, &MainWindow::on_cameraEnableFocus_cliked);
     connect(ui->cameraFocusButton, &QPushButton::clicked, this, &MainWindow::on_cameraFocusButton_clicked);
-\
+
     // Camera Autoexposure
     connect(ui->autoExposureCheckBox, &QCheckBox::clicked, this, &MainWindow::on_autoExposureCheckBox_clicked);
     connect(ui->maxPercentHSlider, &QSlider::valueChanged, this, &MainWindow::on_maxPercentHSlider_valueChanged);
@@ -129,8 +128,8 @@ void MainWindow::setInitialGUIState() {
     ui->modeCameraComboBox->setEnabled(true);
     ui->connectCameraButton->setEnabled(true);
     ui->disconnectCameraButton->setEnabled(false);
+    ui->cameraBitComboBox->setEnabled(true);
 
-    ui->cameraBitComboBox->setEnabled(false);
     ui->cameraFpsSpinBox->setEnabled(false);
     ui->cameraGainDSpinBox->setEnabled(false);
     ui->cameraGainHSlider->setEnabled(false);
@@ -162,15 +161,18 @@ void MainWindow::initializeDisplay() {
     displayView = new dororo::GraphicsView(this);
     ui->horizontalLayout_7->addWidget(displayView);
 
-    displayScene = new QGraphicsScene(this);
-    displayView->setScene(displayScene);
+    displayView->setScene(&displayScene);
+    displayScene.addItem(&imageMapItem);
 
     QPixmap img(":/resources/stars.jpg");
-    imageMapItem = displayScene->addPixmap(img);
-    roiController = new dororo::ViewportController(imageMapItem);
+    imageMapItem.setPixmap(img);
+    roiController = new dororo::ViewportController(&imageMapItem);
 
-    roiController->setRect(100, 100, 250, 250);
-    roiController->setPen(QPen(Qt::GlobalColor::yellow));
+    QPen pen(QColor(247,13,26));
+    pen.setWidth(10);
+
+    roiController->setRect(100, 100, 1500, 1000);
+    roiController->setPen(pen);
 
     roiController->hide();
 }
@@ -187,8 +189,6 @@ void MainWindow::proccessorSignalSlotsInit() {
     connect(processor.processingThread, SIGNAL(newFrame(QImage)), this, SLOT(updateFrame(QImage)));
 
     // GUI thread (emitter) and Camera thread (receiver/listener)
-    connect(this, SIGNAL(bitChanged(BitMode)),
-            processor.cameraThread, SLOT(onBitChanged(BitMode)));
     connect(this, SIGNAL(fpsChanged(double)),
             processor.cameraThread, SLOT(onFpsChanged(double)));
     connect(this, SIGNAL(EGChanged(double,double)),
@@ -224,22 +224,6 @@ void MainWindow::objectiveSignalSlotsInit() {
 void MainWindow::initializeCameraControls() {
     double min, max, step, currentVal;
     CamParameters camParameters = processor.cameraThread->getParams();
-
-    ///////////////////// BitMode ///////////////////
-    if(processor.cameraThread->getControlSettings(transferbit, min, max, step, currentVal)) {
-        ui->cameraBitComboBox->setEnabled(true);
-        BitMode currentMode =(BitMode)currentVal;
-        // Почему то, в режиме фото при 8 битах не получается снять кадр
-        if(!camParameters.mIsLiveMode)
-            ui->cameraBitComboBox->removeItem(0);
-        else {
-            if (currentMode == bit8)
-                ui->cameraBitComboBox->setCurrentIndex(0);
-            else
-                ui->cameraBitComboBox->setCurrentIndex(1);
-        }
-    }
-    ////////////////////////////////////////////////
 
     ////////////////////// FPS /////////////////////
     if(processor.cameraThread->getControlSettings(fps, min, max, step, currentVal)) {
@@ -328,6 +312,8 @@ void MainWindow::initializeCameraControls() {
     }
     ////////////////////////////////////////////////
 
+    ui->cameraBitComboBox->setEnabled(false);
+
     ui->cameraRoiGroupBox->setEnabled(true);
     ui->cameraStartCaptureButton->setEnabled(true);
 
@@ -382,17 +368,21 @@ void MainWindow::on_connectCameraButton_clicked() {
     if(ui->cameraComboBox->currentIndex() == -1)
         return;
 
+    ui->connectCameraButton->setEnabled(false);
     QString qId = cameraIdModel.value(ui->cameraComboBox->currentText());
     QByteArray bId = qId.toLocal8Bit();
     char* id = bId.data();
 
-    StreamMode mode = (ui->modeCameraComboBox->currentIndex() == 0) ? single : live;
-    if(processor.connectToCamera(id, mode)) {
+    StreamMode streamMode = (ui->modeCameraComboBox->currentIndex() == 0) ? single : live;
+    BitMode bitMode = (ui->cameraBitComboBox->currentIndex() == 0) ? bit8 : bit16;
+    if(processor.connectToCamera(id, streamMode, bitMode)) {
         initializeCameraControls();
         proccessorSignalSlotsInit();
     }
-    else
+    else {
+        ui->connectCameraButton->setEnabled(true);
         QMessageBox::warning(this, "Внимание", "Ошибка подключения камеры!\n");
+    }
 }
 
 void MainWindow::on_disconnectCameraButton_clicked() {
@@ -408,8 +398,6 @@ void MainWindow::on_disconnectCameraButton_clicked() {
         disconnect(processor.processingThread, SIGNAL(newFrame(QImage)), this, SLOT(updateFrame(QImage)));
 
         // GUI thread (emitter) and Camera thread (receiver/listener)
-        disconnect(this, SIGNAL(bitChanged(BitMode)),
-                processor.cameraThread, SLOT(onBitChanged(BitMode)));
         disconnect(this, SIGNAL(fpsChanged(double)),
                 processor.cameraThread, SLOT(onFpsChanged(double)));
         disconnect(this, SIGNAL(EGChanged(double,double)),
@@ -429,13 +417,6 @@ void MainWindow::on_disconnectCameraButton_clicked() {
 }
 
 // ************************** Camera Settings *************************** //
-
-void MainWindow::on_cameraBitComboBox_currentIndexChanged(int) {
-    if(ui->cameraBitComboBox->currentIndex() == 0)
-        emit bitChanged(bit8);
-    else
-        emit bitChanged(bit16);
-}
 
 void MainWindow::on_cameraFpsSpinBox_valueChanged(int value) {
     emit fpsChanged(value);
@@ -527,6 +508,7 @@ void MainWindow::on_cameraStopCaptureButton_clicked() {
 // ************************** Camera Focusing *************************** //
 
 void MainWindow::on_cameraEnableFocus_cliked(bool enabled) {
+    ui->cameraFocusButton->setEnabled(enabled);
     if(enabled)
         roiController->show();
     else
@@ -534,12 +516,12 @@ void MainWindow::on_cameraEnableFocus_cliked(bool enabled) {
 }
 
 void MainWindow::on_cameraFocusButton_clicked() {
+    ui->cameraFocusButton->setEnabled(false);
     QRectF roi = roiController->rect();
     double x, y, width, height;
     roi.getRect(&x, &y, &width, &height);
     bool status = ui->cameraEnableFocusCheckBox->isChecked();
-
-    emit focusingEnabled(status, cv::Rect(x, y, width, height));
+    emit focusingEnabled(status, cv::Rect((int)x, (int)y, (int)width, (int)height));
 }
 
 // ************************ Camera AutoExposure ************************* //
@@ -636,9 +618,12 @@ void MainWindow::on_objectiveLensFileButton_clicked() {
     QString fileName = QFileDialog::getOpenFileName(this,
          tr("Аппертуры"), "/home", tr("JSON Files (*.json)"));
 
+    if(fileName.isEmpty())
+        return;
+
     QFile file;
     file.setFileName(fileName);
-    if(file.open(QIODevice::ReadOnly | QIODevice::Text)){
+    if(file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         QByteArray bytes = file.readAll();
         file.close();
 
@@ -728,6 +713,8 @@ void MainWindow::on_objectiveGetFocusButton_clicked() {
     if(!error.empty())
         ui->objectiveErrorLineEdit->setText(QString::fromStdString(error));
 
+    ui->objectiveFocusValSpinbox->setValue(focusingPosition);
+
     ui->objectiveLensFileButton->setEnabled(true);
     ui->objectiveSetAppertureButton->setEnabled(true);
     ui->objectiveSetFocusButton->setEnabled(true);
@@ -738,16 +725,12 @@ void MainWindow::on_objectiveGetFocusButton_clicked() {
 
 void MainWindow::showEvent(QShowEvent*)
 {
-    if(!displayScene)
-        return;
-    QRectF bounds = displayScene->itemsBoundingRect();
+    QRectF bounds = displayScene.itemsBoundingRect();
     displayView->fitInView(bounds, Qt::KeepAspectRatio);
 }
 
 void MainWindow::resizeEvent(QResizeEvent*) {
-    if(!displayScene)
-        return;
-    QRectF bounds = displayScene->itemsBoundingRect();
+    QRectF bounds = displayScene.itemsBoundingRect();
     displayView->fitInView(bounds, Qt::KeepAspectRatio);
 }
 

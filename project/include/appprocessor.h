@@ -21,7 +21,7 @@ public:
     ProcessingThread* processingThread;
     ObjectiveThread* objectiveThread;
 
-    bool connectToCamera(char* id, StreamMode mode);
+    bool connectToCamera(char* id, StreamMode mode, BitMode bit = bit8);
     void disconnectCamera();
 
     bool runProcess();

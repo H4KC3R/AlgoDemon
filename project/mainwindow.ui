@@ -209,15 +209,15 @@ QTabBar::tab  {
               <bool>false</bool>
              </property>
              <property name="currentIndex">
-              <number>2</number>
+              <number>0</number>
              </property>
              <widget class="QWidget" name="cameraToolBoxPage">
               <property name="geometry">
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>318</width>
-                <height>768</height>
+                <width>280</width>
+                <height>640</height>
                </rect>
               </property>
               <attribute name="label">
@@ -327,26 +327,6 @@ QTabBar::tab  {
                      <property name="bottomMargin">
                       <number>0</number>
                      </property>
-                     <item row="1" column="1">
-                      <widget class="QPushButton" name="disconnectCameraButton">
-                       <property name="enabled">
-                        <bool>false</bool>
-                       </property>
-                       <property name="text">
-                        <string>Отключиться</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="0" column="1">
-                      <widget class="QPushButton" name="connectCameraButton">
-                       <property name="text">
-                        <string>Подключиться</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="0" column="0">
-                      <widget class="QComboBox" name="cameraComboBox"/>
-                     </item>
                      <item row="1" column="0">
                       <widget class="QComboBox" name="modeCameraComboBox">
                        <property name="enabled">
@@ -367,7 +347,81 @@ QTabBar::tab  {
                        </item>
                       </widget>
                      </item>
+                     <item row="0" column="0">
+                      <widget class="QComboBox" name="cameraComboBox"/>
+                     </item>
+                     <item row="1" column="1">
+                      <widget class="QPushButton" name="disconnectCameraButton">
+                       <property name="enabled">
+                        <bool>false</bool>
+                       </property>
+                       <property name="text">
+                        <string>Отключиться</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="1">
+                      <widget class="QPushButton" name="connectCameraButton">
+                       <property name="text">
+                        <string>Подключиться</string>
+                       </property>
+                      </widget>
+                     </item>
                     </layout>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
+                <widget class="QFrame" name="cameraBitFrame">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="frameShape">
+                  <enum>QFrame::StyledPanel</enum>
+                 </property>
+                 <property name="frameShadow">
+                  <enum>QFrame::Raised</enum>
+                 </property>
+                 <layout class="QHBoxLayout" name="horizontalLayout_2">
+                  <property name="leftMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="bottomMargin">
+                   <number>0</number>
+                  </property>
+                  <item>
+                   <widget class="QLabel" name="cameraBitLabel">
+                    <property name="text">
+                     <string>Бит</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QComboBox" name="cameraBitComboBox">
+                    <property name="enabled">
+                     <bool>true</bool>
+                    </property>
+                    <item>
+                     <property name="text">
+                      <string>8bits</string>
+                     </property>
+                    </item>
+                    <item>
+                     <property name="text">
+                      <string>16bits</string>
+                     </property>
+                    </item>
                    </widget>
                   </item>
                  </layout>
@@ -436,60 +490,6 @@ QTabBar::tab  {
                        <property name="text">
                         <string/>
                        </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QFrame" name="cameraBitFrame">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="frameShape">
-                     <enum>QFrame::StyledPanel</enum>
-                    </property>
-                    <property name="frameShadow">
-                     <enum>QFrame::Raised</enum>
-                    </property>
-                    <layout class="QHBoxLayout" name="horizontalLayout_2">
-                     <property name="leftMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="topMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="rightMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="bottomMargin">
-                      <number>0</number>
-                     </property>
-                     <item>
-                      <widget class="QLabel" name="cameraBitLabel">
-                       <property name="text">
-                        <string>Бит</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QComboBox" name="cameraBitComboBox">
-                       <property name="enabled">
-                        <bool>false</bool>
-                       </property>
-                       <item>
-                        <property name="text">
-                         <string>8bits</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>16bits</string>
-                        </property>
-                       </item>
                       </widget>
                      </item>
                     </layout>
@@ -892,8 +892,8 @@ QTabBar::tab  {
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>335</width>
-                <height>557</height>
+                <width>294</width>
+                <height>587</height>
                </rect>
               </property>
               <attribute name="label">
@@ -1197,8 +1197,8 @@ QTabBar::tab  {
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>335</width>
-                <height>557</height>
+                <width>294</width>
+                <height>587</height>
                </rect>
               </property>
               <attribute name="label">
@@ -1665,6 +1665,12 @@ QTabBar::tab  {
                 <property name="readOnly">
                  <bool>true</bool>
                 </property>
+                <property name="minimum">
+                 <double>-100000000.000000000000000</double>
+                </property>
+                <property name="maximum">
+                 <double>1000000000.000000000000000</double>
+                </property>
                </widget>
               </item>
               <item>
@@ -1840,7 +1846,7 @@ QTabBar::tab  {
      <x>0</x>
      <y>0</y>
      <width>986</width>
-     <height>25</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>

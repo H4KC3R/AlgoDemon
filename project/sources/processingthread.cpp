@@ -43,7 +43,7 @@ void ProcessingThread::startSingleProcess() {
     ////////////////////////////////////
     // Конец //
     ////////////////////////////////////
-    qFrame = MatToQImage(cvFrame);
+    qFrame = MatToQImage(cvFrame, cvFrame.type());
     updateMembersMutex.unlock();
 
     emit newFrame(qFrame);
@@ -62,7 +62,6 @@ void ProcessingThread::run() {
         stoppedMutex.lock();
         if (stopped) {
             stopped=false;
-            qDebug() << "stopped";
             stoppedMutex.unlock();
             break;
         }
@@ -92,11 +91,11 @@ void ProcessingThread::run() {
         // Конец //
         ////////////////////////////////////
 
-        qDebug() << "processing";
-        qFrame = MatToQImage(cvFrame);
+        qFrame = MatToQImage(cvFrame, cvFrame.type());
         updateMembersMutex.unlock();
 
         emit newFrame(qFrame);
+
         frame = pFramePipeline->nextFrame(frame);
     }
 }

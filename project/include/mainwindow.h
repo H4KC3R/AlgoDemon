@@ -31,7 +31,6 @@ public:
     ~MainWindow();
 
 signals:
-    void bitChanged(BitMode bit);
     void fpsChanged(double fps);
     void EGChanged(double gain, double exposure);
     void roiChanged(RoiBox roi);
@@ -62,8 +61,8 @@ private:
     AppProcessor processor;
 
     dororo::GraphicsView* displayView;
-    QGraphicsScene* displayScene;
-    QGraphicsPixmapItem* imageMapItem;
+    QGraphicsScene displayScene;
+    QGraphicsPixmapItem imageMapItem;
     dororo::ViewportController* roiController;
 
     AutoExposureParams param;
@@ -96,8 +95,6 @@ private:
     void on_disconnectCameraButton_clicked();
 
     // ************************** Camera Settings *************************** //
-
-    void on_cameraBitComboBox_currentIndexChanged(int index);
 
     void on_cameraFpsSpinBox_valueChanged(int value);
 

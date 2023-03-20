@@ -103,11 +103,14 @@ void ObjectiveThread::onAutoExposureSettingChanged(AutoExposureParams params) {
 
 void ObjectiveThread::onFocusingEnabled(bool status, cv::Rect roi) {
     QMutexLocker locker(&updateSettingsMutex);
+    qDebug() << "dasa";
     if(pObjective && pObjective->isContollerActive()) {
         this->mFocusingOn = status;
         maxSharpnessMetric = 0;
         sharpImagePositon = 0;
         myRoi = roi;
+        qDebug() << myRoi.x << myRoi.y << myRoi.width << myRoi.height;
+
     }
 }
 
@@ -118,7 +121,6 @@ void ObjectiveThread::run() {
         stoppedMutex.lock();
         if (stopped) {
             stopped=false;
-            qDebug() << "stopped";
             stoppedMutex.unlock();
             break;
         }
@@ -126,12 +128,17 @@ void ObjectiveThread::run() {
         /////////////////////////////////////////////////////////////
 
         updateSettingsMutex.lock();
+
         int type = ImageProcess::getOpenCvType((BitMode)frame->mBpp, frame->mChannels);
         cvFrame = cv::Mat(frame->mHeight, frame->mWidth, type, frame->pData);
+
+        qDebug() << "Before" << cvFrame.cols << cvFrame.rows;
 
         ///////// GRAYSCALE Формат /////////
         if(!isMono)
             cv::cvtColor(cvFrame, cvFrame, cv::COLOR_BayerRG2GRAY);
+
+        qDebug() << "After" << cvFrame.cols << cvFrame.rows;
 
         ////////////////////////////////////
         // Обработка изображения //
@@ -148,8 +155,8 @@ void ObjectiveThread::run() {
 
         if(mFocusingOn) {
             double sharpnessMetric;
+            qDebug() << "After" << cvFrame.cols << cvFrame.rows;
             if(ImageBlurMetric::getBlurFFT(cvFrame(myRoi), sharpnessMetric)) {
-                QMutexLocker locker(&objectiveControlMutex);
                 currentPosition = (int)pObjective->getCurrentFocusing();
                 if((currentPosition + step) == 10000) {
                     mFocusingOn = false;
@@ -166,17 +173,15 @@ void ObjectiveThread::run() {
             else
                 emit imageProcessingError("Изображение должно быть в GrayScale формате!\n");
         }
+        ////////////////////////////////////
+        // Конец //
+        ////////////////////////////////////
+
+        //qFrame = MatToQImage(cvFrame(myRoi), cvFrame.type());
+        updateSettingsMutex.unlock();
+
+        emit newFocusingResult(QImage(), currentPosition);
+        frame = pFramePipeline->nextFrame(frame);
     }
-
-    ////////////////////////////////////
-    // Конец //
-    ////////////////////////////////////
-
-    qDebug() << "Objective Thread";
-    qFrame = MatToQImage(cvFrame(myRoi));
-    updateSettingsMutex.unlock();
-
-    emit newFocusingResult(qFrame, currentPosition);
-    frame = pFramePipeline->nextFrame(frame);
 }
 
