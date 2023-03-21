@@ -33,90 +33,86 @@
    <property name="font">
     <font>
      <family>Segoe UI</family>
-     <pointsize>10</pointsize>
+     <pointsize>12</pointsize>
      <italic>false</italic>
      <bold>false</bold>
     </font>
    </property>
    <property name="styleSheet">
-    <string notr="true">* {
-	background-color: #1d1c1f;
-	font: 10pt &quot;Segoe UI&quot;;
+    <string notr="true">* {	
+    background-color: #1d1c1f;	font: 12pt &quot;Segoe UI&quot;;
 }
 
-*:disabled{
+*:disabled {    
     color: rgb(98, 98, 98);
 }
 
-QLineEdit {
-	border-radius: 10px;
-	border: 2px solid #FF00CC;
+QLineEdit {	
+    border-radius: 1px;	border: 1px solid #8D77A3;
 }
 
-QWidget {
-	color: #CC00FF;
+QWidget {	
+    color: #65B1E2;
 }
 
 QLabel {
-	color: #FF00FF;
+    color: #65B1E2;
 }
 
-QComboBox {
-	border: 1px solid #F2EA02;
+QComboBox {	
+    border: 1px solid #8D77A3;
 }
 
-QDoubleSpinBox {
-	border: 1px solid #F2EA02;
+QDoubleSpinBox {	
+    border: 1px solid #8D77A3;
 }
 
-QSpinBox {
-	border: 1px solid #F2EA02;
+QSpinBox {	
+    border: 1px solid #8D77A3;
 }
 
-QPushButton {
-	border-radius: 1px;
-	border: 1px solid #F2EA02;
+QPushButton {	
+    border-radius: 1px;	border: 1px solid #8D77A3;
 }
 
 QPushButton:hover {
-background-color: #666;
+    background-color: #666;
 }
 
 QPushButton:pressed {
-background-color: #888;
+    background-color: #888;
 }
-
 QSlider::groove:horizontal {
-border: 1px solid #9D00FF;
-height: 5px;
-border-radius: 3px;
+    border: 1px solid #9D00FF;
+    height: 5px;
+    border-radius: 3px;
 }
 
-QSlider::handle:horizontal{
-background: #FF00FF;
-    border: 3px solid black;
-	width: 10px;
-	height: 5px;
+QSlider::handle:horizontal {
+    background: #FF00FF;    
+    border: 3px solid black;	
+    width: 10px;	
+    height: 5px;    
     margin: -5px 0;
 }
 
 QSlider::add-page:qlineargradient {
-background: #9D00FF;
-border-top-right-radius: 9px;
-border-bottom-right-radius: 9px;
-border-top-left-radius: 0px;
-border-bottom-left-radius: 0px;
+    background: #9D00FF;
+    border-top-right-radius: 9px;
+    border-bottom-right-radius: 9px;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
 }
 
 QSlider::sub-page:qlineargradient {
-background: blue;
-border-top-right-radius: 0px;
-border-bottom-right-radius: 0px;
-border-top-left-radius: 9px;
-border-bottom-left-radius: 9px;
+    background: blue;
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+    border-top-left-radius: 9px;
+    border-bottom-left-radius: 9px;
 }
 
-QTabBar::tab  {
+QTabBar::tab  {   
     background: #1d1c1f;
 }</string>
    </property>
@@ -216,8 +212,8 @@ QTabBar::tab  {
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>280</width>
-                <height>640</height>
+                <width>291</width>
+                <height>724</height>
                </rect>
               </property>
               <attribute name="label">
@@ -892,8 +888,8 @@ QTabBar::tab  {
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>294</width>
-                <height>587</height>
+                <width>305</width>
+                <height>571</height>
                </rect>
               </property>
               <attribute name="label">
@@ -1197,8 +1193,8 @@ QTabBar::tab  {
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>294</width>
-                <height>587</height>
+                <width>305</width>
+                <height>571</height>
                </rect>
               </property>
               <attribute name="label">
