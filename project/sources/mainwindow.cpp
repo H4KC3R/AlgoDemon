@@ -285,6 +285,10 @@ void MainWindow::initializeCameraControls() {
         ui->gammaCoeffSpinBox->setEnabled(false);
 
         ui->autoExposureCheckBox->setEnabled(true);
+        ui->maxPercentHSlider->setEnabled(true);
+        ui->meanHSlider->setEnabled(true);
+        ui->maxRelCoeffHSlider->setEnabled(true);
+        ui->minRelCoeffHSlider->setEnabled(true);
         ui->cameraEnableFocusCheckBox->setEnabled(true);
 
         ui->cameraStartXSpinBox->setMaximum(camParameters.mMaximgw - 1);
@@ -298,10 +302,14 @@ void MainWindow::initializeCameraControls() {
 
         ui->debayerCheckBox->setEnabled(true);
         ui->whiteBalanceCheckBox->setEnabled(true);
-        ui->contrastAlphaSpinBox->setEnabled(true);
-        ui->gammaCoeffSpinBox->setEnabled(true);
+        ui->contrastEnableCheckBox->setEnabled(true);
+        ui->gammaContrastEnableCheckBox->setEnabled(true);
 
         ui->autoExposureCheckBox->setEnabled(true);
+        ui->maxPercentHSlider->setEnabled(true);
+        ui->meanHSlider->setEnabled(true);
+        ui->maxRelCoeffHSlider->setEnabled(true);
+        ui->minRelCoeffHSlider->setEnabled(true);
         ui->cameraEnableFocusCheckBox->setEnabled(true);
 
         ui->cameraStartXSpinBox->setMaximum(camParameters.mMaximgw - 1);

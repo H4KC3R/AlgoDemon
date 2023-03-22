@@ -103,7 +103,6 @@ void ObjectiveThread::onAutoExposureSettingChanged(AutoExposureParams params) {
 
 void ObjectiveThread::onFocusingEnabled(bool status, cv::Rect roi) {
     QMutexLocker locker(&updateSettingsMutex);
-    qDebug() << "dasa";
     if(pObjective && pObjective->isContollerActive()) {
         this->mFocusingOn = status;
         maxSharpnessMetric = 0;
@@ -132,13 +131,9 @@ void ObjectiveThread::run() {
         int type = ImageProcess::getOpenCvType((BitMode)frame->mBpp, frame->mChannels);
         cvFrame = cv::Mat(frame->mHeight, frame->mWidth, type, frame->pData);
 
-        qDebug() << "Before" << cvFrame.cols << cvFrame.rows;
-
         ///////// GRAYSCALE Формат /////////
         if(!isMono)
             cv::cvtColor(cvFrame, cvFrame, cv::COLOR_BayerRG2GRAY);
-
-        qDebug() << "After" << cvFrame.cols << cvFrame.rows;
 
         ////////////////////////////////////
         // Обработка изображения //
@@ -160,7 +155,8 @@ void ObjectiveThread::run() {
                 currentPosition = (int)pObjective->getCurrentFocusing();
                 if((currentPosition + step) == 10000) {
                     mFocusingOn = false;
-                    pObjective->setFocusing(currentPosition);
+                    qDebug() << sharpImagePositon;
+                    pObjective->setFocusing(sharpImagePositon);
                 }
                 else {
                     if(sharpnessMetric >= maxSharpnessMetric) {

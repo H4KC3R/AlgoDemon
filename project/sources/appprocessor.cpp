@@ -1,7 +1,7 @@
 #include "appprocessor.h"
 
 AppProcessor::AppProcessor() {
-    framePipeline = new FramePipeline();
+    framePipeline = new FramePipeline(25);
 
     AutoExposureParams autoExposureParameters;
     autoExposureParameters.maxPercent = 50;
