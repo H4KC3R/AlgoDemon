@@ -40,6 +40,7 @@ private:
     volatile bool stopped;
     QImage qFrame;
     cv::Mat cvFrame;
+    cv::Mat cvProcessedFrame;
 
     FramePipeline* pFramePipeline;
 

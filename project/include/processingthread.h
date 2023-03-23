@@ -34,8 +34,8 @@ private:
     QMutex updateMembersMutex;
     volatile bool stopped;
 
-    CamFrame tmpFrame;
     cv::Mat cvFrame;
+    cv::Mat cvProcessedFrame;
 
     ////////////////  Флаги /////////////////
     bool isMono;

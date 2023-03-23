@@ -25,12 +25,12 @@ void CameraThread::run() {
             ////////////////  Установка настроек камеры  /////////////////
             setSettings();
             /////////////////////////////////////////////////////////////
+            updateControlsMutex.unlock();
 
             while(frameReady == false)
                 frameReady = pCamera->getImage(frame.mWidth, frame.mHeight, frame.mBpp,
                                                        frame.mChannels, frame.pData);
 
-            updateControlsMutex.unlock();
 
             pFramePipeline->setFrame(frame);
             frameReady = false;

@@ -24,6 +24,7 @@ void ProcessingThread::startSingleProcess() {
     updateMembersMutex.lock();
     int type = ImageProcess::getOpenCvType((BitMode)frame->mBpp, frame->mChannels);
     cvFrame = cv::Mat(frame->mHeight, frame->mWidth, type, frame->pData);
+    cvProcessedFrame = cvFrame.clone();
 
     ////////////////////////////////////
     // Обработка изображения //
@@ -70,7 +71,7 @@ void ProcessingThread::run() {
 
         updateMembersMutex.lock();
         int type = ImageProcess::getOpenCvType((BitMode)frame->mBpp, frame->mChannels);
-        cvFrame = cv::Mat(frame->mHeight, frame->mWidth, type, frame->pData);
+        cvFrame = cv::Mat(frame->mHeight, frame->mWidth, type, frame->pData).clone();
 
         ////////////////////////////////////
         // Обработка изображения //
