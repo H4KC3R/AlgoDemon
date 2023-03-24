@@ -37,7 +37,7 @@ bool AppProcessor::connectToCamera(char *id, StreamMode mode, BitMode bit) {
         cameraThread->getControlSettings(exposure, minExposure, maxExposure, step, val);
 
         objectiveThread->autoExposureHandler->setMinGain(minGain);
-        objectiveThread->autoExposureHandler->setMaxGain(maxGain);
+        objectiveThread->autoExposureHandler->setMaxGain(25);
 
         objectiveThread->autoExposureHandler->setMinExposure(minExposure);
         objectiveThread->autoExposureHandler->setMaxExposure(maxExposure);
@@ -72,7 +72,8 @@ void AppProcessor::disconnectCamera() {
 }
 
 bool AppProcessor::runProcess() {
-    if(processingThread->isRunning() || cameraThread->isRunning())
+    if(processingThread->isRunning() || cameraThread->isRunning() ||
+            objectiveThread->isRunning())
         return false;
 
     framePipeline->clearBuffer();
@@ -85,6 +86,8 @@ bool AppProcessor::runProcess() {
 }
 
 void AppProcessor::stopProcess() {
+    framePipeline->activatePipelineRead(false);
+
     if(objectiveThread->isRunning())
         stopObjectiveThread();
 
@@ -109,7 +112,6 @@ void AppProcessor::runSingle() {
 
 void AppProcessor::stopCameraThread() {
     cameraThread->stopLiveCaptureThread();
-    framePipeline->activatePipelineRead(false);
     cameraThread->wait();
 }
 

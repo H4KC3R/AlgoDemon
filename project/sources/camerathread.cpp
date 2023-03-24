@@ -14,7 +14,7 @@ void CameraThread::run() {
             stoppedMutex.lock();
             if (stopped) {
                 stopped=false;
-                pCamera->stopLiveCapture();
+                pCamera->startLiveCapture();
                 stoppedMutex.unlock();
                 break;
             }
@@ -27,10 +27,12 @@ void CameraThread::run() {
             /////////////////////////////////////////////////////////////
             updateControlsMutex.unlock();
 
-            while(frameReady == false)
+            while(frameReady == false) {
+                if(stopped == true)
+                    break;
                 frameReady = pCamera->getImage(frame.mWidth, frame.mHeight, frame.mBpp,
-                                                       frame.mChannels, frame.pData);
-
+                                               frame.mChannels, frame.pData);
+            }
 
             pFramePipeline->setFrame(frame);
             frameReady = false;

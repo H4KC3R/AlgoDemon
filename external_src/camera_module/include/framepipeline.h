@@ -7,6 +7,8 @@
 #include <mutex>
 #include <shared_mutex>
 
+#include <iostream>
+
 class FramePipeline
 {
 public:
@@ -27,6 +29,8 @@ public:
     uint32_t getFrameCount() const;
 
     void activatePipelineRead(bool activateFlag);
+
+    bool getPipelineActive() const;
 
 private:
     size_t mSize;

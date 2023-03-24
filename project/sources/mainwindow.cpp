@@ -55,7 +55,7 @@ void MainWindow::updateFrame(const QImage &frame){
 }
 
 void MainWindow::updateFocusingResult(const QImage &frame, double position) {
-    //ui->cameraFocusRoiLabel->setPixmap(QPixmap::fromImage(frame));
+    ui->cameraFocusRoiLabel->setPixmap(QPixmap::fromImage(frame));
     ui->objectiveFocusValSpinbox->setValue(position);
 }
 
@@ -64,13 +64,23 @@ void MainWindow::updateEG(double gain, double exposure){
     ui->cameraExposureDSpinBox->setValue(exposure);
 }
 
-void MainWindow::onObjectiveError(QString msg) {
-    ui->objectiveErrorLineEdit->clear();
-    ui->objectiveErrorLineEdit->setText(msg);
+void MainWindow::onFocusingStop(QString msg) {
+    QMessageBox::warning(this, "Внимание", msg);
+    // Работа UI после остановки фокусировки
+    ui->cameraFocusButton->setText("Сфокусировать");
+    ui->cameraEnableFocusCheckBox->setEnabled(true);
+
+    // Можно работать с телескопом
+    ui->objectiveLensFileButton->setEnabled(true);
+    ui->objectiveSetAppertureButton->setEnabled(true);
+
+    ui->objectiveSetFocusButton->setEnabled(true);
+    ui->objectiveGetFocusButton->setEnabled(true);
 }
 
-void MainWindow::onImageProcessingError(QString msg) {
+void MainWindow::onAutoExposureStop(QString msg) {
     QMessageBox::warning(this, "Внимание", msg);
+    ui->autoExposureCheckBox->setCheckState(Qt::CheckState::Unchecked);
 }
 
 // *********************************************************************** //
@@ -207,10 +217,10 @@ void MainWindow::objectiveSignalSlotsInit() {
             this, SLOT(updateFocusingResult(QImage,double)));
     connect(processor.objectiveThread, SIGNAL(newEGValues(double,double)),
             this, SLOT(updateEG(double,double)));
-    connect(processor.objectiveThread, SIGNAL(objectiveError(QString)),
-            this, SLOT(onObjectiveError(QString)));
-    connect(processor.objectiveThread, SIGNAL(imageProcessingError(QString)),
-            this, SLOT(onImageProcessingError(QString)));
+    connect(processor.objectiveThread, SIGNAL(focusingStop(QString)),
+            this, SLOT(onFocusingStop(QString)));
+    connect(processor.objectiveThread, SIGNAL(autoExposureStop(QString)),
+            this, SLOT(onAutoExposureStop(QString)));
 
     // GUI thread (emitter) and Objective thread (receiver/listener)
     connect(this, SIGNAL(autoExposureEnabled(bool,double,double)),
@@ -524,12 +534,37 @@ void MainWindow::on_cameraEnableFocus_cliked(bool enabled) {
 }
 
 void MainWindow::on_cameraFocusButton_clicked() {
-    ui->cameraFocusButton->setEnabled(false);
     QRectF roi = roiController->rect();
     double x, y, width, height;
     roi.getRect(&x, &y, &width, &height);
-    bool status = ui->cameraEnableFocusCheckBox->isChecked();
-    emit focusingEnabled(status, cv::Rect((int)x, (int)y, (int)width, (int)height));
+
+    if(processor.objectiveThread->focusingOn()) {
+        emit focusingEnabled(true, cv::Rect((int)x, (int)y, (int)width, (int)height));
+
+        ui->cameraFocusButton->setText("Сфокусировать");
+        ui->cameraEnableFocusCheckBox->setEnabled(true);
+
+        // Можно работать с телескопом
+        ui->objectiveLensFileButton->setEnabled(true);
+        ui->objectiveSetAppertureButton->setEnabled(true);
+
+        ui->objectiveSetFocusButton->setEnabled(true);
+        ui->objectiveGetFocusButton->setEnabled(true);
+
+    }
+    else {
+        ui->cameraFocusButton->setText("Остановить фокусировку");
+        ui->cameraEnableFocusCheckBox->setEnabled(false);
+
+        // Нельзя работать с телескопом
+        ui->objectiveLensFileButton->setEnabled(false);
+        ui->objectiveSetAppertureButton->setEnabled(false);
+
+        ui->objectiveSetFocusButton->setEnabled(false);
+        ui->objectiveGetFocusButton->setEnabled(false);
+
+        emit focusingEnabled(true, cv::Rect((int)x, (int)y, (int)width, (int)height));
+    }
 }
 
 // ************************ Camera AutoExposure ************************* //

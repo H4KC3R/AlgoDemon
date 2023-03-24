@@ -51,8 +51,8 @@ private slots:
 
     void updateFocusingResult(const QImage& frame,double position);
     void updateEG(double gain, double exposure);
-    void onObjectiveError(QString msg);
-    void onImageProcessingError(QString msg);
+    void onFocusingStop(QString msg);
+    void onAutoExposureStop(QString msg);
 
 private:
     Ui::MainWindow *ui;

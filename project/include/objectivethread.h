@@ -36,6 +36,8 @@ public:
     bool getIsMono() const;
     void setIsMono(bool newIsMono);
 
+    bool focusingOn() const;
+
 private:
     volatile bool stopped;
     QImage qFrame;
@@ -45,7 +47,6 @@ private:
     FramePipeline* pFramePipeline;
 
     QMutex stoppedMutex;
-    QMutex objectiveControlMutex;
     QMutex updateSettingsMutex;
 
     ObjectiveController* pObjective;
@@ -74,8 +75,8 @@ private slots:
 signals:
     void newFocusingResult(const QImage& frame,double position);
     void newEGValues(double gain, double exposure);
-    void objectiveError(QString msg);
-    void imageProcessingError(QString msg);
+    void focusingStop(QString msg);
+    void autoExposureStop(QString msg);
 
     // QThread interface
 protected:

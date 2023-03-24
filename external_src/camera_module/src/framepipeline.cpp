@@ -15,7 +15,6 @@ void FramePipeline::setFrame(CamFrame &frame) {
     }
     else
         mList.emplace_back(frame);
-
     frameCount++;
 }
 
@@ -61,6 +60,11 @@ uint32_t FramePipeline::getFrameCount() const {
 
 void FramePipeline::activatePipelineRead(bool activateFlag) {
     pipelineActive = activateFlag;
+}
+
+bool FramePipeline::getPipelineActive() const
+{
+    return pipelineActive;
 }
 
 

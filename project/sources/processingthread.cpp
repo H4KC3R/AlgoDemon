@@ -70,6 +70,13 @@ void ProcessingThread::run() {
         /////////////////////////////////////////////////////////////
 
         updateMembersMutex.lock();
+        // При остановке CameraThread, кадры не помещаются в pipeline
+        // и pipeline закрыт на чтение
+        if(!pFramePipeline->getPipelineActive()) {
+            updateMembersMutex.unlock();
+            continue;
+        }
+
         int type = ImageProcess::getOpenCvType((BitMode)frame->mBpp, frame->mChannels);
         cvFrame = cv::Mat(frame->mHeight, frame->mWidth, type, frame->pData).clone();
 

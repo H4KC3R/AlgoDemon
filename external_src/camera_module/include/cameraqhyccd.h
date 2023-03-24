@@ -11,7 +11,6 @@ private:
     qhyccd_handle *pCamhandle;
     static bool mIsSdkInited;
     CamParameters mParams;
-    CameraStatus mStatus = idle;
 
 public:
     CameraQHYCCD(char* id);
@@ -68,7 +67,6 @@ public:
 
     static bool ReleaseSDK();
 
-    CameraStatus status() const;
 };
 
 #endif // CAMERAQHYCCD_H
