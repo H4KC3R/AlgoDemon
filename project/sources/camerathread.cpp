@@ -166,10 +166,10 @@ void CameraThread::onRoiChanged(RoiBox roi) {
 
     // Если все нули
     if((roi.startX + roi.startY + roi.sizeX + roi.sizeY) == 0) {
-        roi.startX  = 0;
-        roi.startY = 0;
-        roi.sizeX = params.mMaximgw;
-        roi.sizeY = params.mMaximgh;
+        roiToSet.startX  = 0;
+        roiToSet.startY = 0;
+        roiToSet.sizeX = params.mMaximgw;
+        roiToSet.sizeY = params.mMaximgh;
         this->isRoiChanged = true;
     }
     else if((roi.startX + roi.sizeX <= params.mMaximgw) && (roi.startY + roi.sizeY <= params.mMaximgh)) {

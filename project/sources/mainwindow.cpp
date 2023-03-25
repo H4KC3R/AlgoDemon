@@ -44,6 +44,7 @@ void MainWindow::onProcessFinished() {
 void MainWindow::onHardFault(QString errorMsg) {
     processor.stopProcess();
     QMessageBox::warning(this, "Внимание", errorMsg);
+    setInitialGUIState();
 }
 
 void MainWindow::onSoftFault(QString errorMsg) {
