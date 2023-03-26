@@ -19,37 +19,6 @@ ProcessingThread::ProcessingThread(FramePipeline *pipeline, bool isMonoFlag) : Q
 ProcessingThread::~ProcessingThread() {
 }
 
-void ProcessingThread::startSingleProcess() {
-    auto frame = pFramePipeline->getFirstFrame();
-    updateMembersMutex.lock();
-    int type = ImageProcess::getOpenCvType((BitMode)frame->mBpp, frame->mChannels);
-    cvFrame = cv::Mat(frame->mHeight, frame->mWidth, type, frame->pData);
-    cvProcessedFrame = cvFrame.clone();
-
-    ////////////////////////////////////
-    // Обработка изображения //
-    ////////////////////////////////////
-    if(!isMono && debayerOn)
-        ImageProcess::debayerImg(cvFrame, cvFrame);
-
-    if(!isMono && whiteBalanceOn)
-        ImageProcess::whiteBalanceImg(cvFrame, cvFrame);
-
-    if(!isMono && contrastOn)
-        ImageProcess::contrastImg(cvFrame, cvFrame, contrastValue);
-
-    if(!isMono && gammaContrastOn)
-        ImageProcess::gammaContrastImg(cvFrame, cvFrame, gammaContrastValue);
-
-    ////////////////////////////////////
-    // Конец //
-    ////////////////////////////////////
-    qFrame = MatToQImage(cvFrame, cvFrame.type());
-    updateMembersMutex.unlock();
-
-    emit newFrame(qFrame);
-}
-
 void ProcessingThread::stopProcessingThread() {
     stoppedMutex.lock();
     stopped=true;

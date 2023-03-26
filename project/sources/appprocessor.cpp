@@ -88,24 +88,14 @@ bool AppProcessor::runProcess() {
 void AppProcessor::stopProcess() {
     framePipeline->activatePipelineRead(false);
 
-    if(objectiveThread->isRunning())
+    if(objectiveThread && objectiveThread->isRunning())
         stopObjectiveThread();
 
-    if(processingThread->isRunning())
+    if(processingThread && processingThread->isRunning())
         stopProcessingThread();
 
-    if(cameraThread->isRunning())
+    if(cameraThread && cameraThread->isRunning())
         stopCameraThread();
-
-    emit processFinished();
-}
-
-void AppProcessor::runSingle() {
-    framePipeline->clearBuffer();
-    framePipeline->activatePipelineRead(true);
-
-    cameraThread->startSingleCapture();
-    processingThread->startSingleProcess();
 
     emit processFinished();
 }
@@ -127,14 +117,17 @@ void AppProcessor::stopObjectiveThread() {
 
 void AppProcessor::deleteCameraThread() {
     delete cameraThread;
+    cameraThread = nullptr;
 }
 
 void AppProcessor::deleteProcessingThread() {
     delete processingThread;
+    processingThread = nullptr;
 }
 
 void AppProcessor::deleteObjectiveThread() {
     delete objectiveThread;
+    objectiveThread = nullptr;
 }
 
 void AppProcessor::clearFramePipeline() {

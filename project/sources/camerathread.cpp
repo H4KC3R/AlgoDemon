@@ -98,18 +98,6 @@ bool CameraThread::getControlSettings(CameraControls control, double& min, doubl
     return result;
 }
 
-void CameraThread::startSingleCapture() {
-    ////////////////  Установка настроек камеры  /////////////////
-    setSettings();
-    /////////////////////////////////////////////////////////////
-
-    if(pCamera->startSingleCapture()) {
-        pCamera->getImage(frame.mWidth, frame.mHeight, frame.mBpp,
-                           frame.mChannels, frame.pData);
-        pFramePipeline->setFrame(frame);
-    }
-}
-
 void CameraThread::stopLiveCaptureThread() {
     stoppedMutex.lock();
     stopped = true;

@@ -17,17 +17,15 @@ public:
     ~AppProcessor();
     FramePipeline* framePipeline = nullptr;
 
-    CameraThread *cameraThread;
-    ProcessingThread* processingThread;
-    ObjectiveThread* objectiveThread;
+    CameraThread *cameraThread = nullptr;
+    ProcessingThread* processingThread = nullptr;
+    ObjectiveThread* objectiveThread = nullptr;
 
     bool connectToCamera(char* id, StreamMode mode, BitMode bit = bit8);
     void disconnectCamera();
 
     bool runProcess();
     void stopProcess();
-
-    void runSingle();
 
     void stopCameraThread();
     void stopProcessingThread();

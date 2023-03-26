@@ -17,12 +17,10 @@ public:
     void disconnectCamera();
     bool getControlSettings(CameraControls control, double& min, double& max, double& step, double& currentVal);
 
-    void startSingleCapture();
     void stopLiveCaptureThread();
     bool isCameraConnected();
 
     CamParameters getParams() const;
-
     bool getIsLive() const;
 
 private:

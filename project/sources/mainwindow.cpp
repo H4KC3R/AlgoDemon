@@ -31,8 +31,6 @@ MainWindow::MainWindow(QWidget *parent)
 }
 
 MainWindow::~MainWindow() {
-    processor.stopProcess();
-    processor.disconnectCamera();
     delete ui;
 }
 
@@ -513,10 +511,7 @@ void MainWindow::on_gammaCoeffSpinBox_valueChanged(double value) {
 // ************************ Camera Image Capture ************************ //
 
 void MainWindow::on_cameraStartCaptureButton_clicked() {
-    if(processor.cameraThread->getIsLive())
-        processor.runProcess();
-    else
-        processor.runSingle();
+    processor.runProcess();
 
     ui->cameraStartCaptureButton->setEnabled(false);
     ui->cameraStopCaptureButton->setEnabled(true);

@@ -23,7 +23,6 @@ public:
 
     ~ProcessingThread();
 
-    void startSingleProcess();
     void stopProcessingThread();
 
 private:
