@@ -1,7 +1,7 @@
 #ifndef CAMFRAME_H
 #define CAMFRAME_H
 #include <stdint.h>
-#include <chrono>
+#include <time.h>
 #include <algorithm>
 #include <cstring>
 
@@ -15,7 +15,8 @@ public:
 
 public:
    uint8_t* pData = nullptr;
-   std::chrono::time_point<std::chrono::steady_clock> mTime;
+   time_t mTime_start;
+   time_t mTime_end;
 
    uint32_t mWidth = 0;
    uint32_t mHeight = 0;

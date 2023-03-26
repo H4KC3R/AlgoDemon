@@ -16,7 +16,7 @@ enum CameraControls {
 
     transferbit         = 10,       //!< image depth bits
 
-    fps          = 12,       //!< control the USB bandwidth,(only for QHY5II
+    usbtraffic          = 12,       //!< control the USB bandwidth,(only for QHY5II
                                     //!< and QHY5LII to reduce the USB bandwidth . Value range: (30-0), 0 - USB
                                     //!< transmission is the fastest , 30 - transmission is the slowest)
 };
