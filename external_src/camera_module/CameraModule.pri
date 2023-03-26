@@ -16,6 +16,7 @@ HEADERS  += \
     $$PWD/include/imageblurmetric.h \
     $$PWD/include/imageprocess.h \
     $$PWD/include/objectivecontroller.h\
+    $$PWD/include/focusingFSM.h\
     $$PWD/include/serialib.h
 
 SOURCES += \
@@ -26,6 +27,7 @@ SOURCES += \
         $$PWD/src/imageblurmetric.cpp \
         $$PWD/src/imageprocess.cpp \
         $$PWD/src/objectivecontroller.cpp \
+        $$PWD/src/focusingFSM.cpp \
         $$PWD/src/serialib.cpp
 
 

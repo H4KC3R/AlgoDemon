@@ -52,7 +52,7 @@ void ObjectiveController::setDiaphragmLevel(const double value) {
     }
 }
 
-void ObjectiveController::setFocusing(const int value) {
+void ObjectiveController::setFocusing(const double value) {
     mError.clear();
     if (testControllerActive()) {
         if( mObjective.writeString(getFocusingCmd(value).c_str()) != 1 ) {
@@ -112,7 +112,7 @@ bool ObjectiveController::testControllerActive() {
     return false;
 }
 
-string ObjectiveController::getFocusingCmd(const int value) {
+string ObjectiveController::getFocusingCmd(const double value) {
     string val = to_string(value);
     string cmd = "M" + val + "#";
     return cmd;

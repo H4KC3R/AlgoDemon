@@ -22,7 +22,7 @@ public:
 
     void setDiaphragmLevel(const double value);
 
-    void setFocusing(const int value);
+    void setFocusing(const double value);
 
     double getCurrentFocusing();
 
@@ -36,7 +36,7 @@ public:
 
 private:
     bool testControllerActive();
-    string getFocusingCmd(const int value);
+    string getFocusingCmd(const double value);
     string getAppertureCmd(const int value);
 
     vector <double> mAppertures;
