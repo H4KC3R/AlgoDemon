@@ -1807,7 +1807,7 @@ QTabBar::tab  {
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_8">
           <property name="leftMargin">
-           <number>0</number>
+           <number>35</number>
           </property>
           <property name="topMargin">
            <number>0</number>
