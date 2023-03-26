@@ -44,6 +44,7 @@ signals:
 private slots:
     void onProcessFinished();
 
+    void onNewFpsValue(double fps, double gain, double exposure);
     void onHardFault(QString errorMsg);
     void onSoftFault(QString errorMsg);
 

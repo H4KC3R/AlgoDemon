@@ -34,6 +34,11 @@ private:
     QMutex updateControlsMutex;
     volatile bool stopped;
 
+    time_t t_start;
+    time_t t_end;
+    uint32_t frameCount = 0;
+    double fps = 0;
+
     ////////////////  Флаги /////////////////
     volatile bool isFpsChanged;
     double fpsToSet;
@@ -57,6 +62,7 @@ public slots:
 signals:
     void hardFault(QString errorMessage);
     void softFault(QString errorMessage);
+    void newFpsValue(double fps, double gain, double exposure);
 
     // QThread interface
 protected:

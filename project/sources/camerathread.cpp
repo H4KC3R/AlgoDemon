@@ -8,6 +8,10 @@ CameraThread::CameraThread(FramePipeline *pipeline) : QThread(),
 
 void CameraThread::run() {
     if(pCamera->startLiveCapture()) {
+        fps = 0;
+        frameCount = 0;
+        t_start = time(NULL);
+
         bool frameReady = false;
         while(1) {
             /////////////////////  Остановка потока  //////////////////////
@@ -27,12 +31,25 @@ void CameraThread::run() {
             /////////////////////////////////////////////////////////////
             updateControlsMutex.unlock();
 
+            frame.mTime_start = time(NULL);
             while(frameReady == false) {
                 if(stopped == true)
                     break;
                 frameReady = pCamera->getImage(frame.mWidth, frame.mHeight, frame.mBpp,
                                                frame.mChannels, frame.pData);
             }
+
+            frame.mTime_end = time(NULL);
+
+            t_end = time(NULL);
+            frameCount++;
+            if(t_end - t_start >= 5) {
+                fps = (double)frameCount / 5.0;
+                t_start = time(NULL);
+                frameCount = 0;
+            }
+
+            emit newFpsValue(fps, gainToSet, exposureToSet);
 
             pFramePipeline->setFrame(frame);
             frameReady = false;
@@ -76,8 +93,9 @@ void CameraThread::disconnectCamera() {
 }
 
 bool CameraThread::getControlSettings(CameraControls control, double& min, double& max, double& step, double& currentVal) {
-    if (control == transferbit) {
-        currentVal = pCamera->getImageBitMode();
+    if (control == usbtraffic) {
+        currentVal = pCamera->getFps();
+        fpsToSet = currentVal;
     }
     else if (control == gain){
         currentVal = pCamera->getGain();
@@ -86,10 +104,6 @@ bool CameraThread::getControlSettings(CameraControls control, double& min, doubl
     else if(control == exposure) {
         currentVal = pCamera->getExposure();
         exposureToSet = currentVal;
-    }
-    else if(control == fps){
-        currentVal = pCamera->getFps();
-        fpsToSet = currentVal;
     }
     else
         return false;

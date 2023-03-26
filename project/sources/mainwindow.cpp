@@ -41,6 +41,12 @@ void MainWindow::onProcessFinished() {
     ui->cameraStopCaptureButton->setEnabled(false);
 }
 
+void MainWindow::onNewFpsValue(double fps, double gain, double exposure) {
+    ui->fpsValueLabel->setText(QString::number(fps));
+    ui->gainValueLabel->setText(QString::number(gain));
+    ui->exposureValueLabel->setText(QString::number(exposure));
+}
+
 void MainWindow::onHardFault(QString errorMsg) {
     processor.stopProcess();
     QMessageBox::warning(this, "Внимание", errorMsg);
@@ -193,6 +199,8 @@ void MainWindow::proccessorSignalSlotsInit() {
     connect(&processor, SIGNAL(processFinished()), this, SLOT(onProcessFinished()));
 
     //  Camera thread (emitter) and GUI thread (receiver/listener)
+    connect(processor.cameraThread, SIGNAL(newFpsValue(double,double,double)),
+            this, SLOT(onNewFpsValue(double,double,double)));
     connect(processor.cameraThread, SIGNAL(hardFault(QString)), this, SLOT(onHardFault(QString)));
     connect(processor.cameraThread, SIGNAL(softFault(QString)), this, SLOT(onSoftFault(QString)));
 
@@ -237,7 +245,7 @@ void MainWindow::initializeCameraControls() {
     CamParameters camParameters = processor.cameraThread->getParams();
 
     ////////////////////// FPS /////////////////////
-    if(processor.cameraThread->getControlSettings(fps, min, max, step, currentVal)) {
+    if(processor.cameraThread->getControlSettings(usbtraffic, min, max, step, currentVal)) {
         ui->cameraFpsSpinBox->setEnabled(true);
         ui->cameraFpsSpinBox->setMaximum(max);
         ui->cameraFpsSpinBox->setMinimum(min);
@@ -410,6 +418,8 @@ void MainWindow::on_disconnectCameraButton_clicked() {
         disconnect(&processor, SIGNAL(processFinished()), this, SLOT(onProcessFinished()));
 
         //  Camera thread (emitter) and GUI thread (receiver/listener)
+        disconnect(processor.cameraThread, SIGNAL(newFpsValue(double,double,double)),
+                this, SLOT(onNewFpsValue(double,double,double)));
         disconnect(processor.cameraThread, SIGNAL(hardFault(QString)), this, SLOT(onHardFault(QString)));
         disconnect(processor.cameraThread, SIGNAL(softFault(QString)), this, SLOT(onSoftFault(QString)));
 
