@@ -11,6 +11,7 @@ ObjectiveThread::ObjectiveThread(FramePipeline* pipeline, bool isMonoFlag,
       pFramePipeline(pipeline),
       isMono(isMonoFlag)
 {
+    focusingFSM = nullptr;
     pObjective = nullptr;
     autoExposureHandler = new AutoExposureHandler(params, maxExposure, minExposure, maxGain, minGain);
     stopped = false;
@@ -20,6 +21,11 @@ ObjectiveThread::ObjectiveThread(FramePipeline* pipeline, bool isMonoFlag,
 }
 
 ObjectiveThread::~ObjectiveThread() {
+    if(focusingFSM) {
+        delete focusingFSM;
+        focusingFSM = nullptr;
+    }
+
     delete autoExposureHandler;
     if(pObjective)
         delete pObjective;
@@ -28,8 +34,10 @@ ObjectiveThread::~ObjectiveThread() {
 bool ObjectiveThread::connectObjective(const char* serialPort) {
     try {
         pObjective = new ObjectiveController(serialPort);
-        if(pObjective->connectToController(serialPort))
+        if(pObjective->connectToController(serialPort)) {
+            focusingFSM = new FocusingFSM(pObjective);
             return true;
+        }
         else
             return false;
     }
@@ -39,6 +47,8 @@ bool ObjectiveThread::connectObjective(const char* serialPort) {
 }
 
 bool ObjectiveThread::disconnectObjective() {
+    delete focusingFSM;
+    focusingFSM = nullptr;
     if(pObjective->disconnectController())
         return true;
     else
@@ -105,6 +115,7 @@ void ObjectiveThread::onFocusingEnabled(bool status, cv::Rect roi) {
         maxSharpnessMetric = 0;
         sharpImagePositon = 0;
         myRoi = roi;
+        focusingFSM->stopFocus();
     }
     else
         emit focusingStop("Объектив отключен!\n");
@@ -156,19 +167,8 @@ void ObjectiveThread::run() {
         if(mFocusingOn) {
             double sharpnessMetric;
             if(ImageBlurMetric::getBlurFFT(cvFrame(myRoi), sharpnessMetric)) {
-                currentPosition = (int)pObjective->getCurrentFocusing();
-                if((currentPosition + step) == 10000) {
-                    mFocusingOn = false;
-                    qDebug() << sharpImagePositon;
-                    pObjective->setFocusing(sharpImagePositon);
-                }
-                else {
-                    if(sharpnessMetric >= maxSharpnessMetric) {
-                        maxSharpnessMetric = sharpnessMetric;
-                        sharpImagePositon = currentPosition;
-                    }
-                    pObjective->setFocusing(currentPosition + step);
-                }
+                focusingFSM->focus(sharpnessMetric);
+                currentPosition = focusingFSM->getCurrentPosition();
             }
             else {
                 mFocusingOn = false;

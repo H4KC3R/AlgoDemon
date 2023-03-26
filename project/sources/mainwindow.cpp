@@ -31,6 +31,8 @@ MainWindow::MainWindow(QWidget *parent)
 }
 
 MainWindow::~MainWindow() {
+    processor.stopProcess();
+    processor.disconnectCamera();
     delete ui;
 }
 

@@ -10,6 +10,7 @@
 #include "framepipeline.h"
 #include "objectivecontroller.h"
 #include "autoexposurehandler.h"
+#include "focusingFSM.h"
 
 class ObjectiveThread : public QThread
 {
@@ -19,7 +20,9 @@ public:
     ObjectiveThread(FramePipeline* frame, bool isMonoFlag, double maxExposure, double minExposure,
                     double maxGain, double minGain,AutoExposureParams params);
     ~ObjectiveThread();
+
     AutoExposureHandler* autoExposureHandler;
+    FocusingFSM* focusingFSM;
 
 public:
     bool connectObjective(const char* serialPort);
