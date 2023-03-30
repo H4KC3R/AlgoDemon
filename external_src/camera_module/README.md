@@ -1,4 +1,4 @@
-# Focusing Final State Machine
+# Focusing Finite State Machine
 
 ## Схема
 <img src="FocusingFSM.svg"> 
